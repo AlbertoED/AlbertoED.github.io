@@ -42,8 +42,8 @@ Here's a sample "posts list".
 {{ site.github.owner }}
 <ul>
   {% for repository in site.github.public_repositories %}
-	<li><a href = "{{ repository.html_url }}">{{ repository.name }}</a>
-	{{ repository.description }}
+	<li><a href = "{{ repository.html_url }}">{{ repository.name }}: </a>
+	{{ repository.commits }}
 	</li>
   {% endfor %}
 </ul>
