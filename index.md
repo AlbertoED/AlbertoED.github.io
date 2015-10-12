@@ -38,6 +38,14 @@ Here's a sample "posts list".
   {% endfor %}
 </ul>
 
+## Prueba para listar el nombre de mis proyectos
+{{ site.github.owner }}
+<ul>
+  {% for repository in site.github.public_repositories %}
+	<li>[{{ repository.name }}]({{ repository.html_url }})</li>
+  {% endfor %}
+</ul>
+
 ## To-Do
 
 This theme is still unfinished. If you'd like to be added as a contributor, [please fork](http://github.com/plusjade/jekyll-bootstrap)!
