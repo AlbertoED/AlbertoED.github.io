@@ -43,7 +43,7 @@ Here's a sample "posts list".
 <ul>
   {% for repository in site.github.public_repositories %}
 	<li>[{{ repository.name }}]({{ repository.html_url }})</br>
-		{{ repository.readme }}
+		{{ repository.content }}
 	</li>
   {% endfor %}
 </ul>
