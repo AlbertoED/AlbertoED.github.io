@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Hello World!
+title: Página Alberto
 tagline: Supporting tagline
 ---
 {% include JB/setup %}
@@ -8,20 +8,6 @@ tagline: Supporting tagline
 Read [Jekyll Quick Start](http://jekyllbootstrap.com/usage/jekyll-quick-start.html)
 
 Complete usage and documentation available at: [Jekyll Bootstrap](http://jekyllbootstrap.com)
-
-## Update Author Attributes
-
-In `_config.yml` remember to specify your own data:
-    
-    title : My Blog =)
-    
-    author :
-      name : Name Lastname
-      email : blah@email.test
-      github : username
-      twitter : username
-
-The theme should reference these variables whenever needed.
     
 ## Sample Posts
 
@@ -43,7 +29,7 @@ Here's a sample "posts list".
 <ul>
   {% for repository in site.github.public_repositories %}
 	<li><a href = "{{ repository.html_url }}">{{ repository.name }}: </a>
-	{{ repository.language }}
+	{{ repository.description }}
 	</li>
   {% endfor %}
 </ul>
