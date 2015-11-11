@@ -13,16 +13,6 @@
 /*.navbar .nav {
   float: right; }*/
 
-/* Jekyll Bootstrap Colors */
-h1, h2, h3, h4 {
-  color: #f22430;
-}
-#footer {
-  background-color: #fdcd60;
-}
-
-
-
 /* posts index */
 .post > h3.title {
   position: relative;
@@ -77,3 +67,23 @@ h1, h2, h3, h4 {
   background: #57A957;
   border: 1px solid #4c964d;
   color: #FFF; }
+
+/*CSS Personalizado*/
+
+/* Jekyll Bootstrap Colors */
+h1, h2, h3, h4 {
+  color: #00A9E0;
+}
+
+#footer {
+  background-color: #69C6E5;
+}
+
+#footer .container p{
+  /*Es el color del texto del footer
+  color:#00629B;*/
+}
+
+a {
+  color:#00629B;
+}

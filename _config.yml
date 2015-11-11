@@ -8,13 +8,14 @@ highlighter: false
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : Jekyll Bootstrap
-tagline: Site Tagline
+title : GSI GitHub
+tagline: Proyectos GitHub Del Grupo de Sistemas Inteligentes de la UPM
 author :
-  name : Alberto
+  name : Grupo de Sistemas Inteligentes
   email : blah@email.test
   github : AlbertoED
-  twitter : username
+  university : Universidad Politécnica de Madrid
+  twitter : gsiupm
   feedburner : feedname
 
 # The production_url is only used when full-domain names are needed
