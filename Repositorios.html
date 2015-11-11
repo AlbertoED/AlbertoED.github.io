@@ -1,7 +1,15 @@
-	<script src="gitquery.js"></script>
-	<script type="text/javascript">
-    	$(function() {
-        $("#display-projects").getRepos("AlbertoED"); //Add your github username.
-    	});
-	</script>
-	<div id="display-projects"></div>
+---
+layout: page
+title: Repositorios 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+<h3>Repositorios de la cuenta {{site.author.github}}:</h3>
+<ul>
+  {% for repository in site.github.public_repositories %}
+	<li><a href = "{{ repository.html_url }}">{{ repository.name }}: </a>
+	{{ repository.description }}
+	</li>
+  {% endfor %}
+</ul>
