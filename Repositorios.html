@@ -16,8 +16,6 @@ group: navigation
 
 <h3>PRUEBA JQUERY</h3>
 	<script type="text/javascript">
-    	$(function() {
-        $("#display-projects").loadRepositories("albertoed"); //Add your github username.
-    	});
+    	$(document).ready(function () {$("#display-projects").loadRepositories("albertoed");});
 	</script>
 	<div id="display-projects"></div>
