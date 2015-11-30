@@ -26,8 +26,4 @@ jQuery.fn.loadRepositories = function(username) {
         return b.stargazers_count - a.stargazers_count; //Descending order for number of stars based sorting.
        });
     }
-};	repos.sort(function (a, b) {
-		    return b.forks - a.forks; //Descending order for number of forks based sorting.
-		});
-	    }
-	};
+};
