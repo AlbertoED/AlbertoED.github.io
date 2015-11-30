@@ -14,7 +14,7 @@ jQuery.gitUser = function (username, callback) {
         target.empty().append(list);
         $(repos).each(function () {
             checkfork = this.fork;
-            if ((this.name != (username.toLowerCase() + '.github.com')) && (checkfork != true)) { //Check for username.github.com repo and for forked projects
+            if ((this.name != (username.toLowerCase() + '.github.io')) && (checkfork != true)) { //Check for username.github.com repo and for forked projects
                 list.append('<dt><a style="font-size:20px;" href="' + (this.homepage ? this.homepage : this.html_url) + '">' + this.name + '</a><em> - ' + (this.language ? ('(' + this.language + ')') : '') + '</em><br>Forks: ' + this.forks + ' | Watchers: ' + this.watchers + '</dt>');
                 //Similarly fetch everything else you need.
             }
