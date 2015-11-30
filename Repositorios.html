@@ -5,6 +5,8 @@ header: Pages
 group: navigation
 ---
 {% include JB/setup %}
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
+<script src="\assets\themes\bootstrap-3\bootstrap\js\gitquery.js"></script>
 <h3>Repositorios de la cuenta {{site.author.github}}:</h3>
 <ul>
   {% for repository in site.github.public_repositories %}
@@ -14,11 +16,12 @@ group: navigation
 </ul>
 
 <h3>PRUEBA JQUERY</h3>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="/gitquery.js"></script>
-	<script type="text/javascript">
-    	$(function() {
-        $("#display-projects").getRepos("albertoed"); //Add your github username.
-    	});
-	</script>
-	<div id="display-projects"></div>
+
+
+
+<script type="text/javascript">
+$(document).ready(function () {$("#my-github-projects").loadRepositories("albertoed");}); 
+</script>
+
+<div id="my-github-projects">
+</div>
