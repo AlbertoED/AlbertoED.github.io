@@ -127,9 +127,19 @@
 	        <h4 class="modal-title" id="myModalLabel">Credenciales de administrador</h4>
 	      </div>
 	      <div class="modal-body">
-        <form name="login">
-            Usuario: <input type="text" name="userid"/></br></br>
-            Contraseña: <input type="password" name="pswrd"/>
+        	<form name="login">
+
+        		<div class="form-group">
+  					<label for="usr">Usuario:</label>
+  					<input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario">
+				</div>
+				<div class="form-group">
+  					<label for="pwd">Contraseña:</label>
+  					<input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña">
+				</div>
+
+            <!--Usuario: <input type="text" name="userid"/></br></br>
+            Contraseña: <input type="password" name="pswrd"/> -->
 	      </div>
 	      	<!-- Contenedor que se muestra en caso de producirse error en el Login -->
 	      	<!-- MENSAJE ERROR -->
