@@ -65,6 +65,7 @@
         		<script type="text/javascript" src="{{ ASSET_PATH }}/js/jquery-1.9.1.min.js"></script>
     		{% endif %}
 	{% endfor %}
+
   </head>
 
   <body>
@@ -119,6 +120,7 @@
 
     <!-- Código para el popup del Login -->
 <!-- Modal -->
+
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -131,17 +133,17 @@
 
         		<div class="form-group">
   					<label for="usr">Usuario:</label>
-  					<input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario">
+  					<input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
 				</div>
 				<div class="form-group">
   					<label for="pwd">Contraseña:</label>
-  					<input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña">
+  					<input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
 				</div>
 
             <!--Usuario: <input type="text" name="userid"/></br></br>
             Contraseña: <input type="password" name="pswrd"/> -->
 	      </div>
-	      	<!-- Contenedor que se muestra en caso de producirse error en el Login -->
+	      	<!-- Contenedores que se muestran en caso de producirse error en el Login, se introducir un usuario correcto o de aviso si ya está logado -->
 	      	<!-- MENSAJE ERROR -->
    				<div class="alert alert-danger fade in" style="display:none;">
         			<a href="#" class="close" onclick="$('.alert-danger').hide()">&times;</a>
@@ -153,6 +155,19 @@
     				<a href="#" class="close" onclick="$('.alert-success').hide()">&times;</a>
     				<strong>¡Bienvenido!</strong> Usuario y contraseña correctos.
 				</div>
+
+			<!-- MENSAJE INFO YA CONECTADO -->
+				<div class="alert alert-info fade in" style="display:none;">
+    				<a href="#" class="close" onclick="$('.alert-info').hide()">&times;</a>
+    				Ya has iniciado sesión como <strong><span id="usuarioInfo"></span></strong>.
+				</div>
+
+			<!-- MENSAJE FIN SESION -->
+				<div class="alert alert-warning fade in" style="display:none;">
+    				<a href="#" class="close" onclick="$('.alert-warning').hide()">&times;</a>
+    				<strong>!Advertencia!</strong> La sesión ha expirado.
+  				</div>
+
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 	        <button type="button" class="btn btn-primary" onclick="loginUser(this.form)" value="Login">Entrar</button>
