@@ -4,17 +4,24 @@
     // Para almacenar el nombre del usuario que se ha conectado
     var nombreUsuario;
     // Variable booleana para fijar si la sesión del usuario esta abierta (1) o no (0)
-    var sesion = 0; ;
+    var sesion = 0;
 
 
     /* En esta seccion colocamos los fragmentos de codigo que queremos que se ejecuten tras cargar la pagina */
     $(document).ready(function(){
+            //Codigo que activa controles de administrador si hay sesion iniciada
+            var authData1 = myDataRef.getAuth();
+            if (authData1){
+                document.getElementById('btnAdmin').style.display = 'inline';
+            }
             //Codigo a ejecutar cuando se va a cargar el modal de login
+
             $('#myModal').on('show.bs.modal', function(e) {
                 //Comprobamos si ya esta registrado, y mostramos el mensaje de info
                 var authData = myDataRef.getAuth();
                 if (authData) {
-                    document.getElementById('usuarioInfo').innerHTML = nombreUsuario;
+                    document.getElementById('usuarioInfo').innerHTML = authData.password.email;
+                    document.getElementById('btnFinSesion').style.display = 'inline';
                     $('.alert-info ').show();
                     sesion = 1
                 } else if (sesion==1){
@@ -39,6 +46,8 @@
                     .find("input,textarea,select")
                     .val('')
                     .end()
+                //Comprobamos si ha expirado sesion y estamos en pagina admin
+                comprobarPagAdmin();
             });
 
             //
@@ -50,7 +59,26 @@
             });*/
         });
 
+    function mostrarLogin() {
+        $('#myModal').modal('show');  
+        console.log("entra")
+    };
 
+    /* Funcion para controlar acceso a la pagina admin segun sesion. Realizado por si no se accede a la misma por la venta de login (url en buscador) */
+    function accesoAdmin() {
+            console.log(sesion);
+            var authData = myDataRef.getAuth();
+            if (authData){
+                console.log("La sesion esta iniciada, muestro admin");
+                sesion = 1;
+                console.log(authData.password.email);
+            }else{
+                console.log("La sesion no esta iniciada:");
+                sesion = 0;
+                location.href = "/index.html";
+                //mostrarLogin();
+            }
+    };
 
 
     /* Esta funcion sirve para crear un 'objeto' y una variable propia en nuestra app de FireBase*/
@@ -88,9 +116,8 @@
         /* Comprobamos si ya esta logado el usuario */
         var authData = myDataRef.getAuth();
             if (authData) {
-                document.getElementById('usuarioInfo').innerHTML = authData.uid;
+                document.getElementById('usuarioInfo').innerHTML = authData.password.email;
                 $('.alert-info ').show();
-                console.log("User " + authData.uid + " is logged in with " + authData.provider);
             } else {
                 sesion = 0
                 $('.alert').hide();
@@ -106,8 +133,13 @@
                   } else {
                     $('.alert-success').show();
                     //Guardo el nombre del usuario en una variable global
-                    nombreUsuario = form.userid.value
-                    sesion = 1
+                    nombreUsuario = form.userid.value;
+                    //Genero una espera para realizar peticion a GitHub de todos los proyectos y guardarlos en un json
+                    // PENDIENTE
+                    //Redirijo a la pagina de admin.html la una espera. El hilo de ejecucion continua, y ejecuta esta accion a los X segundos
+                    document.getElementById('loadLogin').style.display = 'inline';
+                    setTimeout(function(){location.href = "/admin.html";},5000);
+                    sesion = 1 ;                  
                     console.log("Authenticated successfully with payload:", authData);
                   }
                 },{
@@ -116,15 +148,48 @@
             }
     };
 
-    function check(form) { /*function to check userid & password*/
-        /*the following code checkes whether the entered userid and password are matching*/
-        if(form.userid.value == "Alberto" && form.pswrd.value == "Alberto") {
-            window.location.href ='Repositorios.html'/*opens the target page while Id & password matches*/
+    /* Esta función se utiliza para comprobar al cerrar el popup de login si la pagina en la que estamos es 'admin' en cuyo caso comprueba si hay sesion para continuar*/
+    function comprobarPagAdmin() {
+        var rutaEntera = window.location.pathname;
+        var urlPag = rutaEntera.split("/").pop();
+        if (urlPag == "admin.html") {
+            accesoAdmin()
+            console.log("Ha comprobado si hay sesion, y si hay")
+        }else{
+            console.log("No estamos en admin")
+            //Este caso significa que no estamos en la pagina de admin, pero debemos comprobar si sigue habiendo sesion
+            var authData = myDataRef.getAuth();
+            if (authData){
+                // Si tenemos sesion no hacemos nada
+            }else{
+                // Si no tenemos, eliminamos componentes de administrador
+                console.log("La sesion no esta iniciada:");
+                sesion = 0;
+                //Quitamos el boton de admin
+                document.getElementById('btnAdmin').style.display = 'none';
+                //mostrarLogin();
+            }
+
         }
-        else {
-            alert("Error Password or Username")/*displays error message*/
-        }
-    }
+
+    };
+
+    /* Esta función se utiliza para cerrar la sesion del usuario conectado*/
+    function cerrarSesion() {
+            myDataRef.unauth();
+            sesion = 0
+            $('.alert').hide();
+            $('.alert-warning ').show();
+    };
+           /*   
+        if (sesion == 1){
+            console.log("sesion In nav bar");
+            
+        }else{
+          console.log("sesion OFF nav bar");
+        }*/
+ 
+
 
 
     function showAlert(){

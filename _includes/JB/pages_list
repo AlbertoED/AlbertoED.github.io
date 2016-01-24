@@ -20,6 +20,9 @@ Usage:
   This helper can be seen in use at: ../_layouts/default.html
 -->{% endcomment %}
 
+<!-- En cada pagina anadimos el group navigation, para que los muestre en el 'navigation bar'
+     En la pagina de control 'admin.html' no anadimos esa etiqueta para que no nos los muestre por defecto en el 'navigation bar'
+-->
 {% if site.JB.pages_list.provider == "custom" %}
   {% include custom/pages_list %}
 {% else %}
