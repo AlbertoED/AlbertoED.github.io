@@ -12,7 +12,7 @@
     {% endif %}
     </title>
     {% if page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/gitquery.js"></script>
@@ -98,7 +98,7 @@
                 <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="/index.html" onclick="cerrarSesion()">Log Out</a></li>
+                  <li><a href="/index.html" onclick="cerrarSesion()">Log Out     <span class="glyphicon glyphicon-log-out"></span></a></li>
                   <li><a href="#">Enlace #2</a></li>
                 </ul>
           </div>

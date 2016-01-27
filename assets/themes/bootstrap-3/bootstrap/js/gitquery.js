@@ -27,3 +27,40 @@ jQuery.gitUser = function (username, callback) {
         });
         }
     };
+
+    function funcionPost() {
+        /*
+                         var xhttp = new XMLHttpRequest();
+                        xhttp.open("POST", "php/testapi.php", true);
+                        xhttp.send();
+                        */
+
+                       /* 
+                var data = {'action': 'follow', 'userid': '11239528343'};
+                $.post("testapi.php",
+                    data,
+                    function(response,status){
+                    alert("Status : " + status);
+                });
+*/
+
+        
+        $.ajax({
+            url: 'http://albertoed.github.io/testapi.php',
+            type: 'POST',
+            data: {'action': 'follow', 'userid': '11239528343'},
+            success:function(result, status) {
+                        if(result == "ok") {
+                            console.log("Status : " + status);
+                            console.log("Result : " + result);
+                        }
+                    },
+            error: function(xhr, desc, err) {
+                        console.log(xhr);
+                        console.log("Details: " + desc + "\nError:" + err);
+                    }
+        }); // end ajax call   
+
+
+    };
+

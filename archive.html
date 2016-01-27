@@ -5,6 +5,58 @@ header : Post Archive
 group: navigation
 ---
 {% include JB/setup %}
+<div class="jumbotron">
+		<h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>
+</div>
+	<script type="text/javascript">
 
-{% assign posts_collate = site.posts %}
-{% include JB/posts_collate %}
+
+
+					/*var data = {'bob':'foo','paul':'dog'};
+					$.ajax({
+						type: 'POST',
+						url: '/ajax/prueba',//url of receiver file on server
+						data: JSON.stringify(data), //your data
+						success: 	function(data){//On ajax success do this
+				     					alert("Did it!");
+				      				}, 
+						dataType: 'json' //text/json...
+					});
+					*/
+
+
+	
+    	$(document).ready(function () {
+    		$("#display-projects").loadRepositories("gsi-upm");
+    		funcionPost();
+    	});
+    	/*
+    	 var data = {'bob':'foo','paul':'dog'};
+			 $.ajax({
+			   url: '/repositoriosActualizados.json',
+			   type: 'POST',
+			   contentType:'application/json',
+			   data: JSON.stringify(data),
+			   dataType:'json',
+			   success: function(data){
+			     //On ajax success do this
+			     alert(data);
+			      },
+			   error: function(xhr, ajaxOptions, thrownError) {
+			      //On error do this
+			        if (xhr.status == 200) {
+
+			            alert(ajaxOptions);
+			        }
+			        else {
+			            alert(xhr.status);
+			            alert(thrownError);
+			        }
+			    }
+			 });
+	*/
+	</script>
+	<div id="display-projects">
+		<!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
+	</div>
+<!--{% include JB/posts_collate %}-->
