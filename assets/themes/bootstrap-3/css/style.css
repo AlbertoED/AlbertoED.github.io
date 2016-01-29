@@ -114,8 +114,14 @@ a {
 /* ESTILO DE LOS PANELES DE LOS REPOSITORIOS*/
 .titleReposAdmin {
   font-size: 18px;
-  color:black;
+  color:white;
 
+}
+
+/* ESTILO BOTON GUARDAR*/
+.btn.btn-success.btn-lg.izda{
+  float: right;
+  margin-bottom: 10px;
 }
 
 

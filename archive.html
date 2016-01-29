@@ -8,22 +8,22 @@ group: navigation
 <div class="jumbotron">
 		<h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>
 </div>
-<input data-toggle="toggle" checked type="checkbox" id="toggle">
 
 	<script type="text/javascript">
-
-    	$(document).ready(function () {
-    		$("#display-projects").cargaRepositoriosGithub();
-    		//funcionPost();
-    	});
+	//PRIMERO DEBEMOS OBTENER EL TOKEN ANTES DE EJECUTAR CUALQUIER FUNCION. INTRODUCIMOS LA LLAMADA A LA FUNCION DE CARGARREPOSITORIOS AL FINAL DE LA FUNCION ONTENER TOKEN, PARA ASEGURAR QUE YA SE HAYA OBTENIDO EL TOKEN	
+    $(document).ready(function () {
+    	getTokenFireBase();
+    	//funcionPost();
+    });
 
 	</script>
-
 
 
 	<div id="display-projects">
 		<!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
 	</div>
+		
+
 
 
 
