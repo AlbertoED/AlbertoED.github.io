@@ -112,7 +112,7 @@ a {
 }
 
 /* ESTILO DE LOS PANELES DE LOS REPOSITORIOS*/
-.titleReposAdmin {
+.titleReposAdmin a{
   font-size: 18px;
   color:white;
 
@@ -124,7 +124,41 @@ a {
   margin-bottom: 10px;
 }
 
+/* DEFINICIÓN DEL FONDO DE LA WEB 
+body{
+    background-image: url("fondo1.jpg");
+    background-color: #cccccc;
+}*/
 
+.jumbotron.text-black h4{
+    color: black;
+}
 
+/* ESTILO DIVS INDEX */
+/* Efecto al situar el curso encima de los divs principales */
+.main-box{
+    background-color: #B3D3DD;
+    cursor: pointer;
+}
 
+.main-box:hover{
+    /*background-color: #73888E;*/
+    cursor: pointer;
+}
 
+.jumbotron.main-box h2{
+    text-align: center;
+    color: black;
+}
+
+.main-box p{
+    text-align: justify;
+    color:black;
+    font-size: 16px;
+}
+
+/* Estilo para centrar el botón */
+.jumbotron.main-box button{
+  justify-content: center
+
+}
