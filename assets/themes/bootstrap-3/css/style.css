@@ -76,7 +76,7 @@ h1, h2, h3, h4 {
 }
 
 #footer {
-  background-color: #69C6E5;
+  background-color: #AAE9FC;
   height: auto;
 }
 
@@ -90,7 +90,6 @@ a {
 }
 
 /*CSS para fijar cabecera*/
-
 .margen-inferior{
   margin-bottom:30px;
 }
@@ -115,32 +114,67 @@ a {
 .titleReposAdmin a{
   font-size: 18px;
   color:white;
-
 }
 
-/* ESTILO BOTON GUARDAR*/
+/* ESTILO BOTON GUARDAR REPOSITORIOS*/
 .btn.btn-success.btn-lg.izda{
   float: right;
   margin-bottom: 10px;
 }
 
-/* DEFINICIÓN DEL FONDO DE LA WEB 
+/* DEFINICIÓN DEL FONDO DE LA WEB */
 body{
-    background-image: url("fondo1.jpg");
-    background-color: #cccccc;
-}*/
+  background-color:#F3FAFC;
+}
 
+/* DEFINICIÓN DEL PANEL DE INFO DEL ADMIN */
 .jumbotron.text-black h4{
-    color: black;
+  color: black;   
+}
+
+.jumbotron.text-black{
+  background-color: #CFE5EC;    
+}
+
+/* ESTILO PARA ADPTAR LA IMAGEN AL CONTENEDOR */
+.adapted{
+  -webkit-background-size: cover; 
+  -moz-background-size: cover; 
+  -o-background-size: cover; 
+  background-size: cover;
 }
 
 /* ESTILO DIVS INDEX */
-/* Efecto al situar el curso encima de los divs principales */
 .main-box{
-    background-color: #B3D3DD;
-    cursor: pointer;
+  background-color: #CFE5EC;
+  cursor: pointer;
 }
 
+#div-image-1{
+  background-image: url("./images/ASS-image.png");
+}
+
+#div-image-2{
+  background-image: url("./images/BDA-image.png");
+}
+
+#div-image-3{
+  background-image: url("./images/NLP-image.png");
+}
+
+#div-image-4{
+  background-image: url("./images/LWDT-image.png");
+}
+
+#div-image-5{
+  background-image: url("./images/IWS-image.png");
+}
+
+#div-image-6{
+  background-image: url("./images/OTROS-image.png");
+}
+
+/* Efecto al situar el curso encima de los divs principales */
 .main-box:hover{
     /*background-color: #73888E;*/
     cursor: pointer;
@@ -157,9 +191,33 @@ body{
     font-size: 16px;
 }
 
-/* Estilo para centrar el botón */
+/* Estilo para centrar el botón en lso divs principales */
 .jumbotron.main-box button{
   justify-content: center
 
 }
+
+/* ESTILO DEL NAVBAR */
+.logo-navbar{
+  background-image: url("./images/logo_title.png");
+  background-color: #F3FAFC;
+  width: 122px;
+  height: 50px;
+}
+
+.navbar-brand {
+  padding:0;
+}
+
+.nav.navbar-nav a{
+  font-family: 'font-family: 'Fjalla One', sans-serif;', sans-serif;  
+  font-size: 18px;
+    padding-right: 15px;
+  padding-left: 15px;
+}
+.nav.navbar-nav li{
+
+}
+
+
 
