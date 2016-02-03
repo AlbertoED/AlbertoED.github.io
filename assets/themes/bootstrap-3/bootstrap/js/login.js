@@ -137,10 +137,11 @@
                     //Genero una espera para realizar peticion a GitHub de todos los proyectos y guardarlos en un json
                     // PENDIENTE
                     //Redirijo a la pagina de admin.html la una espera. El hilo de ejecucion continua, y ejecuta esta accion a los X segundos
-                    document.getElementById('loadLogin').style.display = 'inline';
-                    setTimeout(function(){location.href = "/admin.html";},5000);
+                    //document.getElementById('loadLogin').style.display = 'inline';
+                    //setTimeout(function(){location.href = "/admin.html";},5000);
                     sesion = 1 ;                  
                     console.log("Authenticated successfully with payload:", authData);
+                    location.href = "/admin.html"
                   }
                 },{
                 remember: "sessionOnly"/* Se utiliza para marcar que la sesión expirara tras cerrar la ventana */

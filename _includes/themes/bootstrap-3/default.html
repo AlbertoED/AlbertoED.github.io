@@ -16,7 +16,7 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-	  <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/gitquery.js"></script>
@@ -35,15 +35,15 @@
     <!-- Bootstrap toggle styles -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
 
-	<!-- Codigo javascript para fijar la cabecera al hacer scroll
-	<script type="text/javascript">
-    	$(document).ready(function(){
-  				$(window).bind('scroll', function() {
-    			var navHeight = 300; // custom nav height
-    			($(window).scrollTop() > navHeight) ? $('nav').addClass('goToTop') : $('nav').removeClass('goToTop');
-  			});
-		});
-	</script>-->
+  <!-- Codigo javascript para fijar la cabecera al hacer scroll
+  <script type="text/javascript">
+      $(document).ready(function(){
+          $(window).bind('scroll', function() {
+          var navHeight = 300; // custom nav height
+          ($(window).scrollTop() > navHeight) ? $('nav').addClass('goToTop') : $('nav').removeClass('goToTop');
+        });
+    });
+  </script>-->
     
     <!-- Custom styles -->
     <link href="{{ ASSET_PATH }}/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
@@ -66,11 +66,11 @@
     <!-- atom & rss feed -->
     <link href="{{ BASE_PATH }}{{ site.JB.atom_path }}" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
     <link href="{{ BASE_PATH }}{{ site.JB.rss_path }}" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
-	{% for item in page.js %}
-    		{% if item == 'jquery' %}
-        		<script type="text/javascript" src="{{ ASSET_PATH }}/js/jquery-1.9.1.min.js"></script>
-    		{% endif %}
-	{% endfor %}
+  {% for item in page.js %}
+        {% if item == 'jquery' %}
+            <script type="text/javascript" src="{{ ASSET_PATH }}/js/jquery-1.9.1.min.js"></script>
+        {% endif %}
+  {% endfor %}
   </head>
 
   <body>
@@ -104,8 +104,8 @@
                 <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="/index.html" onclick="cerrarSesion()">Log Out     <span class="glyphicon glyphicon-log-out"></span></a></li>
-                  <li><a href="#">Enlace #2</a></li>
+                  <li><a href="/index.html" onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
+                  <li><a href="/archive.html" ><span class="glyphicon glyphicon-list"></span>     Repositorios</a></li>
                 </ul>
           </div>
                     <!-- Código para el botón del login -->
@@ -139,68 +139,68 @@
 <!-- Código para el popup del Login -->
 <!-- Modal -->
 
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="myModalLabel">Credenciales de administrador
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Credenciales de administrador
           <span style="display:none;" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" id="loadLogin"></span>
           </h4>
 
-	      </div>
-	      <div class="modal-body">
-        	<form name="login">
+        </div>
+        <div class="modal-body">
+          <form name="login">
 
-        		<div class="form-group">
-  					<label for="usr">Usuario:</label>
-  					<input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
-				</div>
-				<div class="form-group">
-  					<label for="pwd">Contraseña:</label>
-  					<input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
-				</div>
+            <div class="form-group">
+            <label for="usr">Usuario:</label>
+            <input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Contraseña:</label>
+            <input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
+        </div>
 
             <!--Usuario: <input type="text" name="userid"/></br></br>
             Contraseña: <input type="password" name="pswrd"/> -->
-	      </div>
+        </div>
         <div class="container">
           </div>
-	      	<!-- Contenedores que se muestran en caso de producirse error en el Login, se introducir un usuario correcto o de aviso si ya está logado -->
-	      	<!-- MENSAJE ERROR -->
-   				<div class="alert alert-danger fade in" style="display:none;">
-        			<a href="#" class="close" onclick="$('.alert-danger').hide()">&times;</a>
-        			<strong>¡Error!</strong> La contraseña o el usuario no son correctos.
-   			 	</div>
-			
-			<!-- MENSAJE EXITO -->
-				<div class="alert alert-success fade in" style="display:none;">
-    				<a href="#" class="close" onclick="$('.alert-success').hide()">&times;</a>
-    				<strong>¡Bienvenido!</strong> Usuario y contraseña correctos.
-				</div>
+          <!-- Contenedores que se muestran en caso de producirse error en el Login, se introducir un usuario correcto o de aviso si ya está logado -->
+          <!-- MENSAJE ERROR -->
+          <div class="alert alert-danger fade in" style="display:none;">
+              <a href="#" class="close" onclick="$('.alert-danger').hide()">&times;</a>
+              <strong>¡Error!</strong> La contraseña o el usuario no son correctos.
+          </div>
+      
+      <!-- MENSAJE EXITO -->
+        <div class="alert alert-success fade in" style="display:none;">
+            <a href="#" class="close" onclick="$('.alert-success').hide()">&times;</a>
+            <strong>¡Bienvenido!</strong> Usuario y contraseña correctos.
+        </div>
 
-			<!-- MENSAJE INFO YA CONECTADO -->
-				<div class="alert alert-info fade in" style="display:none;">
-    				<a href="#" class="close" onclick="$('.alert-info').hide()">&times;</a>
-    				Ya has iniciado sesión como <strong><span id="usuarioInfo"></span></strong>.
-				</div>
+      <!-- MENSAJE INFO YA CONECTADO -->
+        <div class="alert alert-info fade in" style="display:none;">
+            <a href="#" class="close" onclick="$('.alert-info').hide()">&times;</a>
+            Ya has iniciado sesión como <strong><span id="usuarioInfo"></span></strong>.
+        </div>
 
-			<!-- MENSAJE FIN SESION -->
-				<div class="alert alert-warning fade in" style="display:none;">
-    				<a href="#" class="close" onclick="$('.alert-warning').hide()"s>&times;</a>
-    				<strong>¡Advertencia!</strong> La sesión ha expirado.
-  				</div>
+      <!-- MENSAJE FIN SESION -->
+        <div class="alert alert-warning fade in" style="display:none;">
+            <a href="#" class="close" onclick="$('.alert-warning').hide()"s>&times;</a>
+            <strong>¡Advertencia!</strong> La sesión ha expirado.
+          </div>
 
-	      <div class="modal-footer">
+        <div class="modal-footer">
           <!-- BOTONES DEL MODAL -->
           <button type="button" class="btn btn-default" onclick="cerrarSesion()" style="display:none;" id="btnFinSesion">Salir de la sesión</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-	        <button type="button" class="btn btn-primary" onclick="loginUser(this.form)" value="Login">Entrar</button>
-	      </div>
-	      </form>
-	    </div>
-	  </div>
-	</div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" onclick="loginUser(this.form)" value="Login">Entrar</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 
     <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
