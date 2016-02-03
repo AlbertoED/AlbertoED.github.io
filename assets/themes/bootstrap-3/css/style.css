@@ -219,5 +219,26 @@ body{
 
 }
 
+/* BOTON SUBIR */
+.go-top {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+  text-decoration: none;
+  color: #fff;
+  /*background-color: rgba(0, 0, 0, 0.3);*/
+  font-size: 12px;
+  padding: 1em;
+  display: none;
+  background-image: url("./images/subir.png");
+  height: 50px;
+  width: 50px;
+}
+
+.go-top:hover {
+  background-image: url("./images/subir-hover.png");
+  /*background-color: rgba(0, 0, 0, 0.6);*/
+}
+
 
 

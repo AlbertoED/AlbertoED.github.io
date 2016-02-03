@@ -94,7 +94,8 @@
     };
 
     jQuery.gitUser = function (callback) {
-        jQuery.getJSON('https://api.github.com/users/' + cuentaGit + '/repos?per_page=1&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', callback); //Change per_page according to your need.
+        //jQuery.getJSON('https://api.github.com/users/' + cuentaGit + '/repos?per_page=1&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', callback);
+                jQuery.getJSON('https://api.github.com/users/gsi-upm/repos?per_page=7&page=' + currentPage + '&callback=?', callback);  //Change per_page according to your need.
         console.log('https://api.github.com/users/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?');
     };
 
@@ -129,6 +130,7 @@
     $(window).load(function(){
         getTokenFireBase();
         $(window).scroll(function(){
+            //Para el infinite scroll
             $('#load-more').each(function(){
                 if (loadingProjects){
                     return;
@@ -142,7 +144,19 @@
                 }
             });
 
+            //Para el boton subir
+            if ($(this).scrollTop() > 200) {
+                $('.go-top').fadeIn(200);
+            } else {
+                $('.go-top').fadeOut(200);
+            }
         });
+
+        //Animacion subir
+        $('.go-top').click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
     });
 
     //FUNCIÓN PARA MOSTRAR TANTOS PROYECTOS COMO QUEPAN EN LA PANTALLA
