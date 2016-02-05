@@ -6,21 +6,20 @@ group: navigation
 ---
 {% include JB/setup %}
 <div class="jumbotron text-black">
-		<h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>
+        <h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>   
 </div>
-
-	<script type="text/javascript">
-	//PRIMERO DEBEMOS OBTENER EL TOKEN ANTES DE EJECUTAR CUALQUIER FUNCION. INTRODUCIMOS LA LLAMADA A LA FUNCION DE CARGARREPOSITORIOS AL FINAL DE LA FUNCION ONTENER TOKEN, PARA ASEGURAR QUE YA SE HAYA OBTENIDO EL TOKEN	
-	</script>
-
-	<div>
-		<div id="display-projects">
-			<!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
-		</div>
-		<div id="load-more"></div>
-		<button id="btnGuardarRepositorios" type="button" data-toggle="modal" data-target="#confirmar-guardar" style="display:none;" class="btn btn-success btn-lg izda">Guardar</button>
-	</div>
-		
+    <div class="div-btn-guardar-arriba">
+        <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" data-target="#confirmar-guardar" style="display:none;" class="btn btn-success btn-lg izda">Guardar</button>
+        <h3>INTRODUCIR FILTROS - ACTUALIZAR - BARRA CONTROL</h3>
+    </div>
+    <div>
+        <div id="display-projects">
+            <!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
+        </div>
+        <div id="load-more"></div>
+          <button id="btnGuardarRepositorios-abajo" type="button" data-toggle="modal" data-target="#confirmar-guardar-abajo" style="display:none;" class="btn btn-success btn-lg dcha">Guardar</button>
+    </div>
+        
     <div class="modal fade" id="confirmar-guardar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

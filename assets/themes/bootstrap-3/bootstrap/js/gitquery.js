@@ -43,17 +43,19 @@
                         //Recogemos la fecha y la ponemos en formato correcto
                         fechaIn = stringDate(this.created_at.substring(0,10));
                         //Las columnas deben sumar 12. Anidamos los contenedores para cada proyecto que nos devuelva el GET:
-                        node.append('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + this.html_url + '" target="_blank">' + this.name + '</a></p></div>' +
+                        $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + this.html_url + '" target="_blank">' + this.name + '</a></p></div>' +
                         '<div class="panel-body"><div class="row"><div class="col-md-2"><p><b>Autor: </b>'+ this.owner.login + '</p></div>' + 
                         '<div class="col-md-3"><p><b>Fecha Creación: </b>'+ fechaIn + '</p></div>' +
                         '<div class="col-md-5"><p><b>Categoría: </b><select><option hidden >Seleccione una categoría</option><option>Agentes y Simulación Social</option><option>Big Data y Aprendizaje Automático</option><option>NLP y Análisis de Sentimientos</option><option>La Web de Datos y Tecnologías Semánticas</option><option>Ingeniería Web y de servicios</option><option>Otros</option></select></p></div> ' +
                         '<div class="col-md-2"><p><b>¿Mostrar?: </b><input data-toggle="toggle" type="checkbox"  id="toggle' + this.id + '"></p></div></div>' +
                         '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
-                        '<div class="col-md-8"><b>Descripción: </b>' + description + '</div></div></div>');
+                        '<div class="col-md-8"><b>Descripción: </b>' + description + '</div></div></div>').hide().appendTo(node).fadeIn(800);
+                        //Incluimos efecto de fade in para los nuevos repositoios que se muestran
                     }
                 });
-                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL BOTON DE GUARDAR SERÁ VISIBLE
-                $('#btnGuardarRepositorios').show();
+                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS LOS BOTONES DE GUARDAR SERÁN VISIBLE
+                $('#btnGuardarRepositorios-arriba').show();
+                $('#btnGuardarRepositorios-abajo').show();
                 //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
                 $('input[type="checkbox"]').bootstrapToggle({
                         on: 'Sí',
