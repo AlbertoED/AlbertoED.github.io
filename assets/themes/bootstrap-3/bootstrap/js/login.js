@@ -9,13 +9,16 @@
 
     /* En esta seccion colocamos los fragmentos de codigo que queremos que se ejecuten tras cargar la pagina */
     $(document).ready(function(){
+            
             //Codigo que activa controles de administrador si hay sesion iniciada
             var authData1 = myDataRef.getAuth();
             if (authData1){
+                //Si esta conectado, mostramos el label con el nombre de usuario y el boton de administrador
+                document.getElementById('usuario-mail-navbar').innerHTML ="Bienvenido <b>" + authData1.password.email + "</b>";
                 document.getElementById('btnAdmin').style.display = 'inline';
             }
-            //Codigo a ejecutar cuando se va a cargar el modal de login
 
+            //Codigo a ejecutar cuando se va a cargar el modal de login
             $('#myModal').on('show.bs.modal', function(e) {
                 //Comprobamos si ya esta registrado, y mostramos el mensaje de info
                 var authData = myDataRef.getAuth();
@@ -79,7 +82,6 @@
                 //mostrarLogin();
             }
     };
-
 
     /* Esta funcion sirve para crear un 'objeto' y una variable propia en nuestra app de FireBase*/
     function testFirebaseSet(form) {
@@ -166,13 +168,13 @@
                 // Si no tenemos, eliminamos componentes de administrador
                 console.log("La sesion no esta iniciada:");
                 sesion = 0;
-                //Quitamos el boton de admin
+                //Quitamos el boton de admin y el label de usuario
                 document.getElementById('btnAdmin').style.display = 'none';
+                document.getElementById('usuario-mail-navbar').innerHTML = ""
+
                 //mostrarLogin();
             }
-
         }
-
     };
 
     /* Esta función se utiliza para cerrar la sesion del usuario conectado*/
@@ -182,17 +184,10 @@
             $('.alert').hide();
             $('.alert-warning ').show();
     };
-           /*   
-        if (sesion == 1){
-            console.log("sesion In nav bar");
-            
-        }else{
-          console.log("sesion OFF nav bar");
-        }*/
- 
 
-
-
-    function showAlert(){
-      $("#myAlert").addClass("in")
-    }
+    /* Funcion llamada al cerrar la sesion desde el navbar */
+        function cerrarSesionNavbar() {
+            cerrarSesion();
+            //Debemos comprobar en qúe pagina se encuentra el usuario
+            comprobarPagAdmin();
+    };

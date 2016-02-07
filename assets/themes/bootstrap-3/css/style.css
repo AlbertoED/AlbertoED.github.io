@@ -250,5 +250,14 @@ body{
   /*background-color: rgba(0, 0, 0, 0.6);*/
 }
 
+/* ESTILO NAVBAR-RIGHT */
+.margen-izdo{
+  margin-left: 10px;
+}
+
+.lbl-user-navbar h4{
+  color:black;
+  font-size: 15;
+}
 
 

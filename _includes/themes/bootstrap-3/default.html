@@ -104,21 +104,27 @@
             <p>{{page.title}}</p>
           {% endif %}-->
           <form class="navbar-form navbar-right" role="search">
-
           <!-- Código para mostrar si se ha iniciado sesion -->
-          <div class="btn-group" style="display:none;" id="btnAdmin">
+          <div style="display:none;" id="btnAdmin">
                 <button type="button" class="btn btn-default dropdown-toggle"data-toggle="dropdown">
                 Administrar
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                 <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
-                  <li><a href="/index.html" onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#" onclick="cerrarSesionNavbar()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
+                  <li class="divider"></li>
                   <li><a href="/archive.html" ><span class="glyphicon glyphicon-list"></span>     Repositorios</a></li>
                 </ul>
           </div>
                     <!-- Código para el botón del login -->
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="$('.alert').hide()">Login</button>
+          <button type="button" class="btn btn-default margen-izdo" data-toggle="modal" data-target="#myModal" onclick="$('.alert').hide()">Login</button>
+          </form>
+          <!-- Codigo para mostrar el nombre del usuario con sesion iniciada -->
+          <form class="navbar-form navbar-right" role="search">
+            <div class="lbl-user-navbar">
+                <h4><span id="usuario-mail-navbar"></span></h4>
+            </div>
           </form>
         </div><!-- /.navbar-collapse -->
       </nav>
