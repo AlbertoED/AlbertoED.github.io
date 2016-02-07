@@ -92,16 +92,14 @@
 
     // FUNCION QUE MUESTRA POR CONSOLA EL ID DE LOS TOGGLES QUE ESTAN EN ESTADO ON
     function guardarSeleccion(){
-        var readme;
+        var readmeRepo;
         var id;
-        var category;
+        var categoryRepo;
         var showRepo;
         var reposRef = myDataRef.child("repos");
         // Buscamos todos los paneles existentes (1 panel= 1 repositorio). De cada uno realizamos una petición de info a GitHub.
         // Guardamos los datos que queremos mostrar posteriormente y la categoria y 'mostrar' especificados
         $(".titleReposAdmin").each(function(){
-
-
 
             //Guardamos los colaboradores
             //https://api.github.com/repos/AlbertoED/AlbertoED.github.io/collaborators?&access_token=733cbc328a460a6cd0238dbd74f09eba4721e57f
@@ -110,19 +108,22 @@
 
         
             jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + $(this).text() + '?&access_token=' + tokenGit, function (data) {
-                //Guardamos la categoria y mostrar en dos variables
-                    id = "#select" + data.id;
-                    category = $(id).prop('value');
-                    id = "#toggle" + data.id;
 
-                    showRepo = $(id).prop('checked');
-                    console.log(showRepo);
-                    console.log(category);
 
                 //Recuperamos el readme, si tiene, y lo guardamos codificado (decodificamos al mostrarlo):
                 if (data.has_wiki == true){  
                      jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + data.name + '/readme?access_token=' + tokenGit, function (dataReadme) {                       
-                        readme = dataReadme.content;
+                        //Guardamos la categoria y mostrar en dos variables
+                        id = "#select" + data.id;
+                        categoryRepo = $(id).prop('value');
+                        id = "#toggle" + data.id;
+                        showRepo = $(id).prop('checked');
+
+                        readmeRepo = dataReadme.content;
+                        console.log(data.name);
+                        console.log(showRepo);
+                        console.log(categoryRepo);
+
                         reposRef.child(data.id).set({
                             name: data.name,
                             owner: data.owner.login,
@@ -131,13 +132,21 @@
                             created_at: data.created_at,
                             updated_at: data.updated_at,
                             size: data.size,
-                            readme: readme,
-                            category: category,
+                            readme: readmeRepo,
+                            category: categoryRepo,
                             show: showRepo 
                         });          
                     });
                 }else{
+                    //Guardamos la categoria y mostrar en dos variables
+                    id = "#select" + data.id;
+                    categoryRepo = $(id).prop('value');
+                    id = "#toggle" + data.id;
+                    showRepo = $(id).prop('checked');
                     readme = '-';
+                    console.log(data.name);
+                    console.log(showRepo);
+                    console.log(categoryRepo);
                     reposRef.child(data.id).set({
                         name: data.name,
                         owner: data.owner.login,
@@ -147,7 +156,7 @@
                         updated_at: data.updated_at,
                         size: data.size,
                         readme: readme,
-                        category: category,
+                        category: categoryRepo,
                         show: showRepo   
                     }); 
                 } 
