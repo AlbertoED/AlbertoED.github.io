@@ -90,54 +90,91 @@
         });
     };
 
-    // FUNCION QUE MUESTRA POR CONSOLA EL ID DE LOS TOGGLES QUE ESTAN EN ESTADO ON
+    /* FUNCION PARA GUARDAR LOS REPOSITORIOS EN FIREBASE */
     function guardarSeleccion(){
-        var readmeRepo;
+        var readmeRepo;        
+        var collaboratorsRepo;
+        var arrayColaborators;
         var id;
         var categoryRepo;
         var showRepo;
-        var reposRef = myDataRef.child("repos");
+        var reposRef = myDataRef.child("repos")
+
+
+
+        $(".titleReposAdmin").each(function(){
+            
+            var nameRepo = $(this).text();
+            console.log(nameRepo);
+            //GitReadme
+            jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/readme?access_token=' + tokenGit + '&callback=?', function(responseReadme) {
+                console.log( "README " + nameRepo );
+                //GitRepoInfo
+                jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '?&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {
+                    console.log( "REPOINFO " + nameRepo );
+                    jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '?&access_token=' + tokenGit + '&callback=?', function() {
+                        
+                        $().each(function() {
+                            
+                        });
+                        
+                        console.log("POR FIN HE ACABADO " + nameRepo );
+                    });                    
+                });
+            });
+        });
+
         // Buscamos todos los paneles existentes (1 panel= 1 repositorio). De cada uno realizamos una petición de info a GitHub.
         // Guardamos los datos que queremos mostrar posteriormente y la categoria y 'mostrar' especificados
+        /*
         $(".titleReposAdmin").each(function(){
+            nameRepo = $(this).text();
+            $.gitRepoInfo(nameRepo, function (dataRepo){
+                id = "#select" + dataRepo.id;
+                categoryRepo = $(id).prop('value');
+                id = "#toggle" + dataRepo.id;
+                showRepo = $(id).prop('checked');
+                $.gitReadme(nameRepo, function (dataReadme){
+                    readmeRepo = dataRepoReadme.content;
+                    })
+                    .fail(function() {
+                        console.log( "error readme" );
+                        readmeRepo = "-"
+                });
 
-            //Guardamos los colaboradores
-            //https://api.github.com/repos/AlbertoED/AlbertoED.github.io/collaborators?&access_token=733cbc328a460a6cd0238dbd74f09eba4721e57f
+
+
+            });
             //tamaño en KB
-
-
-        
-            jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + $(this).text() + '?&access_token=' + tokenGit, function (data) {
-
-
+            //Guardamos los colaboradores
+            
                 //Recuperamos el readme, si tiene, y lo guardamos codificado (decodificamos al mostrarlo):
-                if (data.has_wiki == true){  
-                     jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + data.name + '/readme?access_token=' + tokenGit, function (dataReadme) {                       
                         //Guardamos la categoria y mostrar en dos variables
-                        id = "#select" + data.id;
+                        id = "#select" + dataRepo.id;
                         categoryRepo = $(id).prop('value');
-                        id = "#toggle" + data.id;
+                        id = "#toggle" + dataRepo.id;
                         showRepo = $(id).prop('checked');
 
-                        readmeRepo = dataReadme.content;
-                        console.log(data.name);
+                        readmeRepo = dataRepoReadme.content;
+                        console.log(dataRepo.name);
                         console.log(showRepo);
                         console.log(categoryRepo);
 
-                        reposRef.child(data.id).set({
-                            name: data.name,
-                            owner: data.owner.login,
-                            html_url: data.html_url,
-                            description: data.description,
-                            created_at: data.created_at,
-                            updated_at: data.updated_at,
-                            size: data.size,
+                        reposRef.child(dataRepo.id).set({
+                            name: dataRepo.name,
+                            owner: dataRepo.owner.login,
+                            html_url: dataRepo.html_url,
+                            description: dataRepo.description,
+                            created_at: dataRepo.created_at,
+                            updated_at: dataRepo.updated_at,
+                            size: dataRepo.size,
                             readme: readmeRepo,
                             category: categoryRepo,
-                            show: showRepo 
+                            show: showRepo,
+                            download_zip_url: "https://github.com/" + cuentaGit + "/" + dataRepo.name + "/archive/" + dataRepo.default_branch + ".zip"
                         });          
                     });
-                }else{
+
                     //Guardamos la categoria y mostrar en dos variables
                     id = "#select" + data.id;
                     categoryRepo = $(id).prop('value');
@@ -157,16 +194,19 @@
                         size: data.size,
                         readme: readme,
                         category: categoryRepo,
-                        show: showRepo   
+                        show: showRepo,
+                        download_zip_url: "https://github.com/" + cuentaGit + "/" + data.name + "/archive/" + data.default_branch + ".zip"
                     }); 
-                } 
-            });                  
+            });        
+         
         });
 
         //$(".toggle").not(".off").children("input").each(function(){                
         //});
         $('#confirmar-guardar').modal('hide');
+        */
     };
+
 
     jQuery.gitUser = function (callback) {
         jQuery.getJSON('https://api.github.com/users/' + cuentaGit + '/repos?per_page=9&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', callback);
@@ -177,8 +217,14 @@
     /* FUNCION PARA PEDIR EL README DEL PROYECTO */
     jQuery.gitReadme = function(repositorio,callback) {
         jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + repositorio + '/readme?access_token=' + tokenGit + '&callback=?', callback);
-        console.log(repositorio);
     };
+
+    /* FUNCION PARA PEDIR INFO DE UN REPOSITORIO */
+    jQuery.gitRepoInfo = function(repositorio,callback) {
+        jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '?&access_token=' + tokenGit + '&callback=?', callback);
+    };
+
+
 
     function sortByForks(repos) {
         repos.sort(function (a, b) {
