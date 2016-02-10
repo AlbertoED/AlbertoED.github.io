@@ -141,9 +141,14 @@ body{
 .jumbotron.text-black h4{
   color: black;   
 }
+.align-center{
+  text-align: center;
+}
 
 .jumbotron.text-black{
-  background-color: #CFE5EC;    
+  background-color: #CFE5EC;
+  padding-top: 30px;
+  padding-bottom: 30px;    
 }
 
 /* ESTILO PARA ADPTAR LA IMAGEN AL CONTENEDOR */
