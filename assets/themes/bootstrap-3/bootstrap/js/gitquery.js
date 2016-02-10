@@ -212,7 +212,7 @@
         https://api.github.com/orgs/gsi-upm?&access_token=...
         
         MOSTRAR LOS EQUIPOS
-        https://api.github.com/orgs/gsi-upm/teams?&access_token=1e803530f341f8704e69e11ed1629e20b82c2768
+        https://api.github.com/orgs/gsi-upm/teams?&access_token=...
          */
 
     /* FUNCION PARA PEDIR LOS REPOSITORIOS DE UN USUARIO */
