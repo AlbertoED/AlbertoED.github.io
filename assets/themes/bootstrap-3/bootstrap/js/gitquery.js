@@ -251,7 +251,7 @@
     $(window).load(function(){
         var rutaEntera = window.location.pathname;
         var urlPag = rutaEntera.split("/").pop();
-        if (urlPag == "archive.html"){
+        if (urlPag == "archive.html" || urlpag == "archive"){
             getTokenFireBase();    
         }       
         $(window).scroll(function(){
