@@ -1,6 +1,7 @@
     /* DECLARACION DE VARIABLES*/
     // Para referenciar a nuestra app de FireBase
-    var myDataRef = new Firebase('https://shining-torch-549.firebaseio.com/');
+    var nameBBDD = 'https://shining-torch-549.firebaseio.com/'
+    var myDataRef = new Firebase(nameBBDD);
     // Para almacenar el nombre del usuario que se ha conectado
     var nombreUsuario;
     // Variable booleana para fijar si la sesión del usuario esta abierta (1) o no (0)

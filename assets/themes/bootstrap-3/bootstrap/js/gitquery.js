@@ -1,5 +1,6 @@
- // Para referenciar a nuestra app de FireBase
-    var myDataRef = new Firebase('https://shining-torch-549.firebaseio.com/');
+    // Para referenciar a nuestra app de FireBase
+    var nameBBDD = 'https://shining-torch-549.firebaseio.com/'
+    var myDataRef = new Firebase(nameBBDD);
     var cuentaGit = "gsi-upm"; 
     var tokenGit;
     var currentPage = 1;
@@ -7,8 +8,10 @@
     var stopLoadingProjects = false;
     // Variable publica para almacenar los repositorios devueltos por github
     var repos;
+    //Variable array para guardar los repositorios eliminados de github y poder eliminarlos de Firebase desde otra función
+    var arrayReposEliminados = new Array();
 
-    //eN CASO DE FALLO QUE MUESTRE UN MENSAJE DE ERROR EN LA CARGA
+    /* FUNCION PARA CARGAR LOS REPOSITORIOS EN LA PAGINA DE ADMIN */
     jQuery.fn.cargaRepositoriosGithub = function () {
         if (loadingProjects || stopLoadingProjects){
             return;
@@ -18,8 +21,6 @@
         var privacidad;
         var target = this;
         loadingProjects = true;
-        //Recuperamos el Token para poder utilizar GET en el github con los permisos de visualizar repositorios privados y públicos
-        console.log(tokenGit);
         $.gitUser(function (data) {
         repos = data.data; // JSON Parsing
                 /*var reposRef = myDataRef.child("repos");
@@ -60,7 +61,7 @@
                         '<div class="col-md-2"><p><b>¿Mostrar?: </b><input data-toggle="toggle" type="checkbox" id="toggle' + this.id + '"></p></div></div>' +
                         '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
                         '<div class="col-md-8"><b>Descripción: </b>' + description + '</div>' +
-                        '<div class="col-md-2"><b>' + privacidad + '</b></div></div></div>').hide().appendTo(node).fadeIn(1000);
+                        '<div class="col-md-2"><b>Perfil: </b>' + privacidad + '</div></div></div>').hide().appendTo(node).fadeIn(1000);
                         //Incluimos efecto de fade in para los nuevos repositoios que se muestran
                         //Comprobamos si ya hay datos guardados en Firebase para cada repositorio
                         myDataRef.once("value", function(snapshot) {
@@ -68,7 +69,7 @@
                             console.log(IDRepo + " en firebase: " + elementFirebase);
                             //Si está en Firebase, recuperamos el valor del select y del toggle y los asignamos al panel del repositorio
                             if (elementFirebase == true){
-                                refTemp = new Firebase('https://shining-torch-549.firebaseio.com/repos/' + IDRepo);
+                                refTemp = new Firebase(nameBBDD +   'repos/' + IDRepo);
                                 refTemp.on("value", function(snapshot) {
                                         var reposFire = snapshot.val();
                                         var toggleValue = reposFire.show;
@@ -79,15 +80,14 @@
                                             $("#toggle" + IDRepo).bootstrapToggle('on');    
                                         }else{
                                             $("#toggle" + IDRepo).bootstrapToggle('off');
-                                        } 
-                                                                                
+                                        }                                                                                 
                                 });
                             }
                         });
                     }
                 });
-                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS LOS BOTONES DE GUARDAR SERÁN VISIBLE
-                $('#btnGuardarRepositorios-arriba').show();
+                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL NAVBAR DE CONTROL SERÁ VISIBLE, SI NO ES FILTRO
+                $('#navbarControl').hide().fadeIn(500);
                 $('#btnGuardarRepositorios-abajo').show();
                 //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
                 $('input[type="checkbox"]').bootstrapToggle({
@@ -96,7 +96,8 @@
                 });
                 //...
                 loadingProjects = false;
-                $('#fecha-actualizacion').hide().html('Fecha de actualización: <b>' + getActualDatetime() + '</b>').fadeIn(500);
+                $('#fecha-actualizacion').hide().html('Fecha de actualización: <b>' + getActualDatetime() + '</b>').fadeIn(1000);
+                        $('#container-main').removeClass("loading");
         });
     };
 
@@ -126,7 +127,7 @@
 
     /* FUNCION PARA RECUPERAR EL TOKEN DE GITHUB ALOJADO EN FIREBASE */
     function getTokenFireBase() {
-        refTemp = new Firebase('https://shining-torch-549.firebaseio.com/Tokens');
+        refTemp = new Firebase(nameBBDD + 'Tokens');
         refTemp.on("value", function(snapshot) {
                 var tokens = snapshot.val();
                 $(tokens).each(function () {
@@ -140,8 +141,21 @@
         });
     };
 
+
+    function filtrarRepositorios(){
+        //Comprobamos si se ha introducido algun filtro:
+        if ($('#srch-control-navbar').val() != ''){
+            console.log("HAYFILTRO");
+            var filter = $('#srch-control-navbar').val();
+            console.log(filter);
+        }
+    };
+
     /* FUNCION PARA GUARDAR LOS REPOSITORIOS EN FIREBASE */
     function guardarSeleccion(){
+        //Cerramos el modal
+        $('#confirmar-guardar').modal('hide');
+        $('#container-main').addClass("loading");
         var reposRef = myDataRef.child("repos")
         //Para cada proyecto mostrado en pantalla guardamos la información en Firebase
         //Realiza tres peticiones a GitHub por proyecto
@@ -152,7 +166,6 @@
         // Guardamos los datos que queremos mostrar posteriormente y la categoria y 'mostrar' especificados
         //tamaño en KB
         $(".titleReposAdmin").each(function(){
-
             var nameRepo = $(this).text();
             console.log(nameRepo);
                 //1) - GitRepoInfo
@@ -180,12 +193,19 @@
                                 var Readme = "-";
                             }else{
                                 var Readme = responseReadme.data.content;
+                            }
+                            //Comprobamos si tiene descripcion:
+                            if (responseRepoInfo.data.description == ''){
+                                var description = '-';
+                            }else{
+                                var description = responseRepoInfo.data.description;
                             }   
                             reposRef.child(responseRepoInfo.data.id).set({
+                                id: responseRepoInfo.data.id,
                                 name: responseRepoInfo.data.name,
                                 owner: responseRepoInfo.data.owner.login,
                                 html_url: responseRepoInfo.data.html_url,
-                                description: responseRepoInfo.data.description,
+                                description: description,
                                 created_at: responseRepoInfo.data.created_at,
                                 updated_at: responseRepoInfo.data.updated_at,
                                 size: responseRepoInfo.data.size,
@@ -196,13 +216,12 @@
                                 collaborators: collaboratorsRepo,
                                 private: responseRepoInfo.data.private,
                                 download_zip_url: "https://github.com/" + cuentaGit + "/" + responseRepoInfo.data.name + "/archive/" + responseRepoInfo.data.default_branch + ".zip"
-                            });                  
+                            });              
                         });                    
                     });
-                });
+                });              
             });
-            //Cerramos el modal
-            $('#confirmar-guardar').modal('hide');
+            $('#container-main').removeClass("loading");
         };
         /* MOSTRAR LOS MIEMBROS DE LA ORGANIZACION
         https://api.github.com/orgs/gsi-upm/members?&access_token=...
@@ -214,6 +233,147 @@
         MOSTRAR LOS EQUIPOS
         https://api.github.com/orgs/gsi-upm/teams?&access_token=...
          */
+
+    /* FUNCION PARA ACTUALIZAR LOS DATOS DE LOS REPOSITORIOS EN FIREBASE. SI ALGUNO NO ESTÁ EN FIREBASE SE AÑADE */
+    function actualizarRepos() {
+        //Cerramos el modal
+        $('#confirmar-actualizar').modal('hide');
+        $('#container-main').addClass("loading");
+        var reposRef = myDataRef.child("repos")
+        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
+        repos = responseRepos.data; // JSON Parsing
+            $(repos).each(function () {
+                var nameRepo = this.name;
+                //Recuperamos  la info de Github de la misma forma que al guardar pero si introducir datos en la categoria y mostrar
+                jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '?&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {            
+                    var IDRepo = responseRepoInfo.data.id;
+                    myDataRef.on("value", function(snapshot) {
+                        var elementFirebase = snapshot.child("repos/" + IDRepo).exists();
+                        //Si está en Firebase, actualizamos los datos
+                        if (elementFirebase == true){
+                            var description;
+                            var fechaIn;
+                            var privacidad;
+                            checkfork = responseRepoInfo.data.fork;
+                            if (responseRepoInfo.data.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
+                                //Comprobamos si tiene descripcion:
+                                if (responseRepoInfo.data.description == ''){
+                                    description = '-';
+                                }else{
+                                    description = responseRepoInfo.data.description;
+                                }
+                                //Recogemos la fecha y la ponemos en formato correcto
+                                fechaIn = stringDate(responseRepoInfo.data.created_at.substring(0,10));
+                                //Comprobamos si es público o privado
+                                if (responseRepoInfo.data.private == true){
+                                    privacidad = "PRIVADO";
+                                }else{
+                                    privacidad = "PÚBLICO";
+                                }                              
+                                jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/readme?access_token=' + tokenGit + '&callback=?', function(responseReadme) {  
+                                    jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/collaborators?access_token=' + tokenGit + '&callback=?', function(reponseCollaborators) {            
+                                        //Recorremos la respuesta y guardamos el nombre de cada colaborador en un array
+                                        var collaborators = reponseCollaborators.data;
+                                        var collaboratorsRepo = new Array();
+                                        var i = 0;
+                                        $(collaborators).each(function() {
+                                            collaboratorsRepo[i] = this.login;
+                                            i++;
+                                        });
+                                        //Comprobamos si se ha devuelto readme del proyecto.
+                                        if (responseReadme.data.content == undefined){
+                                            var Readme = "-";
+                                        }else{
+                                            var Readme = responseReadme.data.content;
+                                        }
+                                        reposRef.child(responseRepoInfo.data.id).update({
+                                            id: responseRepoInfo.data.id,
+                                            name: responseRepoInfo.data.name,
+                                            owner: responseRepoInfo.data.owner.login,
+                                            html_url: responseRepoInfo.data.html_url,
+                                            description: responseRepoInfo.data.description,
+                                            created_at: responseRepoInfo.data.created_at,
+                                            updated_at: responseRepoInfo.data.updated_at,
+                                            size: responseRepoInfo.data.size,
+                                            readme: Readme,
+                                            language: responseRepoInfo.data.language,
+                                            collaborators: collaboratorsRepo,
+                                            private: responseRepoInfo.data.private,
+                                            download_zip_url: "https://github.com/" + cuentaGit + "/" + responseRepoInfo.data.name + "/archive/" + responseRepoInfo.data.default_branch + ".zip"
+                                        });   
+                                        console.log("Actualizado" + responseRepoInfo.data.name);                
+                                    });                    
+                                });  
+                            }                             
+                        }
+                    });
+                }); 
+            });
+            $('#container-main').removeClass("loading");
+        });
+    };
+
+    /* FUNCION PARA COMPROBAR SI ALGUN REPOSITORIO GUARDADO HA SIDO ELIMINADO */
+    function checkReposEliminados() {
+        $('#container-main').addClass("loading");
+        var refTemp = new Firebase(nameBBDD + 'repos');
+        var arrayReposGit = new Array();
+        var node = $('#display-deleted-repos');
+        var boolHayEliminados = false;
+        //Vacio el nodo
+        node.empty();
+        //Guardo en un array los ids de los repositorios actuales en github
+        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
+            var repos = responseRepos.data; // JSON Parsing
+            var i = 0;
+            var j = 0;
+            $(repos).each(function () {
+                arrayReposGit[i] = this.id;
+                i++;
+            });
+            //Recojo los ids que tenemos en Firebase. Si alguno no se encuentra entre los de github, significa que se ha borrado
+            refTemp.on("value", function(snapshot) {
+                 snapshot.forEach(function(childSnapshot) {
+                    var childData = childSnapshot.val();
+                    var idRepo = childData.id;
+                    var nameRepo = childData.name;
+                    var bool = false;
+                    //Para cada repositorio compruebo que se encuentre entre los de github, si no lo añado a un array
+                    for (var p = 0; (p <= arrayReposGit.length - 1); p++) {
+                        console.log("entra");
+                        if (arrayReposGit[p] == idRepo){
+                            bool = true;
+                            break;
+                        }
+                    };
+                    //Si bool = false el repositorio se ha eliminado de GitHub y lo mostramos en el modal de eliminar
+                    if (bool == false){
+                        boolHayEliminados = true;
+                        $('<div class="row deleted"><div class="col-md-6"><p><b>Nombre: </b>'+ nameRepo + '</p></div>' + 
+                        '<div class="col-md-6"><p><b>Id: </b>'+ idRepo + '</p></div>').appendTo(node);
+                        arrayReposEliminados[j] = idRepo;
+                        j++;
+                    }
+                });
+                //Por último mostramos el modal aun dentro del callback y si no hay eliminados lo informamos
+                if (boolHayEliminados == false){
+                    $('<p class="align-center"><b>Todos permanecen en GitHub</b></p>').appendTo(node);
+                }
+            });
+        $('#container-main').removeClass("loading");
+        $('#confirmar-eliminar').modal('show');
+        });
+    };
+
+    /* FUNCION PARA ELIMINAR LOS REPOSITORIOS QUE ESTAN EN FIREBASE PERO HAN SIDO ELIMINADOS DE GITHUB */
+    function eliminarRepos() {
+        //Recorremos el bucle de repositorios que ya no estan en github y los eliminamos de firebase
+        for (var p = 0; (p <= arrayReposEliminados.length - 1); p++) {
+            var childRepo = new Firebase(nameBBDD + 'repos/' + arrayReposEliminados[p]);
+            childRepo.remove();
+        };
+        $('#confirmar-eliminar').modal('hide');
+    };
 
     /* FUNCION PARA PEDIR LOS REPOSITORIOS DE UN USUARIO */
     jQuery.gitUser = function (callback) {
@@ -247,11 +407,12 @@
             reposRef.set*/
     };
 
-    // CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA
+    /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
     $(window).load(function(){
         var rutaEntera = window.location.pathname;
         var urlPag = rutaEntera.split("/").pop();
         if (urlPag == "archive.html" || urlPag == "archive"){
+            $('#container-main').addClass("loading");
             getTokenFireBase();    
         }       
         $(window).scroll(function(){
@@ -284,14 +445,46 @@
         })
     });
 
-    /* FUNCION PARA DECODIFICAR EL README QUE ESTA CODIFICADO EN base64 */
+    /* FUNCION PARA DECODIFICAR EL README QUE ESTA CODIFICADO EN Base64 */
     function decodeBase64(string) {
          return decodeURIComponent(escape(window.atob(string)));   
     };
     
-    //FUNCIÓN PARA MOSTRAR TANTOS PROYECTOS COMO QUEPAN EN LA PANTALLA
+    /* FUNCION PARA MOSTRAR TANTOS PROYECTOS COMO QUEPAN EN LA PANTALLA */
     function loadMore() {
         console.log("entra click");
         currentPage++;
         $("#display-projects").cargaRepositoriosGithub();
+    };
+
+    /* PRUEBA GET CATEGORIAS */ 
+    function showReposCategory(categoryParam,idShowDiv) {
+        $('#container-main').addClass("loading");
+        node = $(idShowDiv);
+        console.log(idShowDiv);
+        //Según el parámetro de 
+        var tempRef = new Firebase(nameBBDD + "Categories").orderByChild('name').equalTo(categoryParam).once("child_added", function(snapshot) {
+           var reposCategory = snapshot.val();
+           console.log(reposCategory);
+           var category = reposCategory.id;
+           //Solo devuelve un objeto con el id de la categoria y lo usamos para recuperar los repos de la categoria
+           console.log(category);
+            var tempRefCat = new Firebase(nameBBDD + "repos").orderByChild('category').equalTo(String(category)).on("value", function(repositories){
+                repositories.forEach(function(repo) {
+                    var infoRepo = repo.val();
+                    if (infoRepo.show == false){
+                        return;
+                    }
+                    console.log(infoRepo.id);
+                        $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></p></div>' +
+                        '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
+                        '<div class="col-md-4"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p></div>' +
+                        '<div class="col-md-4"><p><b>ID: </b>' + infoRepo.id + '</p></div></div>' +
+                        '<div class="row"><div class="col-md-8"><b>Descripción: </b>' + infoRepo.description + '</div>' +
+                        '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
+                        '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div></div></div>').appendTo(node);
+                });
+            });
+            $('#container-main').removeClass("loading");
+        });      
     };

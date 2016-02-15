@@ -6,21 +6,49 @@ group: navigation
 ---
 {% include JB/setup %}
 <div class="jumbotron text-black">
-        <h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>
-        <h4 class="align-center" id="fecha-actualizacion"></h4>   
+        <h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>   
 </div>
-    <div class="div-btn-guardar-arriba">
-        <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" data-target="#confirmar-guardar" style="display:none;" class="btn btn-success btn-lg izda">Guardar</button>
-        <h3>INTRODUCIR FILTROS - ACTUALIZAR - BARRA CONTROL</h3>
+    <!-- INICIO NAVBAR DE CONTROL -->
+    <div class="div-btn-guardar-arriba" id="navbarControl" style="display:none;">
+        <!-- -->
+        <div class="navbar navbar-inverse bk-blue" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav control-navbar">
+                <li><div class="btn-group" role="group" aria-label="..."><button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" data-target="#confirmar-guardar" class="btn btn-primary btn-lg izda">Guardar</button>
+                <button id="btnActualizarRepositorios" type="button" data-toggle="modal" data-target="#confirmar-actualizar" class="btn btn-primary btn-lg izda">Actualizar</button>
+                <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" onclick="checkReposEliminados()" class="btn btn-primary btn-lg izda">Eliminados</button></div></li>
+                <li><h4 id="fecha-actualizacion"></h4></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar ID o nombre" name="srch-term-name" id="srch-control-navbar">
+                                <button class="btn btn-default search-control" onclick="filtrarRepositorios()" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+            </form>
+
+        </div>
+        </div>
+        <!-- -->
     </div>
+
     <div>
         <div id="display-projects">
             <!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
         </div>
         <div id="load-more"></div>
-          <button id="btnGuardarRepositorios-abajo" type="button" data-toggle="modal" data-target="#confirmar-guardar-abajo" style="display:none;" class="btn btn-success btn-lg dcha">Guardar</button>
+          <button id="btnGuardarRepositorios-abajo" type="button" data-toggle="modal" data-target="#confirmar-guardar" style="display:none;" class="btn btn-primary btn-lg dcha">Guardar</button>
     </div>
-        
+
+    <!-- MODAL PARA EL BOTÓN GUARDAR -->    
     <div class="modal fade" id="confirmar-guardar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -31,7 +59,7 @@ group: navigation
                 </div>
             
                 <div class="modal-body">
-                    <p>Se guardarán las categorías elegidas y se mostrarán los repositorios seleccionados</p>
+                    <p>Se guardarán los cambios realizados y se actualizarán los repositorios en pantalla.</p>
                     <p>¿Desea continuar?</p>
                     <p class="debug-url"></p>
                 </div>
@@ -44,11 +72,53 @@ group: navigation
         </div>
     </div>
 
+    <!-- MODAL PARA EL BOTÓN ACTUALIZAR -->    
+    <div class="modal fade" id="confirmar-actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirmar actualizar</h4>
+                </div>
+            
+                <div class="modal-body">
+                    <p>Se actualizarán a fecha de hoy los repositorios ya guardados. La categoría se mantendrá.</p>
+                    <p class="debug-url"></p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <a href="#" class="btn btn-primary" onclick="actualizarRepos()">Confirmar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-
-
-
-
+    <!-- MODAL PARA EL BOTÓN ELIMINADOS -->    
+    <div class="modal fade" id="confirmar-eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirmar eliminar</h4>
+                </div>
+            
+                <div class="modal-body">
+                    <p>Los siguientes repositorios ya no se encuentran en GitHub, pero se muestran en la web. ¿Desea elimarlos?</p>
+                    <p class="debug-url"></p>
+                    <div id="display-deleted-repos">
+                        <!-- Espacio reservado para insertar los repositorios eliminados de github pero que siguen en Firebase -->
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <a href="#" class="btn btn-primary" onclick="eliminarRepos()">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!--{% include JB/posts_collate %}-->

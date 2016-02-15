@@ -68,30 +68,29 @@
   border: 1px solid #4c964d;
   color: #FFF; }
 
-/*CSS Personalizado*/
+/************** CSS Personalizado **************/
 
-/* Jekyll Bootstrap Colors */
+/* COLOR DEL GSI */
 h1, h2, h3, h4 {
   color: #00A9E0;
 }
-
+ /* ESTILO PARA EL FOOTER DE LA PAGINA */
 #footer {
   background-color: #AAE9FC;
   height: auto;
 }
 
-#footer .container p{
-  /*Es el color del texto del footer
-  color:#00629B;*/
+#footer .container a{
+  color:black;
 }
 
 a {
   color:#00629B;
 }
 
-/*CSS para fijar cabecera*/
-.margen-inferior{
-  margin-bottom:30px;
+/* CODIGO PARA MANTENER MARGEN ENTRE NAV-BAR Y CONTENT DEL BODY*/
+body {
+  padding-top: 40px;
 }
 
 /*CSS para crear un icono de carga */
@@ -116,21 +115,44 @@ a {
   color:white;
 }
 
-/* ESTILO BOTON GUARDAR REPOSITORIOS*/
-.btn.btn-success.btn-lg.dcha{
+/* ESTILO BOTON GUARDAR REPOSITORIOS Y NAVBAR DE CONTROL */
+.btn.btn-primary.btn-lg.dcha{
   float: right;
   margin-bottom: 10px;
 }
 
-.btn.btn-success.btn-lg.izda{
-  float: left;
-  margin-bottom: 10px;
+.btn.btn-default.search-control{
+  height:40px;
+}
+
+.nav.navbar-nav.control-navbar button{
+  width:120px;
+
+}
+.navbar.navbar-inverse.bk-blue{
+  /*background-color: #84D8F1;*/
+  background-image: linear-gradient(to bottom, #CFE5EC 0px, #0683AD 100%);
+  border: none;
 }
 
 .div-btn-guardar-arriba{
-  height:46px;
+  /*height:46px;*/
   margin-bottom: 20px; 
 }
+
+#srch-control-navbar{
+  width:250px;
+  height:40px;
+}
+.nav.navbar-nav.control-navbar li{
+  margin-top :5px;
+  margin-left: 13px;
+  margin-right: 13px;
+}
+.nav.navbar-nav.control-navbar li h4{
+  color:black;
+}
+
 
 /* DEFINICIÓN DEL FONDO DE LA WEB */
 body{
@@ -147,6 +169,7 @@ body{
 
 .jumbotron.text-black{
   background-color: #CFE5EC;
+  text-align: justify;
   padding-top: 30px;
   padding-bottom: 30px;    
 }
@@ -251,8 +274,10 @@ body{
 }
 
 .go-top:hover {
-  background-image: url("./images/subir-hover.png");
-  /*background-color: rgba(0, 0, 0, 0.6);*/
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
+  /*background-image: url("./images/subir-hover.png");
+  background-color: rgba(0, 0, 0, 0.6);*/
 }
 
 /* ESTILO NAVBAR-RIGHT */
@@ -265,4 +290,33 @@ body{
   font-size: 15;
 }
 
+/* CODIGO PARA ELIMINAR EL EFECTO DE DESPLAZAMIENTO DE LA PANTALLA AL HACER SCROLL */
+.modal-open {
+    overflow: scroll;
+}
 
+/* CODIGO PARA EL LOADING */
+.modal-loading {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('./images/ajax-loader.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* CODIGO PARA ELIMINAR EL EFECTO DE DESPLAZAMIENTO DE LA PANTALLA AL HACER SCROLL */
+.modal-open {
+    overflow: auto;
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+#container-main.loading .modal-loading {
+    display: block;
+}

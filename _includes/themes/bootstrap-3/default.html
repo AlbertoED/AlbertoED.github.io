@@ -77,7 +77,6 @@
 
   <body>
     <div id="wrap">
-    <div class="margen-inferior">
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header" >
@@ -128,11 +127,11 @@
           </form>
         </div><!-- /.navbar-collapse -->
       </nav>
-      </div>
       <!--<div id="logogsi">
         <img SRC="images/logo_gsi_1.png" WIDTH=178 HEIGHT=180>
       </div>-->
-      <div class="container">
+      <div class="container" id="container-main">
+        <div class="modal-loading"></div>
         {{ content }}
       </div>
 
@@ -141,12 +140,10 @@
 
     <div id="footer">
       <div class="container">
-        <p>Copyright  &copy; {{ site.author.name }}, {{ site.author.university }} {{ site.time | date: '%Y' }}
-        <!--Comento estas líneas para personalizar el footer -->
-         <!-- with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
-          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> -->
+        <p>Copyright  &copy; <a href="http://www.gsi.dit.upm.es/es/" target="_blank">{{ site.author.name }}</a>, {{ site.author.university }} {{ site.time | date: '%Y' }}
         </p>
       </div>
+      <!-- ICONO DE SUBIR CON LA IMAGEN ADAPTADA AL TAMAÑO -->
       <a class="go-top adapted" href="#"></a>
     </div>
 
