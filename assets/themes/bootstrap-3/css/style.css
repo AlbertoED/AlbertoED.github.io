@@ -320,3 +320,15 @@ body{
 #container-main.loading .modal-loading {
     display: block;
 }
+
+/* CODIGO PARA AJUSTAR EL README */
+.col-md-12.readme p{
+  text-align: justify;
+}
+
+.col-md-12.readme img{
+  max-width:100%;
+  text-align: center;
+  margin-left:auto;
+  margin-right:auto;
+}

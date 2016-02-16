@@ -475,6 +475,8 @@
                     if (infoRepo.show == false){
                         return;
                     }
+                    var converter = new showdown.Converter();
+                    var converterRDoc = new Attacklab.rundown.converter();
                     console.log(infoRepo.id);
                         $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></p></div>' +
                         '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
@@ -482,7 +484,9 @@
                         '<div class="col-md-4"><p><b>ID: </b>' + infoRepo.id + '</p></div></div>' +
                         '<div class="row"><div class="col-md-8"><b>Descripción: </b>' + infoRepo.description + '</div>' +
                         '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
-                        '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div></div></div>').appendTo(node);
+                        '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div>' + 
+                        //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
+                        '<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
                 });
             });
             $('#container-main').removeClass("loading");
