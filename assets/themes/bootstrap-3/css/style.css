@@ -332,3 +332,13 @@ body{
   margin-left:auto;
   margin-right:auto;
 }
+
+.style-Readme h2{
+  color:black;
+  text-align: center;
+}
+
+.noReadme{
+  color:black;
+  text-align: center;  
+}

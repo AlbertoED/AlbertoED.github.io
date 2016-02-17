@@ -191,15 +191,29 @@
                             //Comprobamos si se ha devuelto readme del proyecto.
                             if (responseReadme.data.content == undefined){
                                 var Readme = "-";
+                                var codeReadme = "-";
                             }else{
                                 var Readme = responseReadme.data.content;
+                                //Compruebo si el fichero README está en Markdown o RDoc. Tomo string a partir del punto
+                                var subReadme = responseReadme.data.name.substr(responseReadme.data.name.indexOf(".") + 1);                              
+                                switch(subReadme) {
+                                    case "rdoc":
+                                        var codeReadme = "rundown";
+                                        break;
+                                    case "txt":
+                                        var codeReadme = "txt";
+                                        break;
+                                    default:
+                                        var codeReadme = "showdown";     
+                                }
                             }
                             //Comprobamos si tiene descripcion:
                             if (responseRepoInfo.data.description == ''){
                                 var description = '-';
                             }else{
                                 var description = responseRepoInfo.data.description;
-                            }   
+                            }
+
                             reposRef.child(responseRepoInfo.data.id).set({
                                 id: responseRepoInfo.data.id,
                                 name: responseRepoInfo.data.name,
@@ -210,6 +224,7 @@
                                 updated_at: responseRepoInfo.data.updated_at,
                                 size: responseRepoInfo.data.size,
                                 readme: Readme,
+                                codeReadme: codeReadme,
                                 category: categoryRepo,
                                 show: showRepo,
                                 language: responseRepoInfo.data.language,
@@ -475,9 +490,27 @@
                     if (infoRepo.show == false){
                         return;
                     }
-                    var converter = new showdown.Converter();
-                    var converterRDoc = new Attacklab.rundown.converter();
-                    console.log(infoRepo.id);
+                    //Compruebo si tiene README y la codificación para aplicarle un conversor de RDOC u otro de MARKDOWN
+                    //Showdown para markdown y rundown para rdoc. Txt con las etiquetas pre
+                    if (infoRepo.readme == "-"){
+                        var decodedReadme = "<h3 class='noReadme'>Repositorio sin archivo Readme<h3>"
+                    }else{
+                        switch(infoRepo.codeReadme) {
+                            case "showdown":
+                                var converter = new showdown.Converter();
+                                var decodedReadme = converter.makeHtml(decodeBase64(infoRepo.readme));
+                                break;
+                            case "rundown":
+                                var converterRDoc = new Attacklab.rundown.converter();
+                                var decodedReadme = converterRDoc.makeHtml(decodeBase64(infoRepo.readme));
+                                break;
+                            case "txt":
+                                var decodedReadme = "<pre>" + decodeBase64(infoRepo.readme) + "</pre>"
+                                break;
+                            default:
+                                var decodedReadme = "<h2>Repositorio sin archivo Readme<h2>";     
+                        }
+                    }                    
                         $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></p></div>' +
                         '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
                         '<div class="col-md-4"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p></div>' +
@@ -486,7 +519,7 @@
                         '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
                         '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div>' + 
                         //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
-                        '<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
+                        '<div class="col-md-12 readme" class="style-Readme"><p><b>Readme: </b>' + decodedReadme + '</p></div></div>').appendTo(node);
                 });
             });
             $('#container-main').removeClass("loading");
