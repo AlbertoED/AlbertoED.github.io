@@ -342,3 +342,14 @@ body{
   color:black;
   text-align: center;  
 }
+
+.noRepos{
+  color:black;
+  text-align: center;  
+}
+
+.alert.alert-success.alert-end-function{
+  position:absolute;
+  margin: 0 auto;
+  text-align:center;
+}

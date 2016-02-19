@@ -9,7 +9,7 @@ group: navigation
         <h4>A continuación se muestran todos los repositorios actualizados de la cuenta de GitHub <strong>{{site.author.github}}</strong>. Elija una categoría y marque los proyectos que quiera que aparezcan en la web pública:</h4>   
 </div>
     <!-- INICIO NAVBAR DE CONTROL -->
-    <div class="div-btn-guardar-arriba" id="navbarControl" style="display:none;">
+    <div class="div-btn-guardar-arriba" id="navbarControl">
         <!-- -->
         <div class="navbar navbar-inverse bk-blue" role="navigation">
             <div class="navbar-header">
@@ -28,12 +28,13 @@ group: navigation
                 <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" onclick="checkReposEliminados()" class="btn btn-primary btn-lg izda">Eliminados</button></div></li>
                 <li><h4 id="fecha-actualizacion"></h4></li>
             </ul>
-            <form class="navbar-form navbar-right" role="search">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Buscar ID o nombre" name="srch-term-name" id="srch-control-navbar">
-                                <button class="btn btn-default search-control" onclick="filtrarRepositorios()" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
-            </form>
+            <div class="navbar-form navbar-right">
+                <div class="input-group">
+                    <button class="btn btn-default search-control" onclick="verTodos()">Todos</button>
+                    <input type="text" class="form-control" placeholder="Buscar ID o nombre" id="srch-control-navbar">
+                    <button class="btn btn-default search-control" onclick="filtrarRepositorios()"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+            </div>
 
         </div>
         </div>
@@ -41,10 +42,11 @@ group: navigation
     </div>
 
     <div>
+        <div class="alert alert-success alert-end-function" style="display:none;" id="alert-update">Actualizado correctamente</div>
         <div id="display-projects">
             <!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
         </div>
-        <div id="load-more"></div>
+        <div id="load-more" style="position:relative;"></div>
           <button id="btnGuardarRepositorios-abajo" type="button" data-toggle="modal" data-target="#confirmar-guardar" style="display:none;" class="btn btn-primary btn-lg dcha">Guardar</button>
     </div>
 

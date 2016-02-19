@@ -10,6 +10,8 @@
     var repos;
     //Variable array para guardar los repositorios eliminados de github y poder eliminarlos de Firebase desde otra función
     var arrayReposEliminados = new Array();
+    //Variable booleana para controlar si estamos aplicando un filtro de búsqueda
+    var isFilter = false;
 
     /* FUNCION PARA CARGAR LOS REPOSITORIOS EN LA PAGINA DE ADMIN */
     jQuery.fn.cargaRepositoriosGithub = function () {
@@ -87,7 +89,7 @@
                     }
                 });
                 //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL NAVBAR DE CONTROL SERÁ VISIBLE, SI NO ES FILTRO
-                $('#navbarControl').hide().fadeIn(500);
+                //$('#navbarControl').hide().fadeIn(500);
                 $('#btnGuardarRepositorios-abajo').show();
                 //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
                 $('input[type="checkbox"]').bootstrapToggle({
@@ -141,13 +143,108 @@
         });
     };
 
+    /* FUNCION PARA QUITAR FILTROS Y VER TODOS REPOSITORIOS */
+    function verTodos(){
+        stopLoadingProjects = false;
+        loadingProjects = false;
+        currentPage = 1;
+        if (isFilter == true){
+            document.getElementById("display-projects").innerHTML="";
+            $("#display-projects").cargaRepositoriosGithub();
+        }
+        isFilter = false;
+        $('#srch-control-navbar').val("");
+    };
 
+    /* FUNCION PARA FILTRAR.  */
     function filtrarRepositorios(){
+        var filterFound = false;
         //Comprobamos si se ha introducido algun filtro:
         if ($('#srch-control-navbar').val() != ''){
+            isFilter = true;
             console.log("HAYFILTRO");
-            var filter = $('#srch-control-navbar').val();
+            var filter = $('#srch-control-navbar').val().toUpperCase();
             console.log(filter);
+            jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {            
+                console.log(repos.length);
+                //sortByForks(repos); //Sorting by forks. You can customize it according to your needs.
+                document.getElementById("display-projects").innerHTML="";
+                var node = $('#display-projects');
+                $(repos).each(function () {
+                    //Si el nombre o el id del proyecto no cuadran con el filtro continuamos con el siguiente proyecto y este no lo mostramos
+                    if (((this.name).toUpperCase().indexOf(filter) == -1) && (String((this.id)).indexOf(filter) == -1)){
+                        return;
+                    }
+                    //Si llega a este punto significa que ha encontrado algún repositorio que cuadre con el filtro
+                    filterFound = true;
+                    var IDRepo = this.id;
+                    checkfork = this.fork;
+                    if (this.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
+                        //Comprobamos si tiene descripcion:
+                        if (this.description == ''){
+                            description = '-';
+                        }else{
+                            description = this.description;
+                        }
+                        //Recogemos la fecha y la ponemos en formato correcto
+                        fechaIn = stringDate(this.created_at.substring(0,10));
+                        //Comprobamos si es público o privado
+                        if (this.private == true){
+                            privacidad = "PRIVADO";
+                        }else{
+                            privacidad = "PÚBLICO";
+                        }
+                        //Las columnas deben sumar 12. Anidamos los contenedores para cada proyecto que nos devuelva el GET:
+                        $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + this.html_url + '" target="_blank">' + this.name + '</a></p></div>' +
+                        '<div class="panel-body"><div class="row"><div class="col-md-2"><p><b>Autor: </b>'+ this.owner.login + '</p></div>' + 
+                        '<div class="col-md-3"><p><b>Fecha Creación: </b>'+ fechaIn + '</p></div>' +
+                        '<div class="col-md-5"><p><b>Categoría: </b><select id="select' + this.id + '"><option hidden value="0">Seleccione una categoría</option><option value="1">Agentes y Simulación Social</option><option value="2">Big Data y Aprendizaje Automático</option><option value="3">NLP y Análisis de Sentimientos</option><option value="4">La Web de Datos y Tecnologías Semánticas</option><option value="5">Ingeniería Web y de servicios</option><option value="6">Otros</option></select></p></div> ' +
+                        '<div class="col-md-2"><p><b>¿Mostrar?: </b><input data-toggle="toggle" type="checkbox" id="toggle' + this.id + '"></p></div></div>' +
+                        '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
+                        '<div class="col-md-8"><b>Descripción: </b>' + description + '</div>' +
+                        '<div class="col-md-2"><b>Perfil: </b>' + privacidad + '</div></div></div>').hide().appendTo(node).fadeIn(1000);
+                        //Incluimos efecto de fade in para los nuevos repositoios que se muestran
+                        //Comprobamos si ya hay datos guardados en Firebase para cada repositorio
+                        myDataRef.once("value", function(snapshot) {
+                            var elementFirebase = snapshot.child("repos/" + IDRepo).exists();
+                            console.log(IDRepo + " en firebase: " + elementFirebase);
+                            //Si está en Firebase, recuperamos el valor del select y del toggle y los asignamos al panel del repositorio
+                            if (elementFirebase == true){
+                                refTemp = new Firebase(nameBBDD +   'repos/' + IDRepo);
+                                refTemp.on("value", function(snapshot) {
+                                        var reposFire = snapshot.val();
+                                        var toggleValue = reposFire.show;
+                                        var selectValue = reposFire.category
+                                        console.log(IDRepo + " " + toggleValue + " " + selectValue);
+                                        $("#select" + IDRepo).val(selectValue);
+                                        if (toggleValue == true){
+                                            $("#toggle" + IDRepo).bootstrapToggle('on');    
+                                        }else{
+                                            $("#toggle" + IDRepo).bootstrapToggle('off');
+                                        }                                                                                 
+                                });
+                            }
+                        });
+                    }
+                });
+                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL NAVBAR DE CONTROL SERÁ VISIBLE, SI NO ES FILTRO
+                //$('#navbarControl').hide().fadeIn(500);
+                $('#btnGuardarRepositorios-abajo').show();
+                //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
+                $('input[type="checkbox"]').bootstrapToggle({
+                        on: 'Sí',
+                        off: 'No'
+                });
+                //...
+                loadingProjects = false;
+                $('#fecha-actualizacion').hide().html('Fecha de actualización: <b>' + getActualDatetime() + '</b>').fadeIn(1000);
+                $('#container-main').removeClass("loading");
+                stopLoadingProjects = true;
+                //Si llega al final y no hay ningún repositorio que coincida con la busqueda, se notifica
+                if(filterFound == false){
+                    $("<h3 class='noRepos'>Ningún repositorio coincide con la búsqueda<h3>").hide().appendTo($("#display-projects")).fadeIn(1000);
+                }
+            });
         }
     };
 
@@ -325,6 +422,8 @@
                 }); 
             });
             $('#container-main').removeClass("loading");
+            $('#alert-update').fadeIn(500);
+            setTimeout (function(){$("#alert-update").fadeOut(500);}, 3000); 
         });
     };
 
@@ -410,16 +509,6 @@
         repos.sort(function (a, b) {
             return b.forks - a.forks; //Descending order for number of forks based sorting.
         });
-    };
-
-    function funcionPost() {
-        myDataRef.on("value", function(snapshot) {
-                console.log(snapshot.val());
-                }, function (errorObject) {
-                        console.log("The read failed: " + errorObject.code);
-                });
-           /* var reposRef = myDataRef.child("repos");
-            reposRef.set*/
     };
 
     /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
