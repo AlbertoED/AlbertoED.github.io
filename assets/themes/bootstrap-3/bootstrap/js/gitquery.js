@@ -253,7 +253,9 @@
         //Cerramos el modal
         $('#confirmar-guardar').modal('hide');
         $('#container-main').addClass("loading");
-        var reposRef = myDataRef.child("repos")
+        var reposRef = myDataRef.child("repos");
+        var nOK = 0;
+        var nTotal = $(".titleReposAdmin").length;
         //Para cada proyecto mostrado en pantalla guardamos la información en Firebase
         //Realiza tres peticiones a GitHub por proyecto
         //1) - Información general del proyecto
@@ -265,6 +267,7 @@
         $(".titleReposAdmin").each(function(){
             var nameRepo = $(this).text();
             console.log(nameRepo);
+            nOK++;
                 //1) - GitRepoInfo
                 jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '?&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {            
                     //2) - GitReadme
@@ -328,12 +331,18 @@
                                 collaborators: collaboratorsRepo,
                                 private: responseRepoInfo.data.private,
                                 download_zip_url: "https://github.com/" + cuentaGit + "/" + responseRepoInfo.data.name + "/archive/" + responseRepoInfo.data.default_branch + ".zip"
-                            });              
+                            });
+                            if( nOK == nTotal ) {
+                               $('#container-main').removeClass("loading");
+                                $(".notifications .notification.guardado.ok").addClass("active");
+                                setTimeout(function() {
+                                    $(".notifications .notification.guardado").removeClass("active");
+                                }, 3000);  
+                            }              
                         });                    
                     });
                 });              
             });
-            $('#container-main').removeClass("loading");
         };
         /* MOSTRAR LOS MIEMBROS DE LA ORGANIZACION
         https://api.github.com/orgs/gsi-upm/members?&access_token=...
@@ -354,6 +363,9 @@
         var reposRef = myDataRef.child("repos")
         jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
         repos = responseRepos.data; // JSON Parsing
+
+            var nOK = 0;
+            var nTotal = $(repos).length;
             $(repos).each(function () {
                 var nameRepo = this.name;
                 //Recuperamos  la info de Github de la misma forma que al guardar pero si introducir datos en la categoria y mostrar
@@ -371,7 +383,7 @@
                                 //Comprobamos si tiene descripcion:
                                 if (responseRepoInfo.data.description == ''){
                                     description = '-';
-                                }else{
+                                } else {
                                     description = responseRepoInfo.data.description;
                                 }
                                 //Recogemos la fecha y la ponemos en formato correcto
@@ -413,17 +425,28 @@
                                             private: responseRepoInfo.data.private,
                                             download_zip_url: "https://github.com/" + cuentaGit + "/" + responseRepoInfo.data.name + "/archive/" + responseRepoInfo.data.default_branch + ".zip"
                                         });   
-                                        console.log("Actualizado" + responseRepoInfo.data.name);                
+                                        console.log("Actualizado" + responseRepoInfo.data.name);
+
+                                        nOK++;
+                                        if( nOK == nTotal ) {
+                                           $('#container-main').removeClass("loading");
+
+                                            $(".notifications .notification.actualizado.ok").addClass("active");
+                                            setTimeout(function() {
+                                                $(".notifications .notification.actualizado").removeClass("active");
+                                            }, 3000);  
+                                        }
+
                                     });                    
                                 });  
                             }                             
+                        } else {
+                            nOK++;
                         }
                     });
                 }); 
             });
-            $('#container-main').removeClass("loading");
-            $('#alert-update').fadeIn(500);
-            setTimeout (function(){$("#alert-update").fadeOut(500);}, 3000); 
+            
         });
     };
 
@@ -487,6 +510,18 @@
             childRepo.remove();
         };
         $('#confirmar-eliminar').modal('hide');
+        if (arrayReposEliminados.length != 0){
+            $(".notifications .notification.eliminado.ok").addClass("active");
+            setTimeout(function() {
+                $(".notifications .notification.eliminado").removeClass("active");
+            }, 3000);  
+        }else{
+            $(".notifications .notification.eliminado.empty").addClass("active");
+            setTimeout(function() {
+                $(".notifications .notification.eliminado").removeClass("active");
+            }, 3000); 
+        }
+
     };
 
     /* FUNCION PARA PEDIR LOS REPOSITORIOS DE UN USUARIO */
@@ -561,6 +596,7 @@
         $("#display-projects").cargaRepositoriosGithub();
     };
 
+    /* FUNCIONES PARA RELLENAR INFO DE LOS REPOSITORIOS EN LA VISUALIZACIÓN */
     /* PRUEBA GET CATEGORIAS */ 
     function showReposCategory(categoryParam,idShowDiv) {
         $('#container-main').addClass("loading");
@@ -610,6 +646,51 @@
                         //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
                         '<div class="col-md-12 readme" class="style-Readme"><p><b>Readme: </b>' + decodedReadme + '</p></div></div>').appendTo(node);
                 });
+            });
+            $('#container-main').removeClass("loading");
+        });      
+    };
+
+    function verRepositoriosCategoria(categoryParam,idShowDiv){
+        var reposFound = false;
+        $('#container-main').addClass("loading");
+        var node; 
+        console.log(idShowDiv);
+        //Según el parámetro de 
+        var tempRef = new Firebase(nameBBDD + "Categories").orderByChild('name').equalTo(categoryParam).once("child_added", function(snapshot) {
+           var reposCategory = snapshot.val();
+           console.log(reposCategory);
+           var category = reposCategory.id;
+           //Solo devuelve un objeto con el id de la categoria y lo usamos para recuperar los repos de la categoria
+           console.log(category);
+            var tempRefCat = new Firebase(nameBBDD + "repos").orderByChild('category').equalTo(String(category)).on("value", function(repositories){
+                //Creo un contador para colocar tres repositorios por cada fila y otro contador para notificar en un panel
+                var cont = 1;
+                var total = 0;
+                repositories.forEach(function(repo) {
+                    var infoRepo = repo.val();
+                    if (infoRepo.show == false){
+                        return;
+                    }        
+                    reposFound = true;
+                    total++;
+                    node = $("#column-" + idShowDiv + "-" + cont);
+                    console.log(node);
+                    $('<div class="panel panel-primary category-repositories"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p>' +
+                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at.substring(0,10)) + '</p>' +
+                    '<p><b>ID: </b>' + infoRepo.id + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
+                    if (cont == 1){
+                        cont++;
+                    }else{
+                        cont=1;
+                    }                    
+                });
+                if(reposFound == false){
+                    $("<div class='jumbotron text-black'><h3 class='noRepos'>No existen repositorios pertenecientes a esta categoría<h3></div>").hide().appendTo($("#container-" + idShowDiv)).fadeIn(500);
+                }else{
+                    $("<div class='jumbotron text-black'><h3 class='noRepos'>Existen " + total + " repositorio(s) pertenecientes a esta categoría. Actualizado el día 'insertarDía'<h3></div>").hide().prependTo($("#container-" + idShowDiv)).fadeIn(500);
+                }
             });
             $('#container-main').removeClass("loading");
         });      

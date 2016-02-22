@@ -348,8 +348,47 @@ body{
   text-align: center;  
 }
 
-.alert.alert-success.alert-end-function{
-  position:absolute;
-  margin: 0 auto;
-  text-align:center;
+/* NOTIFICATIONS */
+
+.notifications {
+  position: fixed;
+  left: 0px;
+  width: 100%;
+  top: 100%;
 }
+
+.notifications .notification {
+  font-size: 14px;
+  color: black;
+  background-color: white;
+  padding: 15px 30px;
+  line-height: 1em; 
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  right: 50px;
+  height: 44px;
+  transition: top 600ms ease;
+  border-radius: 15px 15px 0px 0px;
+  -moz-border-radius: 15px 15px 0px 0px;
+  -webkit-border-radius: 15px 15px 0px 0px;
+  border: 0px solid #000000;
+}
+
+.notifications .notification.active {
+  top: -44px;
+}
+
+.notifications .notification.ok {
+  background-color: #6AF46A;
+}
+
+.notifications .notification.empty {
+  background-color: #6AC1F4;
+}
+
+/* ESTILO DE LOS PANELES DE REPOSITORIOS EN LA VISUALIZACIÓN DE LAS CATEGORÍAS */
+.panel.panel-primary.category-repositories:hover{
+  cursor: pointer;
+}
+

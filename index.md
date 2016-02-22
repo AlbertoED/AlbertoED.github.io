@@ -3,7 +3,12 @@ layout: page
 title: Proyectos GitHub del Grupo de Sistemas Inteligentes de la UPM
 ---
 {% include JB/setup %}
-
+<!--
+<div>
+  <img src="https://avatars.githubusercontent.com/u/2894736?v=3" class="img-responsive">
+</div>
+-->
+<!-- CATEGORIAS -->
 <div class="col-md-6">
             <div class="jumbotron main-box adapted" id="div-image-1" data-toggle="collapse" data-target="#divmain1">
               <h2>Agentes y Simulación Social</h2>

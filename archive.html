@@ -10,6 +10,16 @@ group: navigation
 </div>
     <!-- INICIO NAVBAR DE CONTROL -->
     <div class="div-btn-guardar-arriba" id="navbarControl">
+        <!-- SAVE NOTIFICATION -->
+
+        <div class="notifications">
+            <div class="notification ok actualizado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Actualizado correctamente</p></div> 
+            <div class="notification fail actualizado">No se ha podido actualizar</div>
+            <div class="notification empty eliminado"><p><img src="assets/themes/bootstrap-3/css/images/exclamacion.png" style="width:14 px; height:14px;">   No hay repositorios que eliminar</p></div>
+            <div class="notification ok guardado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Guardado correctamente</p></div> 
+            <div class="notification ok eliminado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Eliminados correctamente</p></div> 
+        </div>
+
         <!-- -->
         <div class="navbar navbar-inverse bk-blue" role="navigation">
             <div class="navbar-header">
@@ -42,7 +52,7 @@ group: navigation
     </div>
 
     <div>
-        <div class="alert alert-success alert-end-function" style="display:none;" id="alert-update">Actualizado correctamente</div>
+        <!--<div class="alert alert-success alert-end-function" style="display:none;" id="alert-update">Actualizado correctamente</div>-->
         <div id="display-projects">
             <!-- ESPACIO RESERVADO PARA RELLENAR CON EL LISTADO DE LOS REPOSITORIOS DE GITHUB MEDIANTE JAVASCRIPT  -->
         </div>
