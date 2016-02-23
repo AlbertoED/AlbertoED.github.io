@@ -1,0 +1,32 @@
+---
+layout: page
+title: Repositorio 
+header: Pages
+group: private
+---
+{% include JB/setup %}
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
+<div id="titulo-repositorio">
+</div> 
+
+
+<div id="container-repo">
+</div>
+
+<script type="text/javascript">
+	 $(window).load(function(){
+	 	//Buscamos el id pasado en la url, si existe. Si no, redireccionamos a la web general de repositorios
+	 	var url = window.location.search;
+        if (url.split('=').length > 1) {
+            var idParam = window.location.search.split('=')[1];
+	 		console.log(idParam);
+	 		if($.isNumeric(idParam == false)){
+	 			location.href = "/Repositorios.html";
+	 		}else{
+	 			showInfoRepository(idParam);
+	 		}
+	 	}else{
+	 		location.href = "/Repositorios.html";
+	 	}
+	});
+</script>

@@ -1,21 +1,10 @@
 ---
 layout: page
-title: Repositorios 
+title: Repositorios
 header: Pages
-group: private
+group: navigation
 ---
 {% include JB/setup %}
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
-<h3>Repositorios de la cuenta {{site.author.github}}:</h3>
-<ul>
-  {% for repository in site.github.public_repositories %}
-	<li><a href = "{{ repository.html_url }}">{{ repository.name }}</a>:Descarga de zip <a href = "{{ repository.html_url }}/archive/master.zip">Haz click para descargar</a> - Fecha Creación: {{ repository.created_at }}
-	</li>
-  {% endfor %}
-</ul>
+<h3>... y aquí mostrará todos los repositorios para poder realizar filtros</h3>
 
-<h3>PRUEBA JQUERY</h3>
-	<script type="text/javascript">
-    	$(document).ready(function () {$("#display-projects").loadRepositories("gsi-upm");});
-	</script>
-	<div id="display-projects"></div>

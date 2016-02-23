@@ -98,8 +98,12 @@
                 });
                 //...
                 loadingProjects = false;
-                $('#fecha-actualizacion').hide().html('Fecha de actualización: <b>' + getActualDatetime() + '</b>').fadeIn(1000);
-                        $('#container-main').removeClass("loading");
+                //Llamamos de manera síncrona a las funciones de obtener las fechas
+                getLastUpdatingDate(function(data){
+                    $('#fecha-ultima-actualizacion').hide().html('<b>' + data + '</b>').fadeIn(1000);
+                    $('#fecha-actual-datos').hide().html('<b>' + getActualDatetime() + '</b>').fadeIn(1000);
+                });
+                $('#container-main').removeClass("loading");
         });
     };
 
@@ -126,6 +130,15 @@
         console.log(actualDate);
         return actualDate;
     }; 
+
+    /* FUNCION PARA RECUPERAR ULTIMA FECHA DE MODIFICACION */
+    function getLastUpdatingDate(callback) {
+        refTemp = new Firebase(nameBBDD + 'info-web/updated_date');
+        refTemp.on("value", function(snapshot) {
+                var lastDate = snapshot.val();
+                callback(lastDate);
+        });
+    };
 
     /* FUNCION PARA RECUPERAR EL TOKEN DE GITHUB ALOJADO EN FIREBASE */
     function getTokenFireBase() {
@@ -218,9 +231,9 @@
                                         console.log(IDRepo + " " + toggleValue + " " + selectValue);
                                         $("#select" + IDRepo).val(selectValue);
                                         if (toggleValue == true){
-                                            $("#toggle" + IDRepo).bootstrapToggle('on');    
+                                            $("#toggle" + IDRepo).bootstrapToggle('sí');    
                                         }else{
-                                            $("#toggle" + IDRepo).bootstrapToggle('off');
+                                            $("#toggle" + IDRepo).bootstrapToggle('no');
                                         }                                                                                 
                                 });
                             }
@@ -360,6 +373,7 @@
         //Cerramos el modal
         $('#confirmar-actualizar').modal('hide');
         $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
         var reposRef = myDataRef.child("repos")
         jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
         repos = responseRepos.data; // JSON Parsing
@@ -415,7 +429,7 @@
                                             name: responseRepoInfo.data.name,
                                             owner: responseRepoInfo.data.owner.login,
                                             html_url: responseRepoInfo.data.html_url,
-                                            description: responseRepoInfo.data.description,
+                                            description: description,
                                             created_at: responseRepoInfo.data.created_at,
                                             updated_at: responseRepoInfo.data.updated_at,
                                             size: responseRepoInfo.data.size,
@@ -430,11 +444,17 @@
                                         nOK++;
                                         if( nOK == nTotal ) {
                                            $('#container-main').removeClass("loading");
-
+                                           $('body').removeClass("stop-scrolling");
                                             $(".notifications .notification.actualizado.ok").addClass("active");
                                             setTimeout(function() {
                                                 $(".notifications .notification.actualizado").removeClass("active");
-                                            }, 3000);  
+                                            }, 3000);
+                                            //Cuando termina, guardamos en firebase la fecha de actualización
+                                            var actualdate = getActualDatetime();
+                                            $('#fecha-ultima-actualizacion').hide().html('<b>' + actualdate + '</b>').fadeIn(1000);
+                                            myDataRef.child("info-web").set({
+                                                updated_date: actualdate
+                                            });
                                         }
 
                                     });                    
@@ -598,55 +618,48 @@
 
     /* FUNCIONES PARA RELLENAR INFO DE LOS REPOSITORIOS EN LA VISUALIZACIÓN */
     /* PRUEBA GET CATEGORIAS */ 
-    function showReposCategory(categoryParam,idShowDiv) {
+    function showInfoRepository(idParam) {
         $('#container-main').addClass("loading");
-        node = $(idShowDiv);
-        console.log(idShowDiv);
-        //Según el parámetro de 
-        var tempRef = new Firebase(nameBBDD + "Categories").orderByChild('name').equalTo(categoryParam).once("child_added", function(snapshot) {
-           var reposCategory = snapshot.val();
-           console.log(reposCategory);
-           var category = reposCategory.id;
-           //Solo devuelve un objeto con el id de la categoria y lo usamos para recuperar los repos de la categoria
-           console.log(category);
-            var tempRefCat = new Firebase(nameBBDD + "repos").orderByChild('category').equalTo(String(category)).on("value", function(repositories){
-                repositories.forEach(function(repo) {
-                    var infoRepo = repo.val();
-                    if (infoRepo.show == false){
-                        return;
-                    }
-                    //Compruebo si tiene README y la codificación para aplicarle un conversor de RDOC u otro de MARKDOWN
-                    //Showdown para markdown y rundown para rdoc. Txt con las etiquetas pre
-                    if (infoRepo.readme == "-"){
-                        var decodedReadme = "<h3 class='noReadme'>Repositorio sin archivo Readme<h3>"
-                    }else{
-                        switch(infoRepo.codeReadme) {
-                            case "showdown":
-                                var converter = new showdown.Converter();
-                                var decodedReadme = converter.makeHtml(decodeBase64(infoRepo.readme));
-                                break;
-                            case "rundown":
-                                var converterRDoc = new Attacklab.rundown.converter();
-                                var decodedReadme = converterRDoc.makeHtml(decodeBase64(infoRepo.readme));
-                                break;
-                            case "txt":
-                                var decodedReadme = "<pre>" + decodeBase64(infoRepo.readme) + "</pre>"
-                                break;
-                            default:
-                                var decodedReadme = "<h2>Repositorio sin archivo Readme<h2>";     
-                        }
-                    }                    
-                        $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></p></div>' +
-                        '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
-                        '<div class="col-md-4"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p></div>' +
-                        '<div class="col-md-4"><p><b>ID: </b>' + infoRepo.id + '</p></div></div>' +
-                        '<div class="row"><div class="col-md-8"><b>Descripción: </b>' + infoRepo.description + '</div>' +
-                        '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
-                        '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div>' + 
-                        //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
-                        '<div class="col-md-12 readme" class="style-Readme"><p><b>Readme: </b>' + decodedReadme + '</p></div></div>').appendTo(node);
-                });
-            });
+        node = $('#container-repo');
+        var tempRef = new Firebase(nameBBDD + "repos/" + idParam)
+        tempRef.on("value", function(snapshot) {  
+           var infoRepo = snapshot.val();
+           //Compruebo que sea un repositorio visible, por si acaso
+            if (infoRepo.show == false){
+                $("<div class='jumbotron text-black'><h3 class='noRepos'>Repositorio no visible<h3></div>").hide().appendTo(node).fadeIn(500);
+                return;
+            }
+            $('<div class="jumbotron title-repos"><h2><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></h2></div>').appendTo($('#titulo-repositorio'));
+            //Compruebo si tiene README y la codificación para aplicarle un conversor de RDOC u otro de MARKDOWN
+            //Showdown para markdown y rundown para rdoc. Txt con las etiquetas pre
+            if (infoRepo.readme == "-"){
+                var decodedReadme = "<h3 class='noReadme'>Repositorio sin archivo Readme<h3>"
+            }else{
+                switch(infoRepo.codeReadme) {
+                    case "showdown":
+                        var converter = new showdown.Converter();
+                        var decodedReadme = converter.makeHtml(decodeBase64(infoRepo.readme));
+                        break;
+                    case "rundown":
+                        var converterRDoc = new Attacklab.rundown.converter();
+                        var decodedReadme = converterRDoc.makeHtml(decodeBase64(infoRepo.readme));
+                        break;
+                    case "txt":
+                        var decodedReadme = "<pre>" + decodeBase64(infoRepo.readme) + "</pre>"
+                        break;
+                    default:
+                        var decodedReadme = "<h2>Repositorio sin archivo Readme<h2>";     
+                }
+            }                    
+            $('<div class="panel panel-primary">' +
+            '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
+            '<div class="col-md-4"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p></div>' +
+            '<div class="col-md-4"><p><b>ID: </b>' + infoRepo.id + '</p></div></div>' +
+            '<div class="row"><div class="col-md-8"><b>Descripción: </b>' + infoRepo.description + '</div>' +
+            '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
+            '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div>' + 
+            //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
+            '<div class="col-md-12 readme" class="style-Readme"><p><b>Readme: </b>' + decodedReadme + '</p></div></div>').appendTo(node);           
             $('#container-main').removeClass("loading");
         });      
     };
@@ -676,10 +689,11 @@
                     total++;
                     node = $("#column-" + idShowDiv + "-" + cont);
                     console.log(node);
-                    $('<div class="panel panel-primary category-repositories"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p>' +
                     '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at.substring(0,10)) + '</p>' +
-                    '<p><b>ID: </b>' + infoRepo.id + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
+                    '<p><b>ID: </b>' + infoRepo.id + '</p>' +
+                    '<p><b>Descripción: </b>' + infoRepo.description + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
                     if (cont == 1){
                         cont++;
                     }else{
@@ -689,9 +703,21 @@
                 if(reposFound == false){
                     $("<div class='jumbotron text-black'><h3 class='noRepos'>No existen repositorios pertenecientes a esta categoría<h3></div>").hide().appendTo($("#container-" + idShowDiv)).fadeIn(500);
                 }else{
-                    $("<div class='jumbotron text-black'><h3 class='noRepos'>Existen " + total + " repositorio(s) pertenecientes a esta categoría. Actualizado el día 'insertarDía'<h3></div>").hide().prependTo($("#container-" + idShowDiv)).fadeIn(500);
+                    //Llamamos de manera síncrona a las funciones de obtener las fechas
+                    getLastUpdatingDate(function(data){
+                        $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen " + total + " repositorio(s) pertenecientes a esta categoría. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#container-" + idShowDiv)).fadeIn(500);
+                    });
                 }
             });
             $('#container-main').removeClass("loading");
         });      
     };
+
+    function addIdReposToURL(idRepo){
+        reposUrl = "/Repositorio.html?";
+        reposUrl = reposUrl + "&id=" + idRepo;
+        window.location.href = reposUrl;
+        console.log(reposUrl);
+        //return _url;
+    }
+

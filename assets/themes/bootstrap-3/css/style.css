@@ -141,7 +141,7 @@ body {
 }
 
 #srch-control-navbar{
-  width:250px;
+  width:220px;
   height:40px;
 }
 .nav.navbar-nav.control-navbar li{
@@ -151,6 +151,8 @@ body {
 }
 .nav.navbar-nav.control-navbar li h4{
   color:black;
+  margin-top:0;
+  margin-bottom:4px;
 }
 
 
@@ -349,7 +351,6 @@ body{
 }
 
 /* NOTIFICATIONS */
-
 .notifications {
   position: fixed;
   left: 0px;
@@ -389,6 +390,33 @@ body{
 
 /* ESTILO DE LOS PANELES DE REPOSITORIOS EN LA VISUALIZACIÓN DE LAS CATEGORÍAS */
 .panel.panel-primary.category-repositories:hover{
+  -webkit-box-shadow: 5px 5px 5px #055670;
+  box-shadow: 5px 5px 5px #055670;  
   cursor: pointer;
+  -webkit-filter:saturate(0);
 }
+
+.saturate {-webkit-filter: saturate(3);}
+
+/* ESTILO DEL PANEL PRINCI`PAL DE CADA REPOSITORIO */
+.jumbotron.title-repos{
+  text-align:center;
+  padding-top:10px;
+  padding-bottom:10px;
+  background-color: #CADBE0;
+}
+
+.jumbotron.title-repos a {
+     color: black;
+     font-size: 30px;
+     font-weight: bold;
+ }
+
+/* CLASE PARA PARA IMPEDIR EL SCROLL */
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+
 

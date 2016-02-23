@@ -20,8 +20,8 @@ group: navigation
                 <div class="notification ok eliminado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Eliminados correctamente</p></div> 
             </div>
         </div>
-
-        <!-- -->
+        
+        <!-- BARRA DE CONTROL -->
         <div class="navbar navbar-inverse bk-blue" role="navigation">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -37,7 +37,10 @@ group: navigation
                 <li><div class="btn-group" role="group" aria-label="..."><button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" data-target="#confirmar-guardar" class="btn btn-primary btn-lg izda">Guardar</button>
                 <button id="btnActualizarRepositorios" type="button" data-toggle="modal" data-target="#confirmar-actualizar" class="btn btn-primary btn-lg izda">Actualizar</button>
                 <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" onclick="checkReposEliminados()" class="btn btn-primary btn-lg izda">Eliminados</button></div></li>
-                <li><h4 id="fecha-actualizacion"></h4></li>
+                <li>
+                    <h4>Fecha actualización datos: <span id="fecha-actual-datos"></span></h4>
+                    <h4>Fecha última actualización: <span id="fecha-ultima-actualizacion"></span></h4>
+                </li>
             </ul>
             <div class="navbar-form navbar-right">
                 <div class="input-group">
