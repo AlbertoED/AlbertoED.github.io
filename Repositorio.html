@@ -9,7 +9,6 @@ group: private
 <div id="titulo-repositorio">
 </div> 
 
-
 <div id="container-repo">
 </div>
 
@@ -20,7 +19,7 @@ group: private
         if (url.split('=').length > 1) {
             var idParam = window.location.search.split('=')[1];
 	 		console.log(idParam);
-	 		if($.isNumeric(idParam == false)){
+	 		if($.isNumeric(idParam) == false){
 	 			location.href = "/Repositorios.html";
 	 		}else{
 	 			showInfoRepository(idParam);

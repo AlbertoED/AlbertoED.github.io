@@ -45,7 +45,7 @@ group: navigation
             <div class="navbar-form navbar-right">
                 <div class="input-group">
                     <button class="btn btn-default search-control" onclick="verTodos()">Todos</button>
-                    <input type="text" class="form-control" placeholder="Buscar ID o nombre" id="srch-control-navbar">
+                    <input type="text" class="form-control" placeholder="Buscar ID o nombre" id="srch-control-navbar" onkeypress="if (event.keyCode == 13) filtrarRepositorios()">
                     <button class="btn btn-default search-control" onclick="filtrarRepositorios()"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>

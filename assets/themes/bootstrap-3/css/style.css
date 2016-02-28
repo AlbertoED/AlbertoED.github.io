@@ -252,7 +252,7 @@ body{
 .nav.navbar-nav a{
   font-family: 'font-family: 'Fjalla One', sans-serif;', sans-serif;  
   font-size: 18px;
-    padding-right: 15px;
+  padding-right: 15px;
   padding-left: 15px;
 }
 .nav.navbar-nav li{
@@ -282,6 +282,33 @@ body{
   background-color: rgba(0, 0, 0, 0.6);*/
 }
 
+/* BOTON VOLVER */
+.go-back {
+  cursor: pointer;
+  float:left;
+  bottom: 2em;
+  right: 2em;
+  text-decoration: none;
+  color: #fff;
+  /*background-color: rgba(0, 0, 0, 0.3);*/
+  padding: 1em;
+  background-image: url("./images/volver.png");
+  height: 40px;
+  width: 40px;
+  margin: 11.5px 0 11.5px 0;
+
+}
+
+.go-back.adapted{
+    font-size: 5px !important;
+}
+
+.go-back:hover {
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
+  /*background-image: url("./images/subir-hover.png");
+  background-color: rgba(0, 0, 0, 0.6);*/
+}
 /* ESTILO NAVBAR-RIGHT */
 .margen-izdo{
   margin-left: 10px;
@@ -331,8 +358,6 @@ body{
 .col-md-12.readme img{
   max-width:100%;
   text-align: center;
-  margin-left:auto;
-  margin-right:auto;
 }
 
 .style-Readme h2{
@@ -393,16 +418,18 @@ body{
   -webkit-box-shadow: 5px 5px 5px #055670;
   box-shadow: 5px 5px 5px #055670;  
   cursor: pointer;
-  -webkit-filter:saturate(0);
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
 }
 
 .saturate {-webkit-filter: saturate(3);}
 
-/* ESTILO DEL PANEL PRINCI`PAL DE CADA REPOSITORIO */
+/* ESTILO DEL PANEL PRINCIPAL DE CADA REPOSITORIO */
 .jumbotron.title-repos{
   text-align:center;
   padding-top:10px;
   padding-bottom:10px;
+  padding-left: 20px;
   background-color: #CADBE0;
 }
 
@@ -410,7 +437,34 @@ body{
      color: black;
      font-size: 30px;
      font-weight: bold;
- }
+}
+
+.panel-primary.info-repo{
+    border-color: #00A9E0;
+}
+
+.panel-heading.title-info-repo{
+  padding-left: 8px;
+  padding-top:1px;
+  height:25px;
+  background-image:none;
+  background-repeat: none;
+  background-color: #00A9E0 !important;
+  border-color: #00A9E0 !important;
+}
+
+.panel-body.info-repo{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+
+/* Imagen zip para descargar */
+.img-zip{
+  margin: 0 auto;
+  display: block;
+}
 
 /* CLASE PARA PARA IMPEDIR EL SCROLL */
 .stop-scrolling {

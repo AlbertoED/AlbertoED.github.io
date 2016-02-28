@@ -178,12 +178,13 @@
             console.log("HAYFILTRO");
             var filter = $('#srch-control-navbar').val().toUpperCase();
             console.log(filter);
-            jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {            
-                console.log(repos.length);
+            jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {
+                var repoGroup = responseRepoInfo.data;            
+                console.log(repoGroup.length);
                 //sortByForks(repos); //Sorting by forks. You can customize it according to your needs.
                 document.getElementById("display-projects").innerHTML="";
                 var node = $('#display-projects');
-                $(repos).each(function () {
+                $(repoGroup).each(function () {
                     //Si el nombre o el id del proyecto no cuadran con el filtro continuamos con el siguiente proyecto y este no lo mostramos
                     if (((this.name).toUpperCase().indexOf(filter) == -1) && (String((this.id)).indexOf(filter) == -1)){
                         return;
@@ -239,10 +240,7 @@
                             }
                         });
                     }
-                });
-                //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL NAVBAR DE CONTROL SERÁ VISIBLE, SI NO ES FILTRO
-                //$('#navbarControl').hide().fadeIn(500);
-                $('#btnGuardarRepositorios-abajo').show();
+                });               
                 //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
                 $('input[type="checkbox"]').bootstrapToggle({
                         on: 'Sí',
@@ -255,7 +253,10 @@
                 stopLoadingProjects = true;
                 //Si llega al final y no hay ningún repositorio que coincida con la busqueda, se notifica
                 if(filterFound == false){
+                    $('#btnGuardarRepositorios-abajo').hide();
                     $("<h3 class='noRepos'>Ningún repositorio coincide con la búsqueda<h3>").hide().appendTo($("#display-projects")).fadeIn(1000);
+                }else{
+                    $('#btnGuardarRepositorios-abajo').show();
                 }
             });
         }
@@ -604,6 +605,12 @@
         })
     });
 
+    /* FUNCION PARA VOLVER A LA PAGINA ANTERIOR */
+    function goBack(){
+        console.log("entra");
+        window.history.back(); 
+    }
+
     /* FUNCION PARA DECODIFICAR EL README QUE ESTA CODIFICADO EN Base64 */
     function decodeBase64(string) {
          return decodeURIComponent(escape(window.atob(string)));   
@@ -622,14 +629,19 @@
         $('#container-main').addClass("loading");
         node = $('#container-repo');
         var tempRef = new Firebase(nameBBDD + "repos/" + idParam)
-        tempRef.on("value", function(snapshot) {  
-           var infoRepo = snapshot.val();
+        tempRef.on("value", function(snapshot) {
+            //Si el id no existe, redireccionamos a Repositorios:
+            var elementFirebase = snapshot.exists();
+            if (elementFirebase == false){
+                location.href = "/Repositorios.html";
+            }
+            var infoRepo = snapshot.val();
            //Compruebo que sea un repositorio visible, por si acaso
             if (infoRepo.show == false){
                 $("<div class='jumbotron text-black'><h3 class='noRepos'>Repositorio no visible<h3></div>").hide().appendTo(node).fadeIn(500);
                 return;
             }
-            $('<div class="jumbotron title-repos"><h2><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></h2></div>').appendTo($('#titulo-repositorio'));
+            $('<div class="jumbotron title-repos"><a class="go-back adapted" onclick="goBack()" title="Volver"></a><h2><a href="' + infoRepo.html_url + '" target="_blank">' + infoRepo.name + '</a></h2></div>').appendTo($('#titulo-repositorio'));
             //Compruebo si tiene README y la codificación para aplicarle un conversor de RDOC u otro de MARKDOWN
             //Showdown para markdown y rundown para rdoc. Txt con las etiquetas pre
             if (infoRepo.readme == "-"){
@@ -650,17 +662,38 @@
                     default:
                         var decodedReadme = "<h2>Repositorio sin archivo Readme<h2>";     
                 }
-            }                    
-            $('<div class="panel panel-primary">' +
-            '<div class="panel-body"><div class="row"><div class="col-md-4"><p><b>Autor: </b>'+ infoRepo.owner + '</p></div>' + 
-            '<div class="col-md-4"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p></div>' +
-            '<div class="col-md-4"><p><b>ID: </b>' + infoRepo.id + '</p></div></div>' +
-            '<div class="row"><div class="col-md-8"><b>Descripción: </b>' + infoRepo.description + '</div>' +
-            '<div class="col-md-4"><b>Perfil: </b>' + infoRepo.private + '</div></div>' + 
-            '<div class="row"><div class="col-md-12"><p><b>¿Mostrar?: </b>' + infoRepo.show + '</p></div>' + 
-            //'<div class="col-md-12 readme"><p><b>Readme: </b>' + converter.makeHtml(decodeBase64(infoRepo.readme)) + '</p></div></div>').appendTo(node);
-            '<div class="col-md-12 readme" class="style-Readme"><p><b>Readme: </b>' + decodedReadme + '</p></div></div>').appendTo(node);           
-            $('#container-main').removeClass("loading");
+            } 
+            //Recojo la categoría
+            var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
+            tempRefCat.on("value", function(snapshotCat) {
+                var cat = snapshotCat.val();
+                //Guarda en una variable si el perfil es público o privado
+                if (infoRepo.private == false){
+                    var perfilGit = "Público"
+                }else{
+                    var perfilGit = "Privado"
+                }
+                //Guardo el tamaño en una variable
+                if (infoRepo.size >= 1024){
+                    var tamano = (infoRepo.size/1024).toFixed(2) + " MB";
+                }else{
+                    var tamano = infoRepo.size + " KB";
+                }   
+                console.log(tamano);
+                $('<div class="panel panel-primary">' +
+                '<div class="panel-body"><div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Autor: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha Creación: </b></div><div class="panel-body info-repo">'+ stringDate(infoRepo.created_at.substring(0,10)) + '</div></div></div></div>' +
+                '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Descripción: </b></div><div class="panel-body info-repo">' + infoRepo.description + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at.substring(0,10)) + '</div></div></div></div>' + 
+                '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Categoría: </b></div><div class="panel-body info-repo">' + cat + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' + 
+                '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a></div></div></div></div>' + 
+                '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
+                $('#container-main').removeClass("loading");
+            });
         });      
     };
 
@@ -692,8 +725,7 @@
                     $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p>' +
                     '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at.substring(0,10)) + '</p>' +
-                    '<p><b>ID: </b>' + infoRepo.id + '</p>' +
-                    '<p><b>Descripción: </b>' + infoRepo.description + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
+                    '<p><b>ID: </b>' + infoRepo.id + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
                     if (cont == 1){
                         cont++;
                     }else{
