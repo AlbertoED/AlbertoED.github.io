@@ -48,7 +48,7 @@
                             description = this.description;
                         }
                         //Recogemos la fecha y la ponemos en formato correcto
-                        fechaIn = stringDate(this.created_at.substring(0,10));
+                        fechaIn = stringDate(this.created_at);
                         //Comprobamos si es público o privado
                         if (this.private == true){
                             privacidad = "PRIVADO";
@@ -107,9 +107,9 @@
         });
     };
 
-    /* FUNCION QUE TOMA COMO PARAMETRO DE ENTRADA UNA STRING DE FECHA (10) Y LO DEVUELVE EN OTRO FORMATO */
+    /* FUNCION QUE TOMA COMO PARAMETRO DE ENTRADA UNA STRING DE FECHA Y LO DEVUELVE EN OTRO FORMATO */
     function stringDate(date) {
-        return (date.substring(8,10) + '-' + date.substring(5,7) + '-' + date.substring(0,4));
+        return (date.substring(8,10) + '-' + date.substring(5,7) + '-' + date.substring(0,4) +' ' + date.substring(11,13) + ':' + date.substring(14,16));
     }; 
 
     /* FUNCION QUE TOMA COMO PARAMETRO DE ENTRADA UNA STRING DE FECHA (10) Y LO DEVUELVE EN OTRO FORMATO */
@@ -201,7 +201,7 @@
                             description = this.description;
                         }
                         //Recogemos la fecha y la ponemos en formato correcto
-                        fechaIn = stringDate(this.created_at.substring(0,10));
+                        fechaIn = stringDate(this.created_at);
                         //Comprobamos si es público o privado
                         if (this.private == true){
                             privacidad = "PRIVADO";
@@ -402,7 +402,7 @@
                                     description = responseRepoInfo.data.description;
                                 }
                                 //Recogemos la fecha y la ponemos en formato correcto
-                                fechaIn = stringDate(responseRepoInfo.data.created_at.substring(0,10));
+                                fechaIn = stringDate(responseRepoInfo.data.created_at);
                                 //Comprobamos si es público o privado
                                 if (responseRepoInfo.data.private == true){
                                     privacidad = "PRIVADO";
@@ -683,9 +683,9 @@
                 $('<div class="panel panel-primary">' +
                 '<div class="panel-body"><div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Autor: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha Creación: </b></div><div class="panel-body info-repo">'+ stringDate(infoRepo.created_at.substring(0,10)) + '</div></div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha Creación: </b></div><div class="panel-body info-repo">'+ stringDate(infoRepo.created_at) + '</div></div></div></div>' +
                 '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Descripción: </b></div><div class="panel-body info-repo">' + infoRepo.description + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at.substring(0,10)) + '</div></div></div></div>' + 
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at) + '</div></div></div></div>' + 
                 '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Categoría: </b></div><div class="panel-body info-repo">' + cat + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' + 
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
@@ -723,8 +723,8 @@
                     node = $("#column-" + idShowDiv + "-" + cont);
                     console.log(node);
                     $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
-                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at.substring(0,10)) + '</p>' +
-                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at.substring(0,10)) + '</p>' +
+                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
+                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
                     '<p><b>ID: </b>' + infoRepo.id + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
                     if (cont == 1){
                         cont++;
