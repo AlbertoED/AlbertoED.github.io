@@ -13,6 +13,46 @@
     //Variable booleana para controlar si estamos aplicando un filtro de búsqueda
     var isFilter = false;
 
+    /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
+    $(window).load(function(){
+        var rutaEntera = window.location.pathname;
+        var urlPag = rutaEntera.split("/").pop();
+        if (urlPag == "archive.html" || urlPag == "archive"){
+            $('#container-main').addClass("loading");
+            getTokenFireBase(function(){
+                $("#display-projects").cargaRepositoriosGithub();
+            });    
+        }       
+        $(window).scroll(function(){
+            //Para el infinite scroll
+            $('#load-more').each(function(){
+                if (loadingProjects){
+                    return;
+                }
+                var loadMoreElem = $('#load-more');
+                var loadMoreOffset = loadMoreElem.offset().top;
+                var windowHeight = $(window).height();
+                var scrollTop = $(window).scrollTop();
+                if( (loadMoreOffset) - ( scrollTop + windowHeight ) < 0 ){
+                    loadMore();
+                }
+            });
+
+            //Para el boton subir
+            if ($(this).scrollTop() > 200) {
+                $('.go-top').fadeIn(200);
+            } else {
+                $('.go-top').fadeOut(200);
+            }
+        });
+
+        //Animacion subir
+        $('.go-top').click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+    });
+
     /* FUNCION PARA CARGAR LOS REPOSITORIOS EN LA PAGINA DE ADMIN */
     jQuery.fn.cargaRepositoriosGithub = function () {
         if (loadingProjects || stopLoadingProjects){
@@ -125,6 +165,12 @@
         if (minutes < 10){
             minutes = ("0" + minutes);
         }
+        if (day < 10){
+            day = ("0" + day);
+        } 
+        if (month < 10){
+            month = ("0" + month);
+        } 
 
         var actualDate = (day + "/" + month + "/" + year + " " + hours + ":" + minutes + " ");
         console.log(actualDate);
@@ -140,8 +186,17 @@
         });
     };
 
+    /* FUNCION PARA RECUPERAR ULTIMA FECHA DE MODIFICACION DE LOS MIEMBROS */
+    function getLastUpdatingDateMembers(callback) {
+        refTemp = new Firebase(nameBBDD + 'info-web/updated_date_members');
+        refTemp.on("value", function(snapshot) {
+                var lastDate = snapshot.val();
+                callback(lastDate);
+        });
+    };
+
     /* FUNCION PARA RECUPERAR EL TOKEN DE GITHUB ALOJADO EN FIREBASE */
-    function getTokenFireBase() {
+    function getTokenFireBase(callback) {
         refTemp = new Firebase(nameBBDD + 'Tokens');
         refTemp.on("value", function(snapshot) {
                 var tokens = snapshot.val();
@@ -149,7 +204,7 @@
                     if (this.user == cuentaGit){
                         tokenGit = this.token;
                         loadingProjects = false;
-                        $("#display-projects").cargaRepositoriosGithub();
+                        callback();
                         //return tokenGit;
                     }
                 });
@@ -361,6 +416,8 @@
         /* MOSTRAR LOS MIEMBROS DE LA ORGANIZACION
         https://api.github.com/orgs/gsi-upm/members?&access_token=...
         https://api.github.com/orgs/gsi-upm/members?&access_token=...&page=2 
+        Get admins
+        https://api.github.com/orgs/gsi-upm/members?&role=admin&access_token=
     
         MOSTRAR INFO DE LA ORG
         https://api.github.com/orgs/gsi-upm?&access_token=...
@@ -453,7 +510,7 @@
                                             //Cuando termina, guardamos en firebase la fecha de actualización
                                             var actualdate = getActualDatetime();
                                             $('#fecha-ultima-actualizacion').hide().html('<b>' + actualdate + '</b>').fadeIn(1000);
-                                            myDataRef.child("info-web").set({
+                                            myDataRef.child("info-web").update({
                                                 updated_date: actualdate
                                             });
                                         }
@@ -567,43 +624,56 @@
         });
     };
 
-    /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
-    $(window).load(function(){
-        var rutaEntera = window.location.pathname;
-        var urlPag = rutaEntera.split("/").pop();
-        if (urlPag == "archive.html" || urlPag == "archive"){
+    /* FUNCION PARA GUARDAR LA INFORMACION DE LOS COLABORADORES EN FIREBASE */
+    function actualizarMiembros(){
+        //Antes de empezar, recogemos el Token, ya que esta función se puede ejecutar desde cualquier página y puede que no se haya leído el token
+        getTokenFireBase(function(){            
+            //Cerramos el modal
+            $('#myModalMiembros').modal('hide');
             $('#container-main').addClass("loading");
-            getTokenFireBase();    
-        }       
-        $(window).scroll(function(){
-            //Para el infinite scroll
-            $('#load-more').each(function(){
-                if (loadingProjects){
-                    return;
-                }
-                var loadMoreElem = $('#load-more');
-                var loadMoreOffset = loadMoreElem.offset().top;
-                var windowHeight = $(window).height();
-                var scrollTop = $(window).scrollTop();
-                if( (loadMoreOffset) - ( scrollTop + windowHeight ) < 0 ){
-                    loadMore();
-                }
+            var reposRef = myDataRef.child("members");
+            //Borramos todos los datos de FireBase y volvemos a cargarlos
+            reposRef.remove();
+            //Primero buscamos los usuarios miembros que no son admin para guardar su rol (ya que el rol no aparece como propiedad)
+            console.log('https://api.github.com/orgs/' + cuentaGit + '/members?role=member&per_page=1000&access_token=' + tokenGit + '&callback=?');
+            jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/members?role=member&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseMembers) {            
+                //Recorremos la respuesta y guardamos los campos link, url de la imagen y asignamos el rol
+                var members = responseMembers.data;
+                $(members).each(function() {
+                    reposRef.child(this.id).set({
+                        id: this.id,
+                        name: this.login,
+                        html_url: this.html_url,
+                        url_image: this.avatar_url,
+                        rol: "Miembro"
+                    });                      
+                });
+                //Una vez guardados los miembros, realizamos el mismo proceso para los admins
+                jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/members?role=admin&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseAdmins) {            
+                    //Recorremos la respuesta y guardamos los campos link, url de la imagen y asignamos el rol
+                    var admins = responseAdmins.data;
+                    $(admins).each(function() {
+                        reposRef.child(this.id).set({
+                            id: this.id,
+                            name: this.login,
+                            html_url: this.html_url,
+                            url_image: this.avatar_url,
+                            rol: "Admin"
+                        });                      
+                    });
+                    $('#container-main').removeClass("loading");
+                    var actualdate = getActualDatetime();
+                    myDataRef.child("info-web").update({
+                        updated_date_members: actualdate
+                    });
+                    $(".notifications .notification.actualizado.ok").addClass("active");
+                    setTimeout(function() {
+                        $(".notifications .notification.actualizado").removeClass("active");
+                    }, 3000);
+                });                                                                                
             });
-
-            //Para el boton subir
-            if ($(this).scrollTop() > 200) {
-                $('.go-top').fadeIn(200);
-            } else {
-                $('.go-top').fadeOut(200);
-            }
         });
-
-        //Animacion subir
-        $('.go-top').click(function(event) {
-            event.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 300);
-        })
-    });
+    };
 
     /* FUNCION PARA VOLVER A LA PAGINA ANTERIOR */
     function goBack(){
@@ -743,6 +813,41 @@
             });
             $('#container-main').removeClass("loading");
         });      
+    };
+
+    function showMembers(){
+        $('#container-main').addClass("loading");
+        node = $('#container-members');
+        var tempRef = new Firebase(nameBBDD + "members");
+        var total = 0;
+        var cont = 1;
+        tempRef.on("value", function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                console.log(childData.name);
+                total++;
+                //<span class="glyphicon glyphicon-star-empty"></span>
+                node = $("#column-mem-" + cont);
+                console.log(node);
+                if (childData.rol == "Admin"){
+                    $('<div class="panel panel-primary"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none; text-align:center;"><p class="titleReposAdmin"><span title="Administrador" class="glyphicon glyphicon-star-empty" style="float: left;"></span><a target="_blank" href="' + childData.html_url + '">' + childData.name + '</a></p></div>' +
+                    '<div class="panel-body"><img src="'+ childData.url_image +'" class="img-responsive adapted image-member"/></div></div>').hide().appendTo(node).fadeIn(1000);
+                }else{
+                    $('<div class="panel panel-primary"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none; text-align:center;"><p class="titleReposAdmin"><a target="_blank" href="' + childData.html_url + '">' + childData.name + '</a></p></div>' +
+                    '<div class="panel-body"><img src="'+ childData.url_image +'" class="img-responsive adapted image-member"/></div></div>').hide().appendTo(node).fadeIn(1000);
+                }
+                if ((cont == 1) || (cont == 2) || (cont == 3) || (cont == 4) || (cont == 5)){
+                    cont++;
+                }else{
+                    cont=1;
+                }           
+            });
+            //Informo de la cantidad de miembros y la fecha de
+            getLastUpdatingDateMembers(function(data){
+                $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen <b>" + total + "</b> miembros pertenecientes a la organización de " + cuentaGit + " de GitHub. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#title-members")).fadeIn(500);
+            });
+            $('#container-main').removeClass("loading");
+        });    
     };
 
     function addIdReposToURL(idRepo){

@@ -141,7 +141,7 @@ body {
 }
 
 #srch-control-navbar{
-  width:220px;
+  width:200px;
   height:40px;
 }
 .nav.navbar-nav.control-navbar li{
@@ -472,5 +472,9 @@ body{
   overflow: hidden;
 }
 
+/* CLASE PARA LA IMAGEN DE CADA MIEMBRO */
+.image-member{
+  min-height: 128px;
+}
 
 
