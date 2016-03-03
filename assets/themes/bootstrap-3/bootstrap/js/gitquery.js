@@ -841,7 +841,7 @@
                 node = $("#column-mem-" + cont);
                 console.log(node);
                 if (childData.rol == "Admin"){
-                    $('<div class="panel panel-primary"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none; text-align:center;"><p class="titleReposAdmin"><span title="Administrador" class="glyphicon glyphicon-star-empty" style="float: left;"></span><a target="_blank" href="' + childData.html_url + '">' + childData.name + '</a></p></div>' +
+                    $('<div class="panel panel-primary"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none; text-align:center;"><p class="titleReposAdmin"><span title="Administrador" class="glyphicon glyphicon-star" style="float: left;"></span><a target="_blank" href="' + childData.html_url + '">' + childData.name + '</a></p></div>' +
                     '<div class="panel-body"><img src="'+ childData.url_image +'" class="img-responsive adapted image-member"/></div></div>').hide().appendTo(node).fadeIn(1000);
                 }else{
                     $('<div class="panel panel-primary"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none; text-align:center;"><p class="titleReposAdmin"><a target="_blank" href="' + childData.html_url + '">' + childData.name + '</a></p></div>' +
