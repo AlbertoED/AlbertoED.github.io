@@ -342,7 +342,7 @@
                     //2) - GitReadme
                     jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/readme?access_token=' + tokenGit + '&callback=?', function(responseReadme) {  
                         //3) - GitCollaborators
-                        jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/collaborators?access_token=' + tokenGit + '&callback=?', function(reponseCollaborators) {            
+                        jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/contributors?access_token=' + tokenGit + '&callback=?', function(reponseCollaborators) {            
                             //Recorremos la respuesta y guardamos el nombre de cada colaborador en un array
                             var collaborators = reponseCollaborators.data;
                             var collaboratorsRepo = new Array();
@@ -467,7 +467,7 @@
                                     privacidad = "PÚBLICO";
                                 }                              
                                 jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/readme?access_token=' + tokenGit + '&callback=?', function(responseReadme) {  
-                                    jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/collaborators?access_token=' + tokenGit + '&callback=?', function(reponseCollaborators) {            
+                                    jQuery.getJSON('https://api.github.com/repos/' + cuentaGit + '/' + nameRepo + '/contributors?access_token=' + tokenGit + '&callback=?', function(reponseCollaborators) {            
                                         //Recorremos la respuesta y guardamos el nombre de cada colaborador en un array
                                         var collaborators = reponseCollaborators.data;
                                         var collaboratorsRepo = new Array();
@@ -748,8 +748,18 @@
                     var tamano = (infoRepo.size/1024).toFixed(2) + " MB";
                 }else{
                     var tamano = infoRepo.size + " KB";
-                }   
-                console.log(tamano);
+                }
+                //Guarda los colaboradores   
+                var arrayCollaborators = infoRepo.collaborators;
+                var stringCollaborators  = "";
+                for (var p = 0; (p <= arrayCollaborators.length - 1); p++) {
+                    if (p == arrayCollaborators.length - 1){
+                        stringCollaborators += arrayCollaborators[p];
+                    }else{
+                        stringCollaborators += arrayCollaborators[p] + " | ";
+                    }
+                }; 
+                console.log(stringCollaborators);
                 $('<div class="panel panel-primary">' +
                 '<div class="panel-body"><div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Autor: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div>' +
@@ -757,10 +767,11 @@
                 '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Descripción: </b></div><div class="panel-body info-repo">' + infoRepo.description + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at) + '</div></div></div></div>' + 
                 '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Categoría: </b></div><div class="panel-body info-repo">' + cat + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' + 
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' +
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a></div></div></div></div>' + 
+                '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a></div></div></div></div>' +
+                '<div class="row"><div class="col-md-12"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div></div>' +                 
                 '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
                 $('#container-main').removeClass("loading");
             });
