@@ -146,13 +146,28 @@ body {
 }
 .nav.navbar-nav.control-navbar li{
   margin-top :5px;
-  margin-left: 13px;
+  margin-left: 15px;
   margin-right: 13px;
 }
 .nav.navbar-nav.control-navbar li h4{
   color:black;
   margin-top:0;
   margin-bottom:4px;
+}
+
+.jumbotron.div-dates-admin{
+  padding-top:1px;
+  padding-left:3px;
+  padding-right:3px;
+  padding-bottom:1px;
+  margin-left:5px;
+  margin-bottom:0px;
+  background-color:#fff;
+}
+
+.jumbotron.div-dates-admin h4{
+  margin-bottom:3px !important;
+  font-size: 17px;
 }
 
 
@@ -231,7 +246,7 @@ body{
     font-size: 16px;
 }
 
-/* Estilo para centrar el botón en lso divs principales */
+/* Estilo para centrar el botón en los divs principales */
 .jumbotron.main-box button{
   justify-content: center
 
@@ -475,6 +490,22 @@ body{
 /* CLASE PARA LA IMAGEN DE CADA MIEMBRO */
 .image-member{
   min-height: 128px;
+}
+
+/* ESTILO PARA LOS LOGOS DE CONTACTO DEL FOOTER */
+.logos-contact{
+  margin-top:3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  height:25px;
+  width:25px;
+}
+
+.logos-contact:hover {
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
+  /*background-image: url("./images/subir-hover.png");
+  background-color: rgba(0, 0, 0, 0.6);*/
 }
 
 

@@ -136,16 +136,28 @@
       </div>-->
       <div class="container" id="container-main">
         <div class="modal-loading"></div>
-        {{ content }}
+          {{ content }}
+        </div>
       </div>
-
-
-    </div>
 
     <div id="footer">
       <div class="container">
-        <p>Copyright  &copy; <a href="http://www.gsi.dit.upm.es/es/" target="_blank">{{ site.author.name }}</a>, {{ site.author.university }} {{ site.time | date: '%Y' }}
-        </p>
+      <div class="row">
+        <div class="col-md-6"> 
+          <div align="center">      
+            <p>
+              Copyright  &copy; <a href="http://www.gsi.dit.upm.es/es/" target="_blank">{{ site.author.name }}</a>, {{ site.author.university }} {{ site.time | date: '%Y' }}
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div align="right">
+            <a title="Canal de Youtube del GSI" target="_blank" href="https://www.youtube.com/user/gsiditupm"><img class="logos-contact" src="assets/themes/bootstrap-3/css/images/youtube-logo.png"></a>
+            <a title="Twitter del GSI" target="_blank" href="https://twitter.com/gsiupm"><img class="logos-contact" src="assets/themes/bootstrap-3/css/images/twitter-logo.png"></a>
+            <a title="Cuenta GitHub del GSI" target="_blank" href="https://github.com/gsi-upm"><img class="logos-contact" src="assets/themes/bootstrap-3/css/images/github-logo.png"></a>
+            <a title="Localización del GSI" target="_blank" href="https://www.google.es/maps/place/GSI+-+Grupo+de+Sistemas+Inteligentes/@40.453026,-3.72569,15z/data=!4m2!3m1!1s0x0:0xb53df252f491797"><img class="logos-contact" src="assets/themes/bootstrap-3/css/images/maps-logo.png"></a>
+          </div>
+        </div>
       </div>
       <!-- ICONO DE SUBIR CON LA IMAGEN ADAPTADA AL TAMAÑO -->
       <a class="go-top adapted" href="#"></a>

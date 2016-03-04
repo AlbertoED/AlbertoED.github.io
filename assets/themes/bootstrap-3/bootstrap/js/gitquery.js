@@ -80,7 +80,7 @@
                 $(repos).each(function () {
                     var IDRepo = this.id;
                     checkfork = this.fork;
-                    if (this.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
+                    //if (this.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
                         //Comprobamos si tiene descripcion:
                         if (this.description == ''){
                             description = '-';
@@ -126,7 +126,7 @@
                                 });
                             }
                         });
-                    }
+                    //}
                 });
                 //CUANDO TERMINE DE CARGAR LOS REPOSITORIOS EL NAVBAR DE CONTROL SERÁ VISIBLE, SI NO ES FILTRO
                 //$('#navbarControl').hide().fadeIn(500);
@@ -248,7 +248,7 @@
                     filterFound = true;
                     var IDRepo = this.id;
                     checkfork = this.fork;
-                    if (this.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
+                    //if (this.name != (cuentaGit.toLowerCase() + '.github.io')){ //Check for cuentaGit.github.com repo and for forked projects
                         //Comprobamos si tiene descripcion:
                         if (this.description == ''){
                             description = '-';
@@ -294,7 +294,7 @@
                                 });
                             }
                         });
-                    }
+                    //}
                 });               
                 //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
                 $('input[type="checkbox"]').bootstrapToggle({
@@ -798,7 +798,17 @@
                     var infoRepo = repo.val();
                     if (infoRepo.show == false){
                         return;
-                    }        
+                    }  
+                    //Guardo los colaboradores:
+                    var arrayCollaborators = infoRepo.collaborators;
+                    var stringCollaborators  = "";
+                    for (var p = 0; (p <= arrayCollaborators.length - 1); p++) {
+                        if (p == arrayCollaborators.length - 1){
+                            stringCollaborators += arrayCollaborators[p];
+                        }else{
+                            stringCollaborators += arrayCollaborators[p] + " | ";
+                        }
+                    };       
                     reposFound = true;
                     total++;
                     node = $("#column-" + idShowDiv + "-" + cont);
@@ -806,7 +816,7 @@
                     $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
                     '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
-                    '<p><b>ID: </b>' + infoRepo.id + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
+                    '<p><b>Autores: </b>' + stringCollaborators + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
                     if (cont == 1){
                         cont++;
                     }else{
@@ -853,13 +863,51 @@
                     cont=1;
                 }           
             });
-            //Informo de la cantidad de miembros y la fecha de
+            //Informo de la cantidad de miembros y la fecha de actualizacion de los miembros
             getLastUpdatingDateMembers(function(data){
                 $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen <b>" + total + "</b> miembros pertenecientes a la organización de " + cuentaGit + " de GitHub. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#title-members")).fadeIn(500);
             });
             $('#container-main').removeClass("loading");
         });    
     };
+
+    function showAllRepos(){
+        $('#container-main').addClass("loading");
+        node = $('#container-repositories-all');
+        var tempRef = new Firebase(nameBBDD + "repos");
+        var total = 0;
+        tempRef.on("value", function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var infoRepo = childSnapshot.val();
+                //Compruebo si el repositorio es visible
+                if (infoRepo.show == false){
+                        return;
+                }
+                //Recojo la categoría
+                var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
+                tempRefCat.on("value", function(snapshotCat) {
+                    var cat = snapshotCat.val();  
+                    total++;
+                    //Guardo los colaboradores:
+                    var arrayCollaborators = infoRepo.collaborators;
+                    var stringCollaborators  = "";
+                    for (var p = 0; (p <= arrayCollaborators.length - 1); p++) {
+                        if (p == arrayCollaborators.length - 1){
+                            stringCollaborators += arrayCollaborators[p];
+                        }else{
+                            stringCollaborators += arrayCollaborators[p] + " | ";
+                        }
+                    };    
+                    $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
+                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
+                    '<p><b>Categoría: </b>'+ cat + '</p>' +
+                    '<p><b>Autores: </b>' + stringCollaborators + '</p></div></div>').hide().appendTo(node).fadeIn(1000);   
+                });
+            });
+            $('#container-main').removeClass("loading");
+        });    
+    }
 
     function addIdReposToURL(idRepo){
         reposUrl = "/Repositorio.html?";

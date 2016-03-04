@@ -61,7 +61,7 @@ title: Proyectos GitHub del Grupo de Sistemas Inteligentes de la UPM
             <div class="jumbotron main-box adapted" id="div-image-6" data-toggle="collapse" data-target="#divmain6">
             <h2>Otros proyectos</h2>
                 <div class="collapse" id="divmain6">
-                  <p>Algunos de nuestros proyectos no encajan en ninguna de las categorías predefinidas o todavía no se les ha asignado.</p>
+                  <p>Algunos de nuestros proyectos no encajan en ninguna de las categorías predefinidas o todavía no se les ha asignado una.</p>
                   <div class="btn-group btn-group-justified">
                     <a href="{{ BASE_PATH }}/CategoriaOtros.html" class="btn btn-primary btn-lg">Ver más</a>
                   </div>                  
