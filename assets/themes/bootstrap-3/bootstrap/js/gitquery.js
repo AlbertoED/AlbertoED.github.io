@@ -17,7 +17,7 @@
     $(window).load(function(){
         var rutaEntera = window.location.pathname;
         var urlPag = rutaEntera.split("/").pop();
-        if (urlPag == "archive.html" || urlPag == "archive"){
+        if (urlPag == "admin.html" || urlPag == "admin"){
             $('#container-main').addClass("loading");
             getTokenFireBase(function(){
                 $("#display-projects").cargaRepositoriosGithub();

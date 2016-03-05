@@ -121,6 +121,11 @@ body {
   margin-bottom: 10px;
 }
 
+/*.btn.btn-primary.btn-lg.izda{
+  background-image: none;
+  color:black;
+}*/
+
 .btn.btn-default.search-control{
   height:40px;
 }
