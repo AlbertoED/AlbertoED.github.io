@@ -24,6 +24,9 @@
     <script src="{{ ASSET_PATH }}/bootstrap/js/gitquery.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/login.js"></script>
     <meta name="author" content="{{ site.author.name }}">
+    <!-- Contenido necesario para usar el objeto datetimepicker -->
+    <script type="text/javascript" src="{{ ASSET_PATH }}/bootstrap/js/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="{{ ASSET_PATH }}/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
     <!-- Enable responsive viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +39,8 @@
     <link href="{{ ASSET_PATH }}/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
     <!-- Bootstrap toggle styles -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <!-- Bootstrap datetimepicker styles -->
+    <link href="{{ ASSET_PATH }}/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <!-- Fuente google -->
     <link href='https://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
 
@@ -183,7 +188,7 @@
               <div class="form-group">
               <label for="usr">Usuario:</label>
               <input type="text" class="form-control" name="userid" id="usr" placeholder="Introduzca el usuario" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
-          </div>
+              </div>
           <div class="form-group">
               <label for="pwd">Contraseña:</label>
               <input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
