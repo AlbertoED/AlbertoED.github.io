@@ -513,4 +513,10 @@ body{
   background-color: rgba(0, 0, 0, 0.6);*/
 }
 
+/* ESTILO PARA EL PANEL DE CADA REPOSITORIO EN LA VISTA DE TODOS */
+.category-repositories.all{
+  font-size:15px;
+
+}
+
 

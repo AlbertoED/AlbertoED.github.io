@@ -347,10 +347,14 @@
                             var collaborators = reponseCollaborators.data;
                             var collaboratorsRepo = new Array();
                             var i = 0;
-                            $(collaborators).each(function() {
-                                collaboratorsRepo[i] = this.login;
-                                i++;
-                            });
+                            if (collaborators == undefined){
+                                collaboratorsRepo[0] = "Autor no especificado"
+                            }else{
+                                $(collaborators).each(function() {
+                                    collaboratorsRepo[i] = this.login;
+                                    i++;
+                                });
+                            }
                             //Recogemos el valor del 'select' de categoria y del 'toggle' de mostrar
                             var idS = "#select" + responseRepoInfo.data.id;
                             var categoryRepo = $(idS).prop('value');
@@ -472,10 +476,14 @@
                                         var collaborators = reponseCollaborators.data;
                                         var collaboratorsRepo = new Array();
                                         var i = 0;
-                                        $(collaborators).each(function() {
-                                            collaboratorsRepo[i] = this.login;
-                                            i++;
-                                        });
+                                        if (collaborators == undefined){
+                                            collaboratorsRepo[0] = ("Autor no especificado");
+                                        }else{
+                                            $(collaborators).each(function() {
+                                                collaboratorsRepo[i] = this.login;
+                                                i++;
+                                            });
+                                        }
                                         //Comprobamos si se ha devuelto readme del proyecto.
                                         if (responseReadme.data.content == undefined){
                                             var Readme = "-";
@@ -888,6 +896,7 @@
                 tempRefCat.on("value", function(snapshotCat) {
                     var cat = snapshotCat.val();  
                     total++;
+                    console.log("Entra bucle");
                     //Guardo los colaboradores:
                     var arrayCollaborators = infoRepo.collaborators;
                     var stringCollaborators  = "";
@@ -898,7 +907,7 @@
                             stringCollaborators += arrayCollaborators[p] + " | ";
                         }
                     };    
-                    $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
                     '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
                     '<p><b>Categoría: </b>'+ cat + '</p>' +

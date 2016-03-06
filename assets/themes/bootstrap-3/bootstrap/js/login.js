@@ -20,7 +20,7 @@
             }
 
             //Codigo a ejecutar cuando se va a cargar el modal de login
-            $('#myModal').on('show.bs.modal', function(e) {
+            $('#myModalLogin').on('show.bs.modal', function(e) {
                 //Comprobamos si ya esta registrado, y mostramos el mensaje de info
                 var authData = myDataRef.getAuth();
                 if (authData) {
@@ -38,13 +38,13 @@
             });
 
             //Codigo a ejecutar cuando se ha cargado el modal de login
-            $('#myModal').on('shown.bs.modal', function(e) {
+            $('#myModalLogin').on('shown.bs.modal', function(e) {
                 //Hacemos focus en el input de usuario una vez cargado el modal
                 $('#usr').focus();
             });          
 
             //Codigo a ejecutar cuando se cierra el modal de login
-            $('#myModal').on('hidden.bs.modal', function(e) {
+            $('#myModalLogin').on('hidden.bs.modal', function(e) {
                 //Vaciamos los campos de input del modal
                 $(this)
                     .find("input,textarea,select")
