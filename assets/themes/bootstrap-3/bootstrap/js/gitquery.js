@@ -55,6 +55,9 @@
 
     /* FUNCION PARA CARGAR LOS REPOSITORIOS EN LA PAGINA DE ADMIN */
     jQuery.fn.cargaRepositoriosGithub = function () {
+        //Relleno el nombre de la cuenta
+        document.getElementById("cuenta-git").innerHTML=cuentaGit;
+        
         if (loadingProjects || stopLoadingProjects){
             return;
         }
