@@ -914,6 +914,10 @@
                     '<p><b>Autores: </b>' + stringCollaborators + '</p></div></div>').hide().appendTo(node).fadeIn(1000);   
                 });
             });
+            //Llamamos de manera síncrona a las funciones de obtener las fechas
+            getLastUpdatingDate(function(data){
+                $("<h4 style='color:black;'>La organización " + cuentaGit + " cuenta con " + total + " repositorios almacenados en GitHub, actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + ".<h4></div>").hide().prependTo($("#intro-repositorios-all")).fadeIn(500);
+            });
             $('#container-main').removeClass("loading");
         });    
     }

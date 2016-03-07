@@ -9,14 +9,13 @@ group: navigation
 <!-- Contenedor para los filtros y búsqueda  -->
 
 <div class="row">
+	<div class="jumbotron color" id="intro-repositorios-all" style="margin-bottom:10px;">
+	</div>
+</div>
+
+<div class="row">
 <div class="col-md-4" id="col-izda" style="padding:0; margin-right:0;">
 	<ul class="jumbotron nav nav-stacked color" id="barra-lateral-filtros" style="z-index: 1000;">
-		<!--
-		<div style="float:right;">
-			<input data-toggle="toggle" type="checkbox" id="toggleFilters">
-		</div>
-		-->
-
 		<p style="text-align:center;"><b>FILTROS</b></p>
 
 		<!-- NOMBRE -->
@@ -57,7 +56,7 @@ group: navigation
 		    </select>
 		</div>
 
-		<!-- Filtros de fechas -->
+		<!-- FECHA CREACIÓN -->
         <div class="form-inline">
         	<label class="control-label-filters"><p >Fecha de creación: </p></label>
         	<div class="form-group">
@@ -68,6 +67,7 @@ group: navigation
         </div>
         <p> </p>
 
+        <!-- FECHA ACTUALIZACIÓN -->
         <div class="form-inline">
         	<label class="control-label-filters"><p >Fecha de actualización: </p></label>
         	<div class="form-group">
@@ -76,12 +76,23 @@ group: navigation
 	            </div>
             </div>
         </div>
+        </br>
+        <!-- BOTÓN FILTRAR -->
+      	<div class="btn-group btn-group-justified">
+            <a  class="btn btn-default btn-lg">Filtrar</a>
+      	</div>
+      	
+      	<!--</br>
+      	<div align="center">
+        <button class="btn btn-default search-control" style="width:100px;" onclick="verTodos()">Filtrar</button>
+        </div>
+        -->
 
 	</ul>
 </div>
 
 <!-- Contenedor para mostrar los repositorios  -->
-<div class="col-md-8" style="padding-left:0;">
+<div class="col-md-8" style="padding-left:0; padding-right:0;">
 	<div class="jumbotron color border" id="container-repositories-all">
 
 	</div>
@@ -111,7 +122,7 @@ group: navigation
 	//Estas funciones se usan para fijar el menu lateral de filtros 
 	$('#barra-lateral-filtros').affix({
       offset: {
-        top: 100
+        top: 200
       }
     });
 </script>
