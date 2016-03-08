@@ -12,6 +12,8 @@
     var arrayReposEliminados = new Array();
     //Variable booleana para controlar si estamos aplicando un filtro de búsqueda
     var isFilter = false;
+    //Variable para guardar las categorias sacadas de Firebase y así evitar las llamadas asíncronas
+    var arrayCategories = new Array();
 
     /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
     $(window).load(function(){
@@ -635,6 +637,12 @@
         });
     };
 
+    function sortByUpdateDate(repos) {
+        repos.sort(function (a,b){
+            return new Date(b.updated_at) - new Date(a.updated_at);
+        });
+    }
+
     /* FUNCION PARA GUARDAR LA INFORMACION DE LOS COLABORADORES EN FIREBASE */
     function actualizarMiembros(){
         //Antes de empezar, recogemos el Token, ya que esta función se puede ejecutar desde cualquier página y puede que no se haya leído el token
@@ -781,7 +789,7 @@
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' +
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a></div></div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a><a target="_blank" href="' + infoRepo.html_url + '" title="Ver proyecto en GitHub"><img class="img-git" border="0" src="assets/themes/bootstrap-3/css/images/git-url.png" width="51" height="51"></a></div></div></div></div>' +
                 '<div class="row"><div class="col-md-12"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div></div>' +                 
                 '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
                 $('#container-main').removeClass("loading");
@@ -888,18 +896,32 @@
         var tempRef = new Firebase(nameBBDD + "repos");
         var total = 0;
         tempRef.on("value", function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                var infoRepo = childSnapshot.val();
-                //Compruebo si el repositorio es visible
-                if (infoRepo.show == false){
-                        return;
+            var reposSort = snapshot.val();
+            var myArray = new Array();
+            //Guardo en un array los elementos que se deben visualizar (show=true)
+            $.each(reposSort, function(key, value) {
+                if(value.show == true){
+                    myArray.push(value);
                 }
+            });
+            sortByUpdateDate(myArray);
+            //En este punto ya tenemos un aarray con los elementos ordenados por la fecha de actualizacion en orden decreciente desde la más reciente
+            myArray.forEach(function(childSnapshot) {
+                var infoRepo = childSnapshot;
+                console.log(infoRepo.updated_at);
+                //console.log(new Date(infoRepo.updated_at));
+                //Compruebo si el repositorio es visible
+                //if (infoRepo.show == false){
+                  //      return;
+                //}
                 //Recojo la categoría
-                var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
-                tempRefCat.on("value", function(snapshotCat) {
-                    var cat = snapshotCat.val();  
+                //var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
+                //tempRefCat.on("value", function(snapshotCat) {
+                    //var cat = snapshotCat.val();  
+                    console.log(arrayCategories)
+                    var cat = arrayCategories[infoRepo.category];  
                     total++;
-                    console.log("Entra bucle");
+                    console.log("Entra bucle " + infoRepo.updated_at);
                     //Guardo los colaboradores:
                     var arrayCollaborators = infoRepo.collaborators;
                     var stringCollaborators  = "";
@@ -915,7 +937,7 @@
                     '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
                     '<p><b>Categoría: </b>'+ cat + '</p>' +
                     '<p><b>Autores: </b>' + stringCollaborators + '</p></div></div>').hide().appendTo(node).fadeIn(1000);   
-                });
+                //});
             });
             //Llamamos de manera síncrona a las funciones de obtener las fechas
             getLastUpdatingDate(function(data){
@@ -923,6 +945,18 @@
             });
             $('#container-main').removeClass("loading");
         });    
+    }
+
+    /* FUNCIÓN PARA CARGAR EN UN ARRAY GLOBAL LAS CATEGORÍAS */
+    function getCategories(callback) {
+        var tempRefCat = new Firebase(nameBBDD + "Categories")
+        tempRefCat.on("value", function(snapshotCat) {
+            var data = snapshotCat.val();
+            data.forEach(function(childSnapshot) {  
+                arrayCategories[childSnapshot.id] = childSnapshot.name;
+            });
+            callback();
+        });
     }
 
     function addIdReposToURL(idRepo){

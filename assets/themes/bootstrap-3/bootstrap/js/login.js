@@ -14,9 +14,10 @@
             //Codigo que activa controles de administrador si hay sesion iniciada
             var authData1 = myDataRef.getAuth();
             if (authData1){
-                //Si esta conectado, mostramos el label con el nombre de usuario y el boton de administrador
+                //Si esta conectado, mostramos el label con el nombre de usuario y el boton de administrador y ocultamos el del login
                 document.getElementById('usuario-mail-navbar').innerHTML ="Bienvenido <b>" + authData1.password.email + "</b>";
                 document.getElementById('btnAdmin').style.display = 'inline';
+                document.getElementById('btnLogin').style.display = 'none';
             }
 
             //Codigo a ejecutar cuando se va a cargar el modal de login

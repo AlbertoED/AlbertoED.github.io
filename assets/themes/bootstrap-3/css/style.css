@@ -480,11 +480,17 @@ body{
   padding-bottom:3px;
 }
 
-/* Imagen zip para descargar */
+/* Imagen zip para descargar y link a github */
 .img-zip{
-  margin: 0 auto;
-  display: block;
+  float:left;
+  margin-left:60px;
 }
+
+.img-git{
+  float:right;
+  margin-right:60px;
+}
+
 
 /* CLASE PARA PARA IMPEDIR EL SCROLL */
 .stop-scrolling {

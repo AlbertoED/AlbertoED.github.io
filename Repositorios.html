@@ -105,7 +105,9 @@ group: navigation
 <script type="text/javascript">
 	//Ejecuta este código para rellenar la info de los repositorios
 	 $(window).load(function(){
-	 	showAllRepos();
+	 	getCategories(function(){
+	 		showAllRepos();
+	 	});
 	 	//Ejecuta sta función para cambiar el idioma a español del datetime y cambiar formato de fecha
         $(function () {
             $('#datetimepicker-creation').datetimepicker({
