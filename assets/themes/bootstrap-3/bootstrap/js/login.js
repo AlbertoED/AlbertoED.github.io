@@ -12,6 +12,7 @@
     $(document).ready(function(){
             
             //Codigo que activa controles de administrador si hay sesion iniciada
+            document.getElementById('btnLogin').style.display = 'inline';
             var authData1 = myDataRef.getAuth();
             if (authData1){
                 //Si esta conectado, mostramos el label con el nombre de usuario y el boton de administrador y ocultamos el del login
@@ -185,6 +186,7 @@
             sesion = 0
             $('.alert').hide();
             $('.alert-warning ').show();
+            document.getElementById('btnLogin').style.display = 'inline';
     };
 
     /* Funcion llamada al cerrar la sesion desde el navbar */
