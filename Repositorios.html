@@ -6,100 +6,144 @@ group: navigation
 ---
 {% include JB/setup %}
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
-<!-- Contenedor para los filtros y búsqueda  -->
 
+<!-- Info inicial  -->
 <div class="row">
 	<div class="jumbotron color" id="intro-repositorios-all" style="margin-bottom:10px;">
 	</div>
 </div>
 
+
 <div class="row">
-<div class="col-md-4" id="col-izda" style="padding:0; margin-right:0;">
-	<ul class="jumbotron nav nav-stacked color" id="barra-lateral-filtros" style="z-index: 1000;">
-		<p style="text-align:center;"><b>FILTROS</b></p>
+	<!-- Contenedor para los filtros y búsqueda  -->
+	<div class="col-md-4" id="col-izda" style="padding:0; margin-right:0;">
+		<ul class="jumbotron nav nav-stacked color" id="barra-lateral-filtros" style="z-index: 1000;">
+			<p style="text-align:center;"><b>FILTROS</b></p>
 
-		<!-- NOMBRE -->
-		<form class="form-inline" >
-			<label class="control-label-filters"><p >Nombre repositorio: </p></label>
-	    	<div class="form-group name">
-	        	<input type="text" class="form-control" placeholder="Buscar nombre" onkeypress="if (event.keyCode == 13)">
-	    	</div>
-	    </form>
+			<!-- NOMBRE -->
+			<form class="form-inline" >
+				<label class="control-label-filters"><p >Nombre repositorio: </p></label>
+		    	<div class="form-group name">
+		        	<input type="text" class="form-control filter-all" id="filtroNombreTodos" placeholder="Buscar nombre">
+		    	</div>
+		    </form>
 
-	    <!-- ID -->
-	    <form class="form-inline">
-			<label class="control-label-filters"><p >Id repositorio: </p></label>
-	    	<div class="form-group id">
-	        	<input type="text" class="form-control" placeholder="Buscar id" onkeypress="if (event.keyCode == 13)">
-	    	</div>
-	    </form>
+		    <!-- ID -->
+		    <form class="form-inline">
+				<label class="control-label-filters"><p >Id repositorio: </p></label>
+		    	<div class="form-group id">
+		        	<input type="text" class="form-control filter-all" placeholder="Buscar id" id="filtroIdTodos" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+		    	</div>
+		    </form>
 
-	    <!-- AUTOR -->
-	    <form class="form-inline">
-			<label class="control-label-filters"><p >Autor repositorio: </p></label>
-	    	<div class="form-group autor">
-	        	<input type="text" class="form-control" placeholder="Buscar autor" onkeypress="if (event.keyCode == 13)">
-	    	</div>
-	    </form>
+		    <!-- AUTOR -->
+		    <form class="form-inline">
+				<label class="control-label-filters"><p >Autor repositorio: </p></label>
+		    	<div class="form-group autor">
+		        	<input type="text" class="form-control filter-all" id="filtroAutorTodos" placeholder="Buscar autor" >
+		    	</div>
+		    </form>
 
-	    <!-- CATEGORIA -->
-	    <div class="form-group">
-	    	<label class="control-label-filters"><p >Categoría: </p></label>   	
-		    <select class="form-control categoria" id="select-categoria-filter">
-			    <option hidden="" value="0">Seleccione una categoría</option>
-			    <option value="1">Agentes y Simulación Social</option>
-			    <option value="2">Big Data y Aprendizaje Automático</option>
-			    <option value="3">NLP y Análisis de Sentimientos</option>
-			    <option value="4">La Web de Datos y Tecnologías Semánticas</option>
-			    <option value="5">Ingeniería Web y de servicios</option>
-			    <option value="6">Otros</option>
-		    </select>
-		</div>
+		    <!-- CATEGORIA -->
+		    <div class="form-group">
+		    	<label class="control-label-filters"><p >Categoría: </p></label>   	
+			    <select class="form-control categoria" id="select-categoria-filter">
+				    <option  value="0">Seleccione una categoría</option>
+				    <option value="1">Agentes y Simulación Social</option>
+				    <option value="2">Big Data y Aprendizaje Automático</option>
+				    <option value="3">NLP y Análisis de Sentimientos</option>
+				    <option value="4">La Web de Datos y Tecnologías Semánticas</option>
+				    <option value="5">Ingeniería Web y de servicios</option>
+				    <option value="6">Otros</option>
+			    </select>
+			</div>
 
-		<!-- FECHA CREACIÓN -->
-        <div class="form-inline">
-        	<label class="control-label-filters"><p >Fecha de creación: </p></label>
-        	<div class="form-group">
-	            <div class='input-group date fecha-creacion' id='datetimepicker-creation'>
-	                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input type='text' class="form-control" />
+			<!-- FECHA CREACIÓN -->
+	        <div class="form-inline">
+	        	<label class="control-label-filters"><p >Fecha de creación: </p></label>
+	        	<div class="form-group">
+		            <div class='input-group date fecha-creacion' id='datetimepicker-creation'>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input id='datetimepicker-creation-value' type='text' class="form-control filter-all" />
+		            </div>
 	            </div>
-            </div>
-        </div>
-        <p> </p>
+	        </div>
+	        <p> </p>
 
-        <!-- FECHA ACTUALIZACIÓN -->
-        <div class="form-inline">
-        	<label class="control-label-filters"><p >Fecha de actualización: </p></label>
-        	<div class="form-group">
-	            <div class='input-group date fecha-actualizacion' id='datetimepicker-update'>
-	                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input type='text' class="form-control" />
+	        <!-- FECHA ACTUALIZACIÓN -->
+	        <div class="form-inline">
+	        	<label class="control-label-filters"><p >Fecha de actualización: </p></label>
+	        	<div class="form-group">
+		            <div class='input-group date fecha-actualizacion' id='datetimepicker-update'>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input id='datetimepicker-update-value' type='text' class="form-control filter-all" />
+		            </div>
 	            </div>
-            </div>
-        </div>
-        </br>
+	        </div>
 
-        <!-- BOTÓN FILTRAR -->
-        <div align="center">
-          <button type="button" class="btn btn-default filter"  onclick="">Filtrar</button>
-          <button type="button" class="btn btn-default filter"  onclick="">Vaciar</button>
-        </div>
+		    <!-- INTERVALOS FECHAS -->
+		    <div class="row">
+		    	<div class="col-md-5 filter-date-left">
+				    <div class="form-group">
+					    <select class="form-control dates" id="select-date-main">
+					    	<option value="0">Filtro fecha</option>
+						    <option value="created">Creación</option>
+						    <option value="updated">Actualización</option>
+						    </option>
+					    </select>
+					</div>
+				</div>
+		    	<div class="col-md-4 filter-date-center">
+				    <div class="form-group">
+					    <select class="form-control dates" disabled ="true" id="select-date-month">
+						    <option value="0">Mes</option>
+						    <option value="01">Enero</option>
+						    <option value="02">Febrero</option>
+						    <option value="03">Marzo</option>
+						    <option value="04">Abril</option>
+						    <option value="05">Mayo</option>
+						    <option value="06">Junio</option>
+						    <option value="07">Julio</option>
+						    <option value="08">Agosto</option>
+						    <option value="09">Septiembre</option>
+						    <option value="10">Octubre</option>
+						    <option value="11">Noviembre</option>
+						    <option value="12">Diciembre</option>
+					    </select>
+					</div>
+				</div>
+		    	<div class="col-md-3 filter-date-right">
+				    <div class="form-group">
+					    <select class="form-control dates" disabled ="true" id="select-date-year">
+					    	<option value="0">Año</option>
+							<script>
+								var dateAux = new Date();
+								var year = dateAux.getFullYear();
+								for(var i = 2010; i < year+1; i++){
+									document.write('<option value="'+i+'">'+i+'</option>');
+								}
+					  		</script>
+					    </select>
+					</div>
+				</div>
+			</div>
 
-      	
-      	<!--</br>
-      	<div align="center">
-        <button class="btn btn-default search-control" style="width:100px;" onclick="verTodos()">Filtrar</button>
-        </div>
-        -->
+	        <!-- BOTÓN FILTRAR -->
+	        <div align="center">
+	          <button type="button" class="btn btn-default filter"  onclick="filtrarTodos()">Filtrar</button>
+	          <button type="button" class="btn btn-default filter"  onclick="vaciarFiltrosTodos()">Vaciar</button>
+	        </div>
+	        </br>
 
-	</ul>
-</div>
-
-<!-- Contenedor para mostrar los repositorios  -->
-<div class="col-md-8" style="padding-left:0; padding-right:0;">
-	<div class="jumbotron color border" id="container-repositories-all">
-
+		    <!-- MUESTRA EL NÚMERO DE RESULTADOS QUE CUADRAN CON LAS BUSQUEDA -->
+	    	<div align="center" id="resultados-filtros-todos">
+	    	</div>	
+		</ul>
 	</div>
-</div>
+
+	<!-- Contenedor para mostrar los repositorios  -->
+	<div class="col-md-8" style="padding-left:0; padding-right:0;">
+		<div class="jumbotron color border" id="container-repositories-all">
+		</div>
+	</div>
 
 </div>
 
@@ -122,7 +166,6 @@ group: navigation
             	format: 'DD/MM/YYYY'
             });
 		});
-	});
 
 	//Estas funciones se usan para fijar el menu lateral de filtros 
 	$('#barra-lateral-filtros').affix({
@@ -130,6 +173,21 @@ group: navigation
         top: 200
       }
     });
+
+	//Control de filtro por intervalo
+    $("#select-date-main").change(function () {
+	    var selectedtype = this.value;
+	    if (selectedtype != 0) {
+	         $("#select-date-month").attr('disabled', false);
+	         $("#select-date-year").attr('disabled', false);
+	    }else{
+	    	$("#select-date-month").val(0)
+	    	$("#select-date-year").val(0)
+	        $("#select-date-month").attr('disabled', true);
+	        $("#select-date-year").attr('disabled', true);	    	
+	    } 
+	});
+});
 </script>
 
 

@@ -245,7 +245,7 @@
         $('#srch-control-navbar').val("");
     };
 
-    /* FUNCION PARA FILTRAR.  */
+    /* FUNCION PARA FILTRAR EN LA PÁGIN DE ADMIN  */
     function filtrarRepositorios(){
         var filterFound = false;
         //Comprobamos si se ha introducido algun filtro:
@@ -449,11 +449,7 @@
                 });              
             });
         };
-        /* MOSTRAR LOS MIEMBROS DE LA ORGANIZACION
-        https://api.github.com/orgs/gsi-upm/members?&access_token=...
-        https://api.github.com/orgs/gsi-upm/members?&access_token=...&page=2 
-        Get admins
-        https://api.github.com/orgs/gsi-upm/members?&role=admin&access_token=
+        /*
     
         MOSTRAR INFO DE LA ORG
         https://api.github.com/orgs/gsi-upm?&access_token=...
@@ -631,7 +627,6 @@
                 $(".notifications .notification.eliminado").removeClass("active");
             }, 3000); 
         }
-
     };
 
     /* FUNCION PARA PEDIR LOS REPOSITORIOS DE UN USUARIO */
@@ -807,7 +802,7 @@
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' +
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño base del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a><a target="_blank" href="' + infoRepo.html_url + '" title="Ver proyecto en GitHub"><img class="img-git" border="0" src="assets/themes/bootstrap-3/css/images/git-url.png" width="51" height="51"></a></div></div></div></div>' +
                 '<div class="row"><div class="col-md-12"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div></div>' +                 
                 '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
@@ -832,11 +827,20 @@
                 //Creo un contador para colocar tres repositorios por cada fila y otro contador para notificar en un panel
                 var cont = 1;
                 var total = 0;
-                repositories.forEach(function(repo) {
-                    var infoRepo = repo.val();
-                    if (infoRepo.show == false){
-                        return;
-                    }  
+                var reposSort = repositories.val();
+                var myArray = new Array();
+                //Guardo en un array los elementos que se deben visualizar (show=true)
+                $.each(reposSort, function(key, value) {
+                    if(value.show == true){
+                        myArray.push(value);
+                    }
+                });
+                sortByUpdateDate(myArray);
+                myArray.forEach(function(repo) {
+                    var infoRepo = repo;
+                    //if (infoRepo.show == false){
+                      //  return;
+                    //}  
                     //Guardo los colaboradores:
                     var arrayCollaborators = infoRepo.collaborators;
                     var stringCollaborators  = "";
@@ -911,6 +915,8 @@
 
     function showAllRepos(){
         $('#container-main').addClass("loading");
+        $("#container-repositories-all").empty();
+        $("#intro-repositorios-all").empty();
         node = $('#container-repositories-all');
         var tempRef = new Firebase(nameBBDD + "repos");
         var total = 0;
@@ -927,7 +933,7 @@
             //En este punto ya tenemos un aarray con los elementos ordenados por la fecha de actualizacion en orden decreciente desde la más reciente
             myArray.forEach(function(childSnapshot) {
                 var infoRepo = childSnapshot;
-                console.log(infoRepo.updated_at);
+                //console.log(infoRepo.updated_at);
                 //console.log(new Date(infoRepo.updated_at));
                 //Compruebo si el repositorio es visible
                 //if (infoRepo.show == false){
@@ -937,10 +943,10 @@
                 //var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
                 //tempRefCat.on("value", function(snapshotCat) {
                     //var cat = snapshotCat.val();  
-                    console.log(arrayCategories)
+                    //console.log(arrayCategories)
                     var cat = arrayCategories[infoRepo.category];  
                     total++;
-                    console.log("Entra bucle " + infoRepo.updated_at);
+                   // console.log("Entra bucle " + infoRepo.updated_at);
                     //Guardo los colaboradores:
                     var arrayCollaborators = infoRepo.collaborators;
                     var stringCollaborators  = "";
@@ -952,10 +958,13 @@
                         }
                     };    
                     $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
-                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
-                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
-                    '<p><b>Categoría: </b>'+ cat + '</p>' +
-                    '<p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div>').hide().appendTo(node).fadeIn(1000);   
+                    '<div class="panel-body">' + 
+                    '<div class="row"><div class="col-md-6"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p></div>' +
+                    '<div class="col-md-6"><p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p></div></div>' +
+                    '<div class="row"><div class="col-md-8"><p><b>Categoría: </b>'+ cat + '</p></div>' +
+                    '<div class="col-md-4"><p><b>Id: </b>'+ infoRepo.id + '</p></div></div>' +
+                    '<div class="row"><div class="col-md-12"><p><b>Autores: </b>'+ stringCollaborators + '</p></div></div>' + 
+                    '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000);   
                 //});
             });
             //Llamamos de manera síncrona a las funciones de obtener las fechas
@@ -978,6 +987,7 @@
         });
     }
 
+    /* FUNCION PARA MONTAR LA URL CON EL IDENTIFICADOR DEL REPOSITORIO */
     function addIdReposToURL(idRepo){
         reposUrl = "/Repositorio.html?";
         reposUrl = reposUrl + "&id=" + idRepo;
@@ -986,3 +996,159 @@
         //return _url;
     }
 
+    /* FUNCION PARA VACIAR LOS FILTROS DEL CONTENEDOR DE FILTRAR EN LA VISTA DE TODOS OS REPOSITORIOS */
+    function vaciarFiltrosTodos() {
+        $("#resultados-filtros-todos").empty();
+        //Vacia los inputs de búsqueda de nombre,id,autor y fechas
+        $('.filter-all').val("");
+        //Elimina la selección de categoría, y fecha detalle
+        $('#select-categoria-filter').val(0);
+        $('#select-date-main').val(0);
+        $('#select-date-month').val(0);
+        $('#select-date-year').val(0);
+        $("#select-date-month").attr('disabled', true);
+        $("#select-date-year").attr('disabled', true);  
+        //LLamamos a la funcion que recraga todos sin filtros
+        showAllRepos();
+    }
+
+    /* FUNCION PARA APLICAR FILTROS SOBRE LA VISTA DE TODOS LOS REPOSITORIOS */
+    function filtrarTodos(){
+        $('#container-main').addClass("loading");
+        $("#container-repositories-all").empty();
+        $("#resultados-filtros-todos").empty();
+        var tempRef = new Firebase(nameBBDD + "repos");
+        var total = 0;
+        tempRef.on("value", function(snapshot) {
+            var reposSort = snapshot.val();
+            var myArray = new Array();
+            //Guardo en un array los elementos que se deben visualizar (show=true) y compruebo los filtros(si existe compruebo que el campo coincida parcialmente)
+            $.each(reposSort, function(key, value) {
+                var filNameOk = true;
+                var filIdOk = true;
+                var filAutorOk = true;
+                var filCategoryOk = true;
+                var filUpdateOk = true;
+                var filCreateOk = true;
+                var filDetailDateMonthOk = true;
+                var filDetailDateYearOk = true;
+                var filtrofechaDetalle = false;
+                //Guardo los colaboradores (se necesita par el filtro):
+                var arrayCollaborators = value.collaborators;
+                var stringCollaborators  = "";
+                for (var p = 0; (p <= arrayCollaborators.length - 1); p++) {
+                    if (p == arrayCollaborators.length - 1){
+                        stringCollaborators += arrayCollaborators[p];
+                    }else{
+                        stringCollaborators += arrayCollaborators[p] + " | ";
+                    }
+                };  
+                if(value.show == true){             
+                    //NOMBRE
+                    if ($('#filtroNombreTodos').val() != ''){
+                        if ((value.name).toUpperCase().indexOf($('#filtroNombreTodos').val().toUpperCase()) == -1){
+                            filNameOk = false;
+                        }
+                    }
+                    //ID
+                    if ($('#filtroIdTodos').val() != ''){
+                        if (String(value.id).indexOf($('#filtroIdTodos').val()) == -1){
+                            filIdOk = false;
+                        }
+                    }
+                    //AUTOR
+                    if ($('#filtroAutorTodos').val() != ''){
+                        if ((stringCollaborators).toUpperCase().indexOf($('#filtroAutorTodos').val().toUpperCase()) == -1){
+                            filAutorOk = false;
+                        }
+                    }
+                    //CATEGORIA
+                    if ($('#select-categoria-filter').val() != 0){
+                        if (value.category != $('#select-categoria-filter').val()){
+                            filCategoryOk = false;
+                        }
+                    }
+                    //FECHA ACTUALIZACION
+                    if ($("#datetimepicker-update-value").val() != ''){
+                        if (stringDate(value.updated_at).substring(0,10) != $("#datetimepicker-update-value").val().replace(/[\/]/g,'-')){
+                            filtrofechaDetalle = true;
+                            filUpdateOk = false;
+                        }
+                    }
+                    //FECHA CREACION
+                    if ($("#datetimepicker-creation-value").val() != ''){
+                        $("#select-date-main").val(0);
+                        if (stringDate(value.created_at).substring(0,10) != $("#datetimepicker-creation-value").val().replace(/[\/]/g,'-')){
+                            filCreateOk = false;
+                            filtrofechaDetalle = true;
+                        }
+                    }
+                    //Comprueba si hay filtro específico de fecha. Si no lo hay aplica los rangos
+                    if (filtrofechaDetalle == false){
+                        if (($("#select-date-main").val() != 0) && (($("#select-date-year").val() != 0) || ($("#select-date-month").val() != 0))){
+                            console.log("entra")
+                            var mainDate = $("#select-date-main").val()
+                            var fechaFilter;
+                            if (mainDate == "updated"){fechaFilter = stringDate(value.updated_at);}else{fechaFilter = stringDate(value.created_at);}                     
+                            if (($("#select-date-month").val() != 0) && (fechaFilter.substring(3,5) != $("#select-date-month").val())){
+                                filDetailDateMonthOk = false;
+                            }
+                            if (($("#select-date-year").val() != 0) && (fechaFilter.substring(6,10) != $("#select-date-year").val())){
+                                filDetailDateYearOk = false;                              
+                            }
+                        }
+                    }
+
+                    //Comprobamos los booleanos y si todos son true, guardamos l repositorio para mostrarlo
+                    if (filNameOk && filIdOk && filCreateOk && filCategoryOk && filAutorOk && filUpdateOk && filDetailDateMonthOk && filDetailDateYearOk){
+                        myArray.push(value);
+                    }
+                }
+
+            });
+            sortByUpdateDate(myArray);
+            //En este punto ya tenemos un aarray con los elementos ordenados por la fecha de actualizacion en orden decreciente desde la más reciente
+            myArray.forEach(function(childSnapshot) {
+                var infoRepo = childSnapshot;
+                console.log(infoRepo.updated_at);
+                //console.log(new Date(infoRepo.updated_at));
+                //Compruebo si el repositorio es visible
+                //if (infoRepo.show == false){
+                  //      return;
+                //}
+                //Recojo la categoría
+                //var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
+                //tempRefCat.on("value", function(snapshotCat) {
+                    //var cat = snapshotCat.val();  
+                    var arrayCollaborators = infoRepo.collaborators;
+                    var stringCollaborators  = "";
+                    for (var p = 0; (p <= arrayCollaborators.length - 1); p++) {
+                        if (p == arrayCollaborators.length - 1){
+                            stringCollaborators += arrayCollaborators[p];
+                        }else{
+                            stringCollaborators += arrayCollaborators[p] + " | ";
+                        }
+                    };  
+                    var cat = arrayCategories[infoRepo.category];  
+                    total++; 
+                    $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    '<div class="panel-body">' + 
+                    '<div class="row"><div class="col-md-6"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p></div>' +
+                    '<div class="col-md-6"><p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p></div></div>' +
+                    '<div class="row"><div class="col-md-8"><p><b>Categoría: </b>'+ cat + '</p></div>' +
+                    '<div class="col-md-4"><p><b>Id: </b>'+ infoRepo.id + '</p></div></div>' +
+                    '<div class="row"><div class="col-md-12"><p><b>Autores: </b>'+ stringCollaborators + '</p></div></div>' + 
+                    '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000);   
+                //});
+            });
+            if (total == 1){
+                $("<p style='font-size:16px;'><b>" + total +" resultado</b><p>").hide().prependTo($("#resultados-filtros-todos")).fadeIn(500);
+            }else if(total == 0){
+                $("<h3 class='noRepos'>Ningún repositorio coincide con la búsqueda<h3>").hide().appendTo(node).fadeIn(500);
+                $("<p style='font-size:16px;'><b>" + total +" resultados</b><p>").hide().prependTo($("#resultados-filtros-todos")).fadeIn(500);
+            }else{
+                $("<p style='font-size:16px;'><b>" + total +" resultados</b><p>").hide().prependTo($("#resultados-filtros-todos")).fadeIn(500);
+            }
+            $('#container-main').removeClass("loading");
+        });    
+    }
