@@ -433,6 +433,7 @@ body{
   background-color: #6AC1F4;
 }
 
+
 /* ESTILO DE LOS PANELES DE REPOSITORIOS EN LA VISUALIZACIÓN DE LAS CATEGORÍAS */
 .panel.panel-primary.category-repositories:hover{
   -webkit-box-shadow: 5px 5px 5px #055670;
