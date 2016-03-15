@@ -18,6 +18,7 @@ group: navigation
 	<!-- Contenedor para los filtros y búsqueda  -->
 	<div class="col-md-4" id="col-izda" style="padding:0; margin-right:0;">
 		<ul class="jumbotron nav nav-stacked color" id="barra-lateral-filtros" style="z-index: 1000;">
+			<!-- ****FILTROS**** -->
 			<p style="text-align:center;"><b>FILTROS</b></p>
 
 			<!-- NOMBRE -->
@@ -87,7 +88,6 @@ group: navigation
 					    	<option value="0">Filtro fecha</option>
 						    <option value="created">Creación</option>
 						    <option value="updated">Actualización</option>
-						    </option>
 					    </select>
 					</div>
 				</div>
@@ -129,13 +129,41 @@ group: navigation
 	        <!-- BOTÓN FILTRAR -->
 	        <div align="center">
 	          <button type="button" class="btn btn-default filter"  onclick="filtrarTodos()">Filtrar</button>
-	          <button type="button" class="btn btn-default filter"  onclick="vaciarFiltrosTodos()">Vaciar</button>
+	          <button type="button" class="btn btn-default filter" style="margin-left:30px;"  onclick="vaciarFiltrosTodos()">Vaciar</button>
 	        </div>
 	        </br>
 
 		    <!-- MUESTRA EL NÚMERO DE RESULTADOS QUE CUADRAN CON LAS BUSQUEDA -->
 	    	<div align="center" id="resultados-filtros-todos">
-	    	</div>	
+	    	</div>
+
+	    	<!-- ****ORDENACION**** -->
+	    	<p style="text-align:center;"><b>ORDENACIÓN</b></p>	
+
+		    <div class="row">
+		    	<div class="col-md-6">
+				    <div class="form-group">
+					    <select class="form-control dates" id="select-order-main">
+					    	<option value="updated">Fecha actualización</option>
+						    <option value="created">Fecha creación</option>
+						    <option value="name">Alfabéticamente</option>
+					    </select>
+					</div>
+		    	</div>
+		    	<div class="col-md-6">
+				    <div class="form-group">
+					    <select class="form-control dates" id="select-order-criterion">
+					    	<option value="desc">Descendente</option>
+						    <option value="asc">Ascendente</option>
+					    </select>
+					</div>
+		    	</div>
+	    	</div>
+
+	        <!-- BOTÓN FILTRAR -->
+	        <div align="center">
+	        <button type="button" class="btn btn-default filter" style="margin-left:0;"  onclick="orderRepos()">Ordenar</button>
+	        </div>
 		</ul>
 	</div>
 

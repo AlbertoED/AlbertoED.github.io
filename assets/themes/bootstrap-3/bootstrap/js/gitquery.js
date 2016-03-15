@@ -14,6 +14,9 @@
     var isFilter = false;
     //Variable para guardar las categorias sacadas de Firebase y así evitar las llamadas asíncronas
     var arrayCategories = new Array();
+    //Variable paraalmacenar los repositorios devueltos por Firebase y sólo tener que llamarlos una vez
+    var reposSortGlobal;
+    var hayFiltroRepos = false;
 
     /* CODIGO QUE SE EJECUTA CUANDO YA SE HA CARGADO LA PÁGINA */
     $(window).load(function(){
@@ -82,7 +85,7 @@
                     return;
                 }
                 //Ordenamos los repositorios en orden decreciente desde el más reciente
-                sortByUpdateDate(repos); //Sorting by forks. You can customize it according to your needs.
+                sortRepos(repos,"updated","desc"); //Sorting by forks. You can customize it according to your needs.
                 
                 var node = $('#display-projects');
                 $(repos).each(function () {
@@ -315,9 +318,9 @@
                                         console.log(IDRepo + " " + toggleValue + " " + selectValue);
                                         $("#select" + IDRepo).val(selectValue);
                                         if (toggleValue == true){
-                                            $("#toggle" + IDRepo).bootstrapToggle('sí');    
+                                            $("#toggle" + IDRepo).bootstrapToggle('on');    
                                         }else{
-                                            $("#toggle" + IDRepo).bootstrapToggle('no');
+                                            $("#toggle" + IDRepo).bootstrapToggle('off');
                                         }
                                         //Comprobamos si tiene descripción propia y si la tiene sobrescribimos la de GitHub
                                         if (descripcionFirebase != "-" ){
@@ -327,12 +330,11 @@
                             }
                         });
                     //}
-                });               
-                //IMPORTANTE: esta linea transforma todos los checkboxes que hemos añadido al html en los toggles
+                });
                 $('input[type="checkbox"]').bootstrapToggle({
                         on: 'Sí',
                         off: 'No'
-                });
+                });             
                 //...
                 loadingProjects = false;
                 $('#fecha-actualizacion').hide().html('Fecha de actualización: <b>' + getActualDatetime() + '</b>').fadeIn(1000);
@@ -379,7 +381,8 @@
                             var collaborators = reponseCollaborators.data;
                             var collaboratorsRepo = new Array();
                             var i = 0;
-                            if (collaborators == undefined){
+                            console.log(collaborators)
+                            if ((collaborators == undefined) || (collaborators.length == 0)){
                                 collaboratorsRepo[0] = "Autor no especificado"
                             }else{
                                 $(collaborators).each(function() {
@@ -651,10 +654,42 @@
         });
     };
 
-    function sortByUpdateDate(repos) {
-        repos.sort(function (a,b){
-            return new Date(b.updated_at) - new Date(a.updated_at);
-        });
+    function sortRepos(repos,main,criterion) {
+        switch(main) {
+            case "updated":
+                if (criterion == "desc"){
+                    repos.sort(function (a, b) {
+                        return new Date(b.updated_at) - new Date(a.updated_at);
+                    });
+                }else{
+                    repos.sort(function (a, b) {
+                        return new Date(a.updated_at) - new Date(b.updated_at);
+                    });
+                }
+                break;
+            case "created":
+                if (criterion == "desc"){
+                    repos.sort(function (a, b) {
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    });
+                }else{
+                    repos.sort(function (a, b) {
+                        return new Date(a.created_at) - new Date(b.created_at);
+                    });
+                }
+                break;
+            case "name":
+                if (criterion == "desc"){
+                    repos.sort(function (a, b) {
+                        return b.name.localeCompare(a.name);
+                    });
+                }else{
+                    repos.sort(function (a, b) {
+                        return a.name.localeCompare(b.name);                    
+                    });
+                }
+                break;        
+        }
     }
 
     /* FUNCION PARA GUARDAR LA INFORMACION DE LOS COLABORADORES EN FIREBASE */
@@ -715,7 +750,7 @@
     }
 
     /* FUNCION PARA DECODIFICAR EL README QUE ESTA CODIFICADO EN Base64 */
-    function decodeBase64(string) {
+    function decodeBase64 (string){
          return decodeURIComponent(escape(window.atob(string)));   
     };
     
@@ -835,7 +870,7 @@
                         myArray.push(value);
                     }
                 });
-                sortByUpdateDate(myArray);
+                sortRepos(myArray,"updated","desc");
                 myArray.forEach(function(repo) {
                     var infoRepo = repo;
                     //if (infoRepo.show == false){
@@ -913,7 +948,9 @@
         });    
     };
 
+    /* FUNCION PARA MOSTRAR TODOS LO REPOSITORIOS EN LA VISTA GLOBAL DE REPOSITORIOS */
     function showAllRepos(){
+        hayFiltroRepos = false;
         $('#container-main').addClass("loading");
         $("#container-repositories-all").empty();
         $("#intro-repositorios-all").empty();
@@ -921,15 +958,16 @@
         var tempRef = new Firebase(nameBBDD + "repos");
         var total = 0;
         tempRef.on("value", function(snapshot) {
-            var reposSort = snapshot.val();
+            reposSortGlobal = snapshot.val();
             var myArray = new Array();
             //Guardo en un array los elementos que se deben visualizar (show=true)
-            $.each(reposSort, function(key, value) {
+            $.each(reposSortGlobal, function(key, value) {
                 if(value.show == true){
                     myArray.push(value);
                 }
             });
-            sortByUpdateDate(myArray);
+            //Ordenamos los repositorios según el filtro
+            sortRepos(myArray,$('#select-order-main').val(),$('#select-order-criterion').val());
             //En este punto ya tenemos un aarray con los elementos ordenados por la fecha de actualizacion en orden decreciente desde la más reciente
             myArray.forEach(function(childSnapshot) {
                 var infoRepo = childSnapshot;
@@ -956,7 +994,7 @@
                         }else{
                             stringCollaborators += arrayCollaborators[p] + " | ";
                         }
-                    };    
+                    };
                     $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body">' + 
                     '<div class="row"><div class="col-md-6"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p></div>' +
@@ -1014,16 +1052,17 @@
 
     /* FUNCION PARA APLICAR FILTROS SOBRE LA VISTA DE TODOS LOS REPOSITORIOS */
     function filtrarTodos(){
+        hayFiltroRepos = true;
         $('#container-main').addClass("loading");
         $("#container-repositories-all").empty();
         $("#resultados-filtros-todos").empty();
         var tempRef = new Firebase(nameBBDD + "repos");
         var total = 0;
-        tempRef.on("value", function(snapshot) {
-            var reposSort = snapshot.val();
+        //tempRef.on("value", function(snapshot) {
+            //var reposSort = snapshot.val();
             var myArray = new Array();
             //Guardo en un array los elementos que se deben visualizar (show=true) y compruebo los filtros(si existe compruebo que el campo coincida parcialmente)
-            $.each(reposSort, function(key, value) {
+            $.each(reposSortGlobal, function(key, value) {
                 var filNameOk = true;
                 var filIdOk = true;
                 var filAutorOk = true;
@@ -1042,7 +1081,7 @@
                     }else{
                         stringCollaborators += arrayCollaborators[p] + " | ";
                     }
-                };  
+                };
                 if(value.show == true){             
                     //NOMBRE
                     if ($('#filtroNombreTodos').val() != ''){
@@ -1106,7 +1145,7 @@
                 }
 
             });
-            sortByUpdateDate(myArray);
+            sortRepos(myArray,$('#select-order-main').val(),$('#select-order-criterion').val());
             //En este punto ya tenemos un aarray con los elementos ordenados por la fecha de actualizacion en orden decreciente desde la más reciente
             myArray.forEach(function(childSnapshot) {
                 var infoRepo = childSnapshot;
@@ -1128,7 +1167,7 @@
                         }else{
                             stringCollaborators += arrayCollaborators[p] + " | ";
                         }
-                    };  
+                    };
                     var cat = arrayCategories[infoRepo.category];  
                     total++; 
                     $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
@@ -1150,5 +1189,14 @@
                 $("<p style='font-size:16px;'><b>" + total +" resultados</b><p>").hide().prependTo($("#resultados-filtros-todos")).fadeIn(500);
             }
             $('#container-main').removeClass("loading");
-        });    
+        //});    
+    }
+
+    /* FUNCION PARA CONTROLAR LA ORDENACION DE LOS REPOSITORIOS */
+    function orderRepos() {
+        if (hayFiltroRepos == true){
+            filtrarTodos()
+        }else{
+            showAllRepos()
+        }
     }
