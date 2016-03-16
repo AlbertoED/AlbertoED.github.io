@@ -433,7 +433,6 @@ body{
   background-color: #6AC1F4;
 }
 
-
 /* ESTILO DE LOS PANELES DE REPOSITORIOS EN LA VISUALIZACIÓN DE LAS CATEGORÍAS */
 .panel.panel-primary.category-repositories:hover{
   -webkit-box-shadow: 5px 5px 5px #055670;
@@ -635,4 +634,25 @@ body{
   .dates{
     padding:1px;
   }
+}
+
+/* ESTILI PARA LA VISUALIZACION DE LOS EQUIPOS */
+
+.jumbotron.team-main{
+  background: #ABDDEC;
+  background: -webkit-linear-gradient(#AEBEC4, #CFE5EC); 
+  background: -o-linear-gradient(#AEBEC4, #CFE5EC); 
+  background: -moz-linear-gradient(#AEBEC4, #CFE5EC); 
+  background: linear-gradient(#AEBEC4, #CFE5EC); 
+  text-align:center;
+  padding:20px 10px 20px 10px; 
+}
+.jumbotron.team-main:hover{
+  cursor: pointer;
+}
+
+.jumbotron.team-main h4{
+  color:black;
+  font-weight: bold;
+  font-size:19px; 
 }

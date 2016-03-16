@@ -456,10 +456,6 @@
     
         MOSTRAR INFO DE LA ORG
         https://api.github.com/orgs/gsi-upm?&access_token=...
-        
-        MOSTRAR LOS EQUIPOS
-        https://api.github.com/orgs/gsi-upm/teams?&access_token=...
-         */
 
     /* FUNCION PARA ACTUALIZAR LOS DATOS DE LOS REPOSITORIOS EN FIREBASE. SI ALGUNO NO ESTÁ EN FIREBASE SE AÑADE */
     function actualizarRepos() {
@@ -729,6 +725,9 @@
                             rol: "Admin"
                         });                      
                     });
+                    console.log("empiezaEquipos");
+                    actualizarEquipos();
+                    /*
                     $('#container-main').removeClass("loading");
                     var actualdate = getActualDatetime();
                     myDataRef.child("info-web").update({
@@ -737,7 +736,7 @@
                     $(".notifications .notification.actualizado.ok").addClass("active");
                     setTimeout(function() {
                         $(".notifications .notification.actualizado").removeClass("active");
-                    }, 3000);
+                    }, 3000);*/
                 });                                                                                
             });
         });
@@ -765,6 +764,7 @@
     /* PRUEBA GET CATEGORIAS */ 
     function showInfoRepository(idParam) {
         $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
         node = $('#container-repo');
         var tempRef = new Firebase(nameBBDD + "repos/" + idParam)
         tempRef.on("value", function(snapshot) {
@@ -842,6 +842,7 @@
                 '<div class="row"><div class="col-md-12"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div></div>' +                 
                 '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
                 $('#container-main').removeClass("loading");
+                $('body').removeClass("stop-scrolling");
             });
         });      
     };
@@ -849,6 +850,7 @@
     function verRepositoriosCategoria(categoryParam,idShowDiv){
         var reposFound = false;
         $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
         var node; 
         console.log(idShowDiv);
         //Según el parámetro de 
@@ -910,11 +912,13 @@
                 }
             });
             $('#container-main').removeClass("loading");
+            $('body').removeClass("stop-scrolling");
         });      
     };
 
     function showMembers(){
         $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
         node = $('#container-members');
         var tempRef = new Firebase(nameBBDD + "members");
         var total = 0;
@@ -945,6 +949,7 @@
                 $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen <b>" + total + "</b> miembros pertenecientes a la organización de " + cuentaGit + " de GitHub. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#title-members")).fadeIn(500);
             });
             $('#container-main').removeClass("loading");
+            $('body').removeClass("stop-scrolling");
         });    
     };
 
@@ -952,6 +957,7 @@
     function showAllRepos(){
         hayFiltroRepos = false;
         $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
         $("#container-repositories-all").empty();
         $("#intro-repositorios-all").empty();
         node = $('#container-repositories-all');
@@ -1010,6 +1016,7 @@
                 $("<h4 style='color:black;'>La organización " + cuentaGit + " cuenta con " + total + " repositorios almacenados en GitHub, actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + ".<h4></div>").hide().prependTo($("#intro-repositorios-all")).fadeIn(500);
             });
             $('#container-main').removeClass("loading");
+            $('body').removeClass("stop-scrolling");
         });    
     }
 
@@ -1200,3 +1207,95 @@
             showAllRepos()
         }
     }
+
+    /* FUNCION PARA GUARDAR LOS EQUIPOS EN FIREBASE */
+    function actualizarEquipos() {
+        //Se ejecuta tras la actualizacion de los miembros. El token ya esta guardado 
+        //Cerramos el modal
+        $('#myModalMiembros').modal('hide');
+        $('#container-main').addClass("loading");
+        var reposRef = myDataRef.child("teams");
+        //Borramos todos los datos de FireBase y volvemos a cargarlos
+        reposRef.remove();
+        //Realizamos la llamada que devuelve todos los equipos actuales
+        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/teams?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseTeams) {
+            teamsGit = responseTeams.data; // JSON Parsing
+            var nOK = 0;
+            var nTotal = $(teamsGit).length;
+            //Recorremos la respuesta y para cada uno realizamos una llamada para recoger el listado de los miembros pertenecientes
+            $(teamsGit).each(function () {
+                var idTeam = this.id;
+                var nameTeam = this.name         
+                //Montamos la llamada
+                jQuery.getJSON('https://api.github.com/teams/' + idTeam + '/members?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseOneTeam) {
+                    var membersGit = responseOneTeam.data;
+                    var membersArray = new Array();
+                    var i = 0;  
+                    if ((membersGit == undefined) || (membersGit.length == 0)){
+                        membersArray[0] = "Sin miembros"
+                    }else{
+                        $(membersGit).each(function() {
+                            membersArray[i] = this.login;
+                            i++;
+                        });
+                    }
+                    console.log(membersArray)
+                    //Guardo los datos del equipo
+                    reposRef.child(idTeam).set({
+                        id: idTeam,
+                        name: nameTeam,
+                        members: membersArray
+                    });
+                });
+            });
+            $('#container-main').removeClass("loading");
+            var actualdate = getActualDatetime();
+            myDataRef.child("info-web").update({
+                updated_date_members: actualdate
+            });
+            $(".notifications .notification.actualizado.ok").addClass("active");
+            setTimeout(function() {
+                $(".notifications .notification.actualizado").removeClass("active");
+            }, 3000);
+        });
+    }     
+
+    /* FUNCION PARA MOSTRAR LOS EQUIPOS */
+    function showTeams(){
+        $('#container-main').addClass("loading");
+        $('body').addClass("stop-scrolling");
+        node = $('#container-teams');
+        var tempRef = new Firebase(nameBBDD + "teams");
+        var total = 0;
+        var cont = 1;
+        tempRef.on("value", function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                total++;
+                node = $("#column-team-" + cont);
+                console.log(node);
+                //Entro en bucle con los miembros y monto una cadena  
+                var arrayMembers = childData.members;
+                var stringMembers  = "";
+                for (var p = 0; (p <= arrayMembers.length - 1); p++) {
+                        stringMembers += '<p>' + arrayMembers[p] + '<p>';
+                }; 
+                //Añado al final las etiquetas de cierre de los contenedores
+                stringMembers += '</div></div>';
+                //Añado la cabecera desplegable
+                $('<div class="jumbotron team-main" data-toggle="collapse" data-target="#div' + childData.id + '"><h4>' + childData.name + '</h4>' +
+                '<div class="collapse" id="div' + childData.id + '">' + stringMembers).hide().appendTo(node).fadeIn(1000);
+                if ((cont == 1) || (cont == 2)){
+                    cont++;
+                }else{
+                    cont=1;
+                }           
+            });
+            //Informo de la cantidad de miembros y la fecha de actualizacion de los miembros
+            getLastUpdatingDateMembers(function(data){
+                $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen <b>" + total + "</b> equipos en la cuenta " + cuentaGit + " de GitHub. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#title-teams")).fadeIn(500);
+            });
+            $('#container-main').removeClass("loading");
+            $('body').removeClass("stop-scrolling");
+        });     
+    } 
