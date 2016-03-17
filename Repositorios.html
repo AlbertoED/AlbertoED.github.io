@@ -22,7 +22,7 @@ group: navigation
 			<p style="text-align:center;"><b>FILTROS</b></p>
 
 			<!-- NOMBRE -->
-			<form class="form-inline" >
+			<form class="form-inline" onkeypress="return event.keyCode != 13;">
 				<label class="control-label-filters"><p >Nombre repositorio: </p></label>
 		    	<div class="form-group name">
 		        	<input type="text" class="form-control filter-all" id="filtroNombreTodos" placeholder="Buscar nombre">
@@ -38,7 +38,7 @@ group: navigation
 		    </form>
 
 		    <!-- AUTOR -->
-		    <form class="form-inline">
+		    <form class="form-inline" onkeypress="return event.keyCode != 13;">
 				<label class="control-label-filters"><p >Autor repositorio: </p></label>
 		    	<div class="form-group autor">
 		        	<input type="text" class="form-control filter-all" id="filtroAutorTodos" placeholder="Buscar autor" >
