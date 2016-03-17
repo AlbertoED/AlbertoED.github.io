@@ -219,6 +219,15 @@
         });
     };
 
+    /* FUNCION PARA RECUPERAR ULTIMA FECHA DE MODIFICACION DE LOS EQUIPOS */
+    function getLastUpdatingDateTeams(callback) {
+        refTemp = new Firebase(nameBBDD + 'info-web/updated_date_teams');
+        refTemp.on("value", function(snapshot) {
+                var lastDate = snapshot.val();
+                callback(lastDate);
+        });
+    };
+
     /* FUNCION PARA RECUPERAR EL TOKEN DE GITHUB ALOJADO EN FIREBASE */
     function getTokenFireBase(callback) {
         refTemp = new Firebase(nameBBDD + 'Tokens');
@@ -725,9 +734,6 @@
                             rol: "Admin"
                         });                      
                     });
-                    console.log("empiezaEquipos");
-                    actualizarEquipos();
-                    /*
                     $('#container-main').removeClass("loading");
                     var actualdate = getActualDatetime();
                     myDataRef.child("info-web").update({
@@ -736,7 +742,7 @@
                     $(".notifications .notification.actualizado.ok").addClass("active");
                     setTimeout(function() {
                         $(".notifications .notification.actualizado").removeClass("active");
-                    }, 3000);*/
+                    }, 3000);
                 });                                                                                
             });
         });
@@ -1210,53 +1216,55 @@
 
     /* FUNCION PARA GUARDAR LOS EQUIPOS EN FIREBASE */
     function actualizarEquipos() {
-        //Se ejecuta tras la actualizacion de los miembros. El token ya esta guardado 
-        //Cerramos el modal
-        $('#myModalMiembros').modal('hide');
-        $('#container-main').addClass("loading");
-        var reposRef = myDataRef.child("teams");
-        //Borramos todos los datos de FireBase y volvemos a cargarlos
-        reposRef.remove();
-        //Realizamos la llamada que devuelve todos los equipos actuales
-        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/teams?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseTeams) {
-            teamsGit = responseTeams.data; // JSON Parsing
-            var nOK = 0;
-            var nTotal = $(teamsGit).length;
-            //Recorremos la respuesta y para cada uno realizamos una llamada para recoger el listado de los miembros pertenecientes
-            $(teamsGit).each(function () {
-                var idTeam = this.id;
-                var nameTeam = this.name         
-                //Montamos la llamada
-                jQuery.getJSON('https://api.github.com/teams/' + idTeam + '/members?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseOneTeam) {
-                    var membersGit = responseOneTeam.data;
-                    var membersArray = new Array();
-                    var i = 0;  
-                    if ((membersGit == undefined) || (membersGit.length == 0)){
-                        membersArray[0] = "Sin miembros"
-                    }else{
-                        $(membersGit).each(function() {
-                            membersArray[i] = this.login;
-                            i++;
+        //Antes de empezar, recogemos el Token, ya que esta función se puede ejecutar desde cualquier página y puede que no se haya leído el token
+        getTokenFireBase(function(){   
+            //Cerramos el modal
+            $('#myModalEquipos').modal('hide');
+            $('#container-main').addClass("loading");
+            var reposRef = myDataRef.child("teams");
+            //Borramos todos los datos de FireBase y volvemos a cargarlos
+            reposRef.remove();
+            //Realizamos la llamada que devuelve todos los equipos actuales
+            jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/teams?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseTeams) {
+                teamsGit = responseTeams.data; // JSON Parsing
+                var nOK = 0;
+                var nTotal = $(teamsGit).length;
+                //Recorremos la respuesta y para cada uno realizamos una llamada para recoger el listado de los miembros pertenecientes
+                $(teamsGit).each(function () {
+                    var idTeam = this.id;
+                    var nameTeam = this.name         
+                    //Montamos la llamada
+                    jQuery.getJSON('https://api.github.com/teams/' + idTeam + '/members?&per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseOneTeam) {
+                        var membersGit = responseOneTeam.data;
+                        var membersArray = new Array();
+                        var i = 0;  
+                        if ((membersGit == undefined) || (membersGit.length == 0)){
+                            membersArray[0] = "Sin miembros"
+                        }else{
+                            $(membersGit).each(function() {
+                                membersArray[i] = this.login;
+                                i++;
+                            });
+                        }
+                        console.log(membersArray)
+                        //Guardo los datos del equipo
+                        reposRef.child(idTeam).set({
+                            id: idTeam,
+                            name: nameTeam,
+                            members: membersArray
                         });
-                    }
-                    console.log(membersArray)
-                    //Guardo los datos del equipo
-                    reposRef.child(idTeam).set({
-                        id: idTeam,
-                        name: nameTeam,
-                        members: membersArray
                     });
                 });
+                $('#container-main').removeClass("loading");
+                var actualdate = getActualDatetime();
+                myDataRef.child("info-web").update({
+                    updated_date_teams: actualdate
+                });
+                $(".notifications .notification.actualizado.ok").addClass("active");
+                setTimeout(function() {
+                    $(".notifications .notification.actualizado").removeClass("active");
+                }, 3000);
             });
-            $('#container-main').removeClass("loading");
-            var actualdate = getActualDatetime();
-            myDataRef.child("info-web").update({
-                updated_date_members: actualdate
-            });
-            $(".notifications .notification.actualizado.ok").addClass("active");
-            setTimeout(function() {
-                $(".notifications .notification.actualizado").removeClass("active");
-            }, 3000);
         });
     }     
 
@@ -1292,7 +1300,7 @@
                 }           
             });
             //Informo de la cantidad de miembros y la fecha de actualizacion de los miembros
-            getLastUpdatingDateMembers(function(data){
+            getLastUpdatingDateTeams(function(data){
                 $("<div class='jumbotron text-black'><h4 class='noRepos'>Existen <b>" + total + "</b> equipos en la cuenta " + cuentaGit + " de GitHub. Actualizado el día " + data.substring(0,10) + " a las " + data.substring(10,16) + " <h4></div>").hide().prependTo($("#title-teams")).fadeIn(500);
             });
             $('#container-main').removeClass("loading");

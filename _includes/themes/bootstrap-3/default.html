@@ -118,11 +118,16 @@
                 <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a href="#" onclick="cerrarSesionNavbar()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
-                  <li class="divider"></li>
                   <li><a href="/admin.html" ><span class="glyphicon glyphicon-list"></span>     Repositorios</a></li>
                   <li class="divider"></li>
                   <li><a href="#" data-toggle="modal" data-target="#myModalMiembros"><span class="glyphicon glyphicon-user"></span>     Miembros</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#" data-toggle="modal" data-target="#myModalEquipos"><span class="glyphicon glyphicon-briefcase"></span>     Equipos</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#" data-toggle="modal" data-target="#myModalInfo"><span class="glyphicon glyphicon-info-sign"></span>     Información</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#" onclick="cerrarSesionNavbar()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
+
                 </ul>
           </div>
                     <!-- Código para el botón del login -->
@@ -247,13 +252,64 @@
             </h4>
           </div>
           <div class="modal-body">
-            <p style="text-align: justify;">Para actualizar la información de los miembros de la organización haga click en actualizar. Los nuevos miembros se añadirán y los que ya no pertenezcan al grupo serán eliminados</p>
+            <p style="text-align: justify;">Para actualizar la información de los miembros de la organización haga click en actualizar. Los nuevos miembros se añadirán y los que ya no pertenezcan al grupo serán eliminados.</p>
             <p class="debug-url"></p>
           </div>
           <div class="modal-footer">
             <!-- BOTONES DEL MODAL -->
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             <button type="button" class="btn btn-primary" onclick="actualizarMiembros()" value="Login">Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Código para el popup de equipos -->
+    <!-- Modal -->
+      <div class="modal fade" id="myModalEquipos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Actualización de equipos
+            <span style="display:none;" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" id="loadLogin"></span>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <p style="text-align: justify;">Para actualizar la información de los equipos de la organización haga click en actualizar. Los nuevos equipos se añadirán y los que ya no existan serán eliminados.</p>
+            <p class="debug-url"></p>
+          </div>
+          <div class="modal-footer">
+            <!-- BOTONES DEL MODAL -->
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="actualizarEquipos()" value="Login">Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Código para el popup de info -->
+    <!-- Modal -->
+      <div class="modal fade" id="myModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Actualización de equipos
+            <span style="display:none;" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" id="loadLogin"></span>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <p style="text-align: justify;">Bienvenido al panel de administración de la web de GitHub del GSI. Desde aquí podrás controlar los contenidos que serán visibles en la web.</p></br>
+            <p style="text-align: justify;">En la página de repositorios puedes asignar a cada uno una categoría de las predefinidas y decidir si será público. Además puedes modificar la descripción o escribir una personalizada en caso de no tener una. El botón GUARDAR almacenará los cambios realizados sobre los repositorios visibles en pantalla. El botón ACTUALIZAR pondrá al día todos los repositorios que ya estén guardados. Por último el botón ELIMINADOS eliminará los repositorios que hayan desaparecido de GitHub desde la última actualización.</p></br>
+            <p style="text-align: justify;">Haciendo click en los apartado de Equipos y Miembros se actualizarán la información de los mismos.</p></br>
+            <p style="text-align: justify;">Para cualquier duda o mejora que te gustaría incluir puedes escribir un correo a <i>alberto.esteban92@gmail.com<i>.</p></br>
+            <p style="text-align: center;"><b>¡Gracias por mantener la web actualizada!</b></p></br>
+            <p class="debug-url"></p>
+          </div>
+          <div class="modal-footer">
+            <!-- BOTONES DEL MODAL -->
+            <button type="button" class="btn btn-primary"data-dismiss="modal">Entendido</button>
           </div>
         </div>
       </div>
