@@ -26,7 +26,8 @@ Usage:
 {% if site.JB.pages_list.provider == "custom" %}
   {% include custom/pages_list %}
 {% else %}
-  {% for node in pages_list %}
+  {% assign sorted_pages = site.pages | sort:"order" %}
+  {% for node in sorted_pages %}
     {% if node.description != "categories" %}
       {% if node.title != null %}
         {% if group == null or group == node.group %}
@@ -41,7 +42,7 @@ Usage:
     {% endif %}  
   {% endfor %}
 
-  {% for node in pages_list %}
+  {% for node in sorted_pages %}
     {% if node.description == "categories" and page.url == node.url %}
       {% assign isCategory = true %}
       {% break %}
@@ -57,7 +58,7 @@ Usage:
     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Categorías<span class="caret"></span></a>
   {% endif %}
   <ul class="dropdown-menu">
-  {% for node in pages_list %}
+  {% for node in sorted_pages %}
     {% if node.description == "categories" %}
       {% if node.title != null %}
         {% if group == null or group == node.group %}
@@ -74,5 +75,5 @@ Usage:
   </ul>
   </li>
 {% endif %}
-{% assign pages_list = nil %}
+{% assign sorted_pages = nil %}
 {% assign group = nil %}

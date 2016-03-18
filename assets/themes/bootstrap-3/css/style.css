@@ -72,7 +72,7 @@
 
 /* COLOR DEL GSI */
 h1, h2, h3, h4 {
-  color: #00A9E0;
+  color: #00629b;
 }
  /* ESTILO PARA EL FOOTER DE LA PAGINA */
 #footer {
@@ -232,6 +232,36 @@ body{
 
 #div-image-6{
   background-image: url("./images/OTROS-image.png");
+}
+
+#div-image-members{
+  min-height:192px;
+  background-image: url("./images/members.png");
+}
+
+#div-image-members:hover{
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
+}
+
+#div-image-repos{
+  min-height:192px;
+  background-image: url("./images/repos.png");
+}
+
+#div-image-repos:hover{
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
+}
+
+#div-image-teams{
+  min-height:192px;
+  background-image: url("./images/teams.png");
+}
+
+#div-image-teams:hover{
+  -webkit-filter: grayscale(100%); 
+  filter: grayscale(100%);
 }
 
 /* Efecto al situar el curso encima de los divs principales */
@@ -463,6 +493,10 @@ body{
     border-color: #00A9E0;
 }
 
+#titulo-repositorio{
+  margin-top:20px;
+}
+
 .panel-heading.title-info-repo{
   padding-left: 8px;
   padding-top:1px;
@@ -524,9 +558,6 @@ body{
   font-size:15px;
 
 }
-
-
-
 
 /* ESTILOS PARA FIJAR EL MENÚ LATERAL DE LA PÁGINA DE REPOSITORIOS */
 .affix-top,.affix{
@@ -636,8 +667,7 @@ body{
   }
 }
 
-/* ESTILI PARA LA VISUALIZACION DE LOS EQUIPOS */
-
+/* ESTILO PARA LA VISUALIZACION DE LOS EQUIPOS */
 .jumbotron.team-main{
   background: #ABDDEC;
   background: -webkit-linear-gradient(#AEBEC4, #CFE5EC); 
@@ -655,4 +685,47 @@ body{
   color:black;
   font-weight: bold;
   font-size:19px; 
+}
+
+/* ESTILO PARA LOS CONTENEDORES DE LA PAGINA PRINCIPAL */
+.info-row-index{
+  margin-top:40px;
+  margin-bottom:10px;
+}
+
+.jumbotron.info-index{
+  padding:15px 15px 15px 15px;
+  min-height:150px;
+  background: #C7D3D7;
+  background: -webkit-linear-gradient(#C7D3D7, #F3FAFC); 
+  background: -o-linear-gradient(#C7D3D7, #F3FAFC); 
+  background: -moz-linear-gradient(#C7D3D7, #F3FAFC); 
+  background: linear-gradient(#C7D3D7, #F3FAFCf); 
+
+}
+
+.jumbotron.info-index p{
+  text-align:justify;
+  font-size:16px;
+}
+
+#index-logo{
+  min-height:150px;
+  background-image: url("./images/logo_title.png");
+}
+
+.logo-container{
+  padding:0 !important;
+  margin:0;
+  background: none;
+}
+
+.logo-container img{
+  margin:0;
+}
+
+@media (min-width: 768px){
+.logo-container{
+  min-height:200px;
+  }
 }
