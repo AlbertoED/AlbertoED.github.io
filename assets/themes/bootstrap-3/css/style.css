@@ -676,10 +676,10 @@ body{
 /* ESTILO PARA LA VISUALIZACION DE LOS EQUIPOS */
 .jumbotron.team-main{
   background: #ABDDEC;
-  background: -webkit-linear-gradient(#AEBEC4, #CFE5EC); 
+  /*background: -webkit-linear-gradient(#AEBEC4, #CFE5EC); 
   background: -o-linear-gradient(#AEBEC4, #CFE5EC); 
   background: -moz-linear-gradient(#AEBEC4, #CFE5EC); 
-  background: linear-gradient(#AEBEC4, #CFE5EC); 
+  background: linear-gradient(#0683AD, #CFE5EC); */
   text-align:center;
   padding:20px 10px 20px 10px; 
 }
