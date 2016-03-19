@@ -1284,15 +1284,24 @@
                 console.log(node);
                 //Entro en bucle con los miembros y monto una cadena  
                 var arrayMembers = childData.members;
-                var stringMembers  = "";
+                var stringMembers1 = "<div class='row'><div class='col-md-6'>";
+                var stringMembers2 = "<div class='col-md-6'>"
+                var contoColumn = 1;
                 for (var p = 0; (p <= arrayMembers.length - 1); p++) {
-                        stringMembers += '<p>' + arrayMembers[p] + '<p>';
+                    if (contoColumn == 1){
+                        stringMembers1 += '<p class="members-teams-left">' + arrayMembers[p] + '</p>';
+                        contoColumn = 2;
+                    }else{
+                        stringMembers2 += '<p class="members-teams-right">' + arrayMembers[p] + '</p>';
+                        contoColumn = 1;
+                    }
                 }; 
                 //Añado al final las etiquetas de cierre de los contenedores
-                stringMembers += '</div></div>';
+                stringMembers1 += '</div>';
+                stringMembers2 += '</div></div>';
                 //Añado la cabecera desplegable
                 $('<div class="jumbotron team-main" data-toggle="collapse" data-target="#div' + childData.id + '"><h4>' + childData.name + '</h4>' +
-                '<div class="collapse" id="div' + childData.id + '">' + stringMembers).hide().appendTo(node).fadeIn(1000);
+                '<div class="collapse" id="div' + childData.id + '">' + stringMembers1 + stringMembers2).hide().appendTo(node).fadeIn(1000);
                 if ((cont == 1) || (cont == 2)){
                     cont++;
                 }else{

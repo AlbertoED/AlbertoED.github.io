@@ -10,9 +10,6 @@ title: GSI UPM GitHub
 -->
 <div class="row info-row-index">
   <div class="col-md-4">
-    <div class="jumbotron info-index">
-      <p>GSI UPM GitHub es una página que muestra información sobre los proyectos de GitHub del <b>Grupo de Sistemas Inteligentes de la UPM</b> y sus miembros. </p>
-    </div>
   </div>
   <div class="col-md-4">
       <div class="jumbotron adapted logo-container" align="center">
@@ -20,9 +17,6 @@ title: GSI UPM GitHub
       </div>
   </div>
   <div class="col-md-4">
-    <div class="jumbotron info-index">
-      <p>Todos los repositorios que aparecen en esta página pertenecen a la cuenta <b>gsi-upm</b> de GitHub y han sido desarrollados por sus colaboradores.</p>
-    </div>
   </div>
 </div>
 
@@ -123,6 +117,15 @@ title: GSI UPM GitHub
     <a href="{{ BASE_PATH }}/Equipos.html">
       <div class="jumbotron main-box adapted" id="div-image-teams"></div>
     </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="jumbotron info-index">
+      <p>GSI UPM GitHub es una página que muestra información sobre los proyectos de GitHub del <b>Grupo de Sistemas Inteligentes de la UPM</b> y sus miembros. Todos los repositorios que aparecen en esta página pertenecen a la cuenta <b>gsi-upm</b> de GitHub y han sido desarrollados por sus colaboradores.</p>
+    </div>
+  </div>
 </div>
 
 

@@ -546,6 +546,12 @@ body{
   width:25px;
 }
 
+@media (max-width: 979px) {
+  #div-logos-footer{
+    text-align: center ;
+  }
+}
+
 .logos-contact:hover {
   -webkit-filter: grayscale(100%); 
   filter: grayscale(100%);
@@ -687,9 +693,23 @@ body{
   font-size:19px; 
 }
 
+.members-teams-left{
+  font-size: 17px;
+  text-align:left;
+  margin-bottom:0;
+  margin-left:20px;
+}
+
+.members-teams-right{
+  font-size: 17px;
+  text-align:right;
+  margin-bottom:0;
+  margin-right:20px;
+}
+
 /* ESTILO PARA LOS CONTENEDORES DE LA PAGINA PRINCIPAL */
 .info-row-index{
-  margin-top:40px;
+  margin-top:20px;
   margin-bottom:10px;
 }
 
@@ -726,6 +746,6 @@ body{
 
 @media (min-width: 768px){
 .logo-container{
-  min-height:200px;
+  min-height:120px;
   }
 }
