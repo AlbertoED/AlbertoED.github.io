@@ -472,6 +472,15 @@ body{
   filter: grayscale(100%);
 }
 
+.container-image-categories{
+  max-height:100px;
+}
+
+.container-image-categories img{
+  margin:auto;
+  max-height:100px;
+}
+
 .saturate {-webkit-filter: saturate(3);}
 
 /* ESTILO DEL PANEL PRINCIPAL DE CADA REPOSITORIO */
@@ -482,6 +491,17 @@ body{
   padding-left: 20px;
   background-color: #CADBE0;
 }
+
+.panel-body.info-repo.panel-image{
+  max-height:270px;
+  text-align: center;
+}
+
+.panel-body.info-repo.panel-image img{
+  margin:auto;
+  max-height:265px;
+}
+
 
 .jumbotron.title-repos a {
      color: black;
@@ -525,7 +545,6 @@ body{
   margin-right:60px;
 }
 
-
 /* CLASE PARA PARA IMPEDIR EL SCROLL */
 .stop-scrolling {
   height: 100%;
@@ -562,7 +581,15 @@ body{
 /* ESTILO PARA EL PANEL DE CADA REPOSITORIO EN LA VISTA DE TODOS */
 .category-repositories.all{
   font-size:15px;
+}
 
+.container-image-all{
+  max-height:155px;
+}
+
+.container-image-all img{
+  margin:auto;
+  max-height:150px;
 }
 
 /* ESTILOS PARA FIJAR EL MENÚ LATERAL DE LA PÁGINA DE REPOSITORIOS */
@@ -748,4 +775,11 @@ body{
 .logo-container{
   min-height:120px;
   }
+}
+
+/* TAMAÑO DEL MODAL DE INFO */
+@media (min-width: 700px){
+  #modal-info{
+    width: 700px;
+  } 
 }

@@ -116,7 +116,8 @@
                         '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
                         '<div class="col-md-8"><b>Fecha última actualización: </b>' + fechaUp + '</div>' +
                         '<div class="col-md-2"><b>Perfil: </b>' + privacidad + '</div></div>' +
-                        '<div class="row"><div class="col-md-12"><b>Descripción: </b><input type="text" class="form-control" placeholder="Este repositorio no tiene descripción en Github. Introduzca una personalizada." id="input-description' + this.id +'"></div></div></div></div>').hide().appendTo(node).fadeIn(1000);
+                        '<div class="row"><div class="col-md-12"><b>Descripción: </b><input style="margin-bottom:10px;" type="text" class="form-control" placeholder="Este repositorio no tiene descripción en Github. Introduzca una personalizada." id="input-description' + this.id +'"></div></div>' +
+                        '<div class="row"><div class="col-md-12"><b>URL imagen: </b><input type="text" class="form-control" placeholder="Introduzca una url con la imagen para el proyecto" id="input-urlImage' + this.id +'"></div></div></div></div>').hide().appendTo(node).fadeIn(1000);                        
                         //Comprobamos una vez creado el input de la descripción si existe una.
                         if (this.description != ""){
                             document.getElementById('input-description' + this.id).value = this.description;    
@@ -134,6 +135,7 @@
                                         var toggleValue = reposFire.show;
                                         var selectValue = reposFire.category;
                                         var descripcionFirebase = reposFire.description;
+                                        var urlImage = reposFire.urlImage;
                                         //console.log(IDRepo + " " + toggleValue + " " + selectValue);
                                         //Asignamos la categoria
                                         $("#select" + IDRepo).val(selectValue);
@@ -146,7 +148,11 @@
                                         //Comprobamos si tiene descripción propia y si la tiene sobrescribimos la de GitHub
                                         if (descripcionFirebase != "-" ){
                                             document.getElementById('input-description' + IDRepo).value = descripcionFirebase;                  
-                                        }                                                                                  
+                                        }
+                                        //Comprobamos si tiene url de imagen ya definida y si la tiene la mostramos
+                                        if (urlImage != "assets/themes/bootstrap-3/css/images/image-url-default.png" ){
+                                            document.getElementById('input-urlImage' + IDRepo).value = urlImage;                  
+                                        }                                                                                     
                                 });
                             }
                         });
@@ -170,7 +176,6 @@
                 $('#container-main').removeClass("loading");
         });
     };
-
     /* FUNCION QUE TOMA COMO PARAMETRO DE ENTRADA UNA STRING DE FECHA Y LO DEVUELVE EN OTRO FORMATO */
     function stringDate(date) {
         return (date.substring(8,10) + '-' + date.substring(5,7) + '-' + date.substring(0,4) +' ' + date.substring(11,13) + ':' + date.substring(14,16));
@@ -306,7 +311,8 @@
                         '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
                         '<div class="col-md-8"><b>Fecha última actualización: </b>' + fechaUp + '</div>' +
                         '<div class="col-md-2"><b>Perfil: </b>' + privacidad + '</div></div>' +
-                        '<div class="row"><div class="col-md-12"><b>Descripción: </b><input type="text" class="form-control" placeholder="Este repositorio no tiene descripción en Github. Introduzca una personalizada." id="input-description' + this.id +'"></div></div></div></div>').hide().appendTo(node).fadeIn(1000);
+                        '<div class="row"><div class="col-md-12"><b>Descripción: </b><input style="margin-bottom:10px;" type="text" class="form-control" placeholder="Este repositorio no tiene descripción en Github. Introduzca una personalizada." id="input-description' + this.id +'"></div></div>' +
+                        '<div class="row"><div class="col-md-12"><b>URL imagen: </b><input type="text" class="form-control" placeholder="Introduzca una url con la imagen para el proyecto" id="input-urlImage' + this.id +'"></div></div></div></div>').hide().appendTo(node).fadeIn(1000);            
                         //Comprobamos una vez creado el input de la descripción si existe una.
                         if (this.description != ""){
                             document.getElementById('input-description' + this.id).value = this.description;    
@@ -324,6 +330,7 @@
                                         var toggleValue = reposFire.show;
                                         var selectValue = reposFire.category
                                         var descripcionFirebase = reposFire.description;
+                                        var urlImage = reposFire.urlImage;
                                         console.log(IDRepo + " " + toggleValue + " " + selectValue);
                                         $("#select" + IDRepo).val(selectValue);
                                         if (toggleValue == true){
@@ -334,7 +341,11 @@
                                         //Comprobamos si tiene descripción propia y si la tiene sobrescribimos la de GitHub
                                         if (descripcionFirebase != "-" ){
                                             document.getElementById('input-description' + IDRepo).value = descripcionFirebase;                  
-                                        }                                                                                  
+                                        }
+                                        //Comprobamos si tiene url de imagen ya definida y si la tiene la mostramos
+                                        if (urlImage != "assets/themes/bootstrap-3/css/images/image-url-default.png" ){
+                                            document.getElementById('input-urlImage' + IDRepo).value = urlImage;                  
+                                        }                                                                                     
                                 });
                             }
                         });
@@ -430,12 +441,18 @@
                             }else{
                                 var description = $('#input-description' + responseRepoInfo.data.id).val();
                             }
-
+                            //Comprobamos si tiene urlImage personalizada:
+                            if ($('#input-urlImage' + responseRepoInfo.data.id).val() == ''){
+                                var urlImageFire = "assets/themes/bootstrap-3/css/images/image-url-default.png";
+                            }else{
+                                var urlImageFire = $('#input-urlImage' + responseRepoInfo.data.id).val();
+                            }
                             reposRef.child(responseRepoInfo.data.id).set({
                                 id: responseRepoInfo.data.id,
                                 name: responseRepoInfo.data.name,
                                 owner: responseRepoInfo.data.owner.login,
                                 html_url: responseRepoInfo.data.html_url,
+                                urlImage: urlImageFire,
                                 description: description,
                                 created_at: responseRepoInfo.data.created_at,
                                 updated_at: responseRepoInfo.data.updated_at,
@@ -834,18 +851,21 @@
                     }
                 }; 
                 console.log(stringCollaborators);
-                $('<div class="panel panel-primary"><div class="panel-body">' +
-                '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Descripción: </b></div><div class="panel-body info-repo">' + infoRepo.description + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at) + '</div></div></div></div>' + 
-                '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Categoría: </b></div><div class="panel-body info-repo">' + cat + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha Creación: </b></div><div class="panel-body info-repo">'+ stringDate(infoRepo.created_at) + '</div></div></div></div>' +
-                '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Autor: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div>' +
-                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' +
+                $('<div class="panel panel-primary"><div class="panel-body"><div class="row">' +
+                '<div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Descripción: </b></div><div class="panel-body info-repo">' + infoRepo.description + '</div></div>' +
+                '<div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Categoría: </b></div><div class="panel-body info-repo">' + cat + '</div></div>' +
+                '<div class="row"><div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha Creación: </b></div><div class="panel-body info-repo">'+ stringDate(infoRepo.created_at) + '</div></div></div>' +
+                '<div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at) + '</div></div></div></div>' + 
+                '<div class="row"><div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Propietario: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
+                '<div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div></div></div>' +
+
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-body info-repo panel-image"><img class="img-responsive" src="' + infoRepo.urlImage + '"></div></div></div></div>' +
+
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño base del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a><a target="_blank" href="' + infoRepo.html_url + '" title="Ver proyecto en GitHub"><img class="img-git" border="0" src="assets/themes/bootstrap-3/css/images/git-url.png" width="51" height="51"></a></div></div></div></div>' +
-                '<div class="row"><div class="col-md-12"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div></div>' +                 
+                '<div class="row"><div class="col-md-8"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Colaboradores: </b></div><div class="panel-body info-repo" style="text-align: center;">' + stringCollaborators + '</div></div></div>' + 
+                '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Perfil: </b></div><div class="panel-body info-repo">' + perfilGit + '</div></div></div></div>' +                
                 '<div class="row"><div class="col-md-12 readme" class="style-Readme"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Readme: </b></div><div class="panel-body info-repo">' + decodedReadme + '</div></div></div></div>').appendTo(node);           
                 $('#container-main').removeClass("loading");
                 $('body').removeClass("stop-scrolling");
@@ -899,9 +919,9 @@
                     node = $("#column-" + idShowDiv + "-" + cont);
                     console.log(node);
                     $('<div class="panel panel-primary category-repositories" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
-                    '<div class="panel-body"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
-                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
-                    '<p><b>Autores: </b>' + stringCollaborators + '</p></div></div>').hide().appendTo(node).fadeIn(1000);
+                    '<div class="panel-body"><div class="row">' +
+                    '<div class="col-md-7"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +'<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +'<p><b>Autores: </b>' + stringCollaborators + '</p></div>' +
+                    '<div class="col-md-5"><div class="container-image-categories"><img class="img-responsive" src="' + infoRepo.urlImage + '"></div></div></div></div>').hide().appendTo(node).fadeIn(1000);
                     if (cont == 1){
                         cont++;
                     }else{
@@ -1007,14 +1027,24 @@
                             stringCollaborators += arrayCollaborators[p] + " | ";
                         }
                     };
-                    $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    /*$('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body">' + 
                     '<div class="row"><div class="col-md-6"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p></div>' +
                     '<div class="col-md-6"><p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p></div></div>' +
                     '<div class="row"><div class="col-md-8"><p><b>Categoría: </b>'+ cat + '</p></div>' +
                     '<div class="col-md-4"><p><b>Id: </b>'+ infoRepo.id + '</p></div></div>' +
                     '<div class="row"><div class="col-md-12"><p><b>Autores: </b>'+ stringCollaborators + '</p></div></div>' + 
-                    '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000);   
+                    '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000); */
+                    $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
+                    '<div class="panel-body">' + 
+                    '<div class="row"><div class="col-md-8"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
+                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
+                    '<p><b>Categoría: </b>'+ cat + '</p>' +
+                    '<p><b>Id: </b>'+ infoRepo.id + '</p>' +
+                    '<p><b>Autores: </b>'+ stringCollaborators + '</p></div>' +
+                    '<div class="col-md-4"><div class="container-image-all"><img class="img-responsive" src="' + infoRepo.urlImage + '"></div></div></div>' +
+                    '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000);      
+
                 //});
             });
             //Llamamos de manera síncrona a las funciones de obtener las fechas
