@@ -858,9 +858,7 @@
                 '<div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Fecha última modificación: </b></div><div class="panel-body info-repo">' + stringDate(infoRepo.updated_at) + '</div></div></div></div>' + 
                 '<div class="row"><div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Propietario: </b></div><div class="panel-body info-repo">'+ infoRepo.owner + '</div></div></div>' + 
                 '<div class="col-md-6"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>ID: </b></div><div class="panel-body info-repo">' + infoRepo.id + '</div></div></div></div></div>' +
-
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-body info-repo panel-image"><img class="img-responsive" src="' + infoRepo.urlImage + '"></div></div></div></div>' +
-
                 '<div class="row"><div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Lenguaje principal: </b></div><div class="panel-body info-repo">'+ infoRepo.language + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo"><div class="panel-heading title-info-repo"><b>Tamaño base del proyecto: </b></div><div class="panel-body info-repo">' + tamano + '</div></div></div>' +
                 '<div class="col-md-4"><div class="panel panel-primary info-repo" style="border:none;"><div class="panel-body info-repo"><a href="' + infoRepo.download_zip_url + '" title="Descargar proyecto"><img border="0" class="img-zip" src="assets/themes/bootstrap-3/css/images/zip-logo.png" width="51" height="51"></a><a target="_blank" href="' + infoRepo.html_url + '" title="Ver proyecto en GitHub"><img class="img-git" border="0" src="assets/themes/bootstrap-3/css/images/git-url.png" width="51" height="51"></a></div></div></div></div>' +
@@ -1215,11 +1213,12 @@
                     total++; 
                     $('<div class="panel panel-primary category-repositories all" onclick="addIdReposToURL(' + infoRepo.id +')"><div class="panel-heading category-repositories" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin">' + infoRepo.name + '</p></div>' +
                     '<div class="panel-body">' + 
-                    '<div class="row"><div class="col-md-6"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p></div>' +
-                    '<div class="col-md-6"><p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p></div></div>' +
-                    '<div class="row"><div class="col-md-8"><p><b>Categoría: </b>'+ cat + '</p></div>' +
-                    '<div class="col-md-4"><p><b>Id: </b>'+ infoRepo.id + '</p></div></div>' +
-                    '<div class="row"><div class="col-md-12"><p><b>Autores: </b>'+ stringCollaborators + '</p></div></div>' + 
+                    '<div class="row"><div class="col-md-8"><p><b>Fecha Creación: </b>'+ stringDate(infoRepo.created_at) + '</p>' +
+                    '<p><b>Fecha Actualización: </b>'+ stringDate(infoRepo.updated_at) + '</p>' +
+                    '<p><b>Categoría: </b>'+ cat + '</p>' +
+                    '<p><b>Id: </b>'+ infoRepo.id + '</p>' +
+                    '<p><b>Autores: </b>'+ stringCollaborators + '</p></div>' +
+                    '<div class="col-md-4"><div class="container-image-all"><img class="img-responsive" src="' + infoRepo.urlImage + '"></div></div></div>' +
                     '<div class="row"><div class="col-md-12"><p style="text-align:justify;"><b>Descripción: </b>' + infoRepo.description + '</p></div></div></div></div>').hide().appendTo(node).fadeIn(1000);   
                 //});
             });
