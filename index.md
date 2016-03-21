@@ -13,7 +13,7 @@ title: GSI UPM GitHub
   </div>
   <div class="col-md-4">
       <div class="jumbotron adapted logo-container" align="center">
-        <img class="img-responsive" src="assets\themes\bootstrap-3\css\images\logo_title.png">
+        <img class="img-responsive" src="assets/themes/bootstrap-3/css/images/logo_title.png">
       </div>
   </div>
   <div class="col-md-4">
