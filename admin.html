@@ -6,7 +6,7 @@ header : Post Archive
 {% include JB/setup %}
 <!-- CONTROL DE SOLO ACCESO SI LA SESION ESTA INICIADA -->
 <script type="text/javascript" >
-    accesoAdmin();
+    accessAdmin();
 </script>
 <div class="page-header" style="margin-top:10px;" align="center">
     <h1>Administración de repositorios</h1>
@@ -36,13 +36,13 @@ header : Post Archive
             <ul class="nav navbar-nav control-navbar">
                 <li><button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" data-target="#confirmar-guardar" class="btn btn-primary btn-lg izda">Guardar</button>
                 <button id="btnActualizarRepositorios" type="button" data-toggle="modal" data-target="#confirmar-actualizar" class="btn btn-primary btn-lg izda">Actualizar</button>
-                <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" onclick="checkReposEliminados()" class="btn btn-primary btn-lg izda">Eliminados</button></li>
+                <button id="btnGuardarRepositorios-arriba" type="button" data-toggle="modal" onclick="checkDeletedRepositories()" class="btn btn-primary btn-lg izda">Eliminados</button></li>
             </ul>
             <div class="navbar-form navbar-right">
                 <div class="input-group">
-                    <button class="btn btn-default search-control" onclick="verTodos()">Todos</button>
-                    <input type="text" class="form-control" placeholder="Buscar ID o nombre" id="srch-control-navbar" onkeypress="if (event.keyCode == 13) filtrarRepositorios()">
-                    <button class="btn btn-default search-control" onclick="filtrarRepositorios()"><i class="glyphicon glyphicon-search"></i></button>
+                    <button class="btn btn-default search-control" onclick="filterOffAdmin()">Todos</button>
+                    <input type="text" class="form-control" placeholder="Buscar ID o nombre" id="srch-control-navbar" onkeypress="if (event.keyCode == 13) filterRepositories()">
+                    <button class="btn btn-default search-control" onclick="filterRepositories()"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>
 
@@ -78,7 +78,7 @@ header : Post Archive
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <a href="#" class="btn btn-primary" onclick="guardarSeleccion()">Confirmar</a>
+                    <a href="#" class="btn btn-primary" onclick="saveRepositories()">Confirmar</a>
                 </div>
             </div>
         </div>
@@ -101,7 +101,7 @@ header : Post Archive
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <a href="#" class="btn btn-primary" onclick="actualizarRepos()">Confirmar</a>
+                    <a href="#" class="btn btn-primary" onclick="updateRepositories()">Confirmar</a>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@ header : Post Archive
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <a href="#" class="btn btn-primary" onclick="eliminarRepos()">Eliminar</a>
+                    <a href="#" class="btn btn-primary" onclick="deleteRepositories()">Eliminar</a>
                 </div>
             </div>
         </div>

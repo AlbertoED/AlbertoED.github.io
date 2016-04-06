@@ -20,8 +20,12 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.3.0/showdown.js"></script>
     <script src="{{ ASSET_PATH }}/bootstrap/js/rundown.js"></script>
-    <script src="{{ ASSET_PATH }}/bootstrap/js/gitquery.js"></script>
-    <script src="{{ ASSET_PATH }}/bootstrap/js/login.js"></script>
+    <!-- ARCHIVOS JS PROPIOS -->
+    <script src="{{ ASSET_PATH }}/bootstrap/js/general-functions.js"></script>
+    <script src="{{ ASSET_PATH }}/bootstrap/js/admin-functions.js"></script>
+    <script src="{{ ASSET_PATH }}/bootstrap/js/login-functions.js"></script>
+    <script src="{{ ASSET_PATH }}/bootstrap/js/show-functions.js"></script>
+
     <meta name="author" content="{{ site.author.name }}">
     <!-- Contenido necesario para usar el objeto datetimepicker -->
     <script type="text/javascript" src="{{ ASSET_PATH }}/bootstrap/js/moment-with-locales.min.js"></script>
@@ -125,7 +129,7 @@
                   <li class="divider"></li>
                   <li><a href="#" data-toggle="modal" data-target="#myModalInfo"><span class="glyphicon glyphicon-info-sign"></span>     Información</a></li>
                   <li class="divider"></li>
-                  <li><a href="#" onclick="cerrarSesionNavbar()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
+                  <li><a href="#" onclick="logoutUser()"><span class="glyphicon glyphicon-log-out"></span>     Log Out</a></li>
 
                 </ul>
           </div>
@@ -198,39 +202,25 @@
               <input type="password" class="form-control" name="pswrd" id="pwd" placeholder="Introduzca la contraseña" onkeypress="if (event.keyCode == 13) loginUser(this.form)">
           </div>
 
-              <!--Usuario: <input type="text" name="userid"/></br></br>
-              Contraseña: <input type="password" name="pswrd"/> -->
           </div>
+
           <div class="container">
-            </div>
+          </div>
             <!-- Contenedores que se muestran en caso de producirse error en el Login, se introducir un usuario correcto o de aviso si ya está logado -->
             <!-- MENSAJE ERROR -->
             <div class="alert alert-danger fade in" style="display:none;">
                 <a href="#" class="close" onclick="$('.alert-danger').hide()">&times;</a>
                 <strong>¡Error!</strong> La contraseña o el usuario no son correctos.
             </div>
-        
-        <!-- MENSAJE EXITO -->
-          <div class="alert alert-success fade in" style="display:none;">
-              <a href="#" class="close" onclick="$('.alert-success').hide()">&times;</a>
-              <strong>¡Bienvenido!</strong> Usuario y contraseña correctos.
-          </div>
-
-        <!-- MENSAJE INFO YA CONECTADO -->
-          <div class="alert alert-info fade in" style="display:none;">
-              <a href="#" class="close" onclick="$('.alert-info').hide()">&times;</a>
-              Ya has iniciado sesión como <strong><span id="usuarioInfo"></span></strong>.
-          </div>
-
-        <!-- MENSAJE FIN SESION -->
-          <div class="alert alert-warning fade in" style="display:none;">
-              <a href="#" class="close" onclick="$('.alert-warning').hide()"s>&times;</a>
-              <strong>¡Advertencia!</strong> La sesión ha expirado.
+      
+            <!-- MENSAJE EXITO -->
+            <div class="alert alert-success fade in" style="display:none;">
+                <a href="#" class="close" onclick="$('.alert-success').hide()">&times;</a>
+                <strong>¡Bienvenido!</strong> Usuario y contraseña correctos.
             </div>
 
           <div class="modal-footer">
             <!-- BOTONES DEL MODAL -->
-            <button type="button" class="btn btn-default" onclick="cerrarSesion()" style="display:none;" id="btnFinSesion">Salir de la sesión</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             <button type="button" class="btn btn-primary" onclick="loginUser(this.form)" value="Login">Entrar</button>
           </div>
@@ -257,7 +247,7 @@
           <div class="modal-footer">
             <!-- BOTONES DEL MODAL -->
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" onclick="actualizarMiembros()" value="Login">Actualizar</button>
+            <button type="button" class="btn btn-primary" onclick="updateMembers()" value="Login">Actualizar</button>
           </div>
         </div>
       </div>
@@ -281,7 +271,7 @@
           <div class="modal-footer">
             <!-- BOTONES DEL MODAL -->
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" onclick="actualizarEquipos()" value="Login">Actualizar</button>
+            <button type="button" class="btn btn-primary" onclick="updateTeams()" value="Login">Actualizar</button>
           </div>
         </div>
       </div>
@@ -315,6 +305,27 @@
       </div>
     </div>
 
+    <!-- Código para el popup de sesion expirada -->
+    <!-- Modal -->
+      <div class="modal fade" id="myModalSessionExpired" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Información</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning">
+                <strong>¡Atención!</strong> La sesión ha expirado.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- BOTONES DEL MODAL -->
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- SAVE NOTIFICATION -->
     <div class="hidden-xs">
         <div class="notifications">
@@ -323,6 +334,7 @@
             <div class="notification empty eliminado"><p><img src="assets/themes/bootstrap-3/css/images/exclamacion.png" style="width:14 px; height:14px;">   No hay repositorios que eliminar</p></div>
             <div class="notification ok guardado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Guardado correctamente</p></div> 
             <div class="notification ok eliminado"><p><img src="assets/themes/bootstrap-3/css/images/tick.png" style="width:14 px; height:14px;">   Eliminados correctamente</p></div>
+            <div class="notification empty finSesion"><p><img src="assets/themes/bootstrap-3/css/images/exclamacion.png" style="width:14 px; height:14px;">   Sesión cerrada</p></div>
         </div>
     </div> 
 
