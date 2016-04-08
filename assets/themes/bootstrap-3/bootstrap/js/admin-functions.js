@@ -542,7 +542,7 @@
                         name: this.login,
                         html_url: this.html_url,
                         url_image: this.avatar_url,
-                        rol: "Miembro"
+                        role: "Miembro"
                     });                      
                 });
                 //Una vez guardados los miembros, realizamos el mismo proceso para los admins
@@ -555,7 +555,7 @@
                             name: this.login,
                             html_url: this.html_url,
                             url_image: this.avatar_url,
-                            rol: "Admin"
+                            role: "Admin"
                         });                      
                     });
                     $('#container-main').removeClass("loading");
