@@ -29,7 +29,8 @@
         var privacidad;
         var target = this;
         loadingProjects = true;
-        $.gitUser(function (data) {
+        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=9&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', function(data) {
+            console.log(data);
         repos = data.data;
             // Comprobamos si la peticion ya no devuelve mas objetos y en ese caso ya no se envían mas peticiones a github
             // y se termina el infinite scroll
@@ -126,10 +127,10 @@
         });
     };
 
-    /* FUNCION PARA PEDIR LOS REPOSITORIOS DE UN USUARIO */
-    jQuery.gitUser = function (callback) {
-
-        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=9&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', callback);
+    /* FUNCION PARA MOSTRAR TANTOS PROYECTOS COMO QUEPAN EN LA PANTALLA */
+    function loadMore() {
+        currentPage++;
+        loadRepositoriesGithub();
     };
 
     /* FUNCION PARA FILTRAR POR NOMBRE E ID EN LA PÁGINA DE ADMIN */
@@ -354,6 +355,78 @@
         });
     };
 
+    /* FUNCION PARA COMPROBAR SI ALGUN REPOSITORIO GUARDADO HA SIDO ELIMINADO */
+    function checkDeletedRepositories() {
+        $('#container-main').addClass("loading");
+        var refTemp = new Firebase(nameBBDD + 'repos');
+        var arrayReposGit = new Array();
+        var node = $('#display-deleted-repos');
+        var boolHayEliminados = false;
+        //Vacio el nodo
+        node.empty();
+        //Guardo en un array los ids de los repositorios actuales en github
+        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
+            var repos = responseRepos.data; // JSON Parsing
+            var i = 0;
+            var j = 0;
+            $(repos).each(function () {
+                arrayReposGit[i] = this.id;
+                i++;
+            });
+            //Recojo los ids que tenemos en Firebase. Si alguno no se encuentra entre los de github, significa que se ha borrado
+            refTemp.on("value", function(snapshot) {
+                 snapshot.forEach(function(childSnapshot) {
+                    var childData = childSnapshot.val();
+                    var idRepo = childData.id;
+                    var nameRepo = childData.name;
+                    var bool = false;
+                    //Para cada repositorio compruebo que se encuentre entre los de github, si no lo añado a un array
+                    for (var p = 0; (p <= arrayReposGit.length - 1); p++) {
+                        if (arrayReposGit[p] == idRepo){
+                            bool = true;
+                            break;
+                        }
+                    };
+                    //Si bool = false el repositorio se ha eliminado de GitHub y lo mostramos en el modal de eliminar
+                    if (bool == false){
+                        boolHayEliminados = true;
+                        $('<div class="row deleted"><div class="col-md-6"><p><b>Nombre: </b>'+ nameRepo + '</p></div>' + 
+                        '<div class="col-md-6"><p><b>Id: </b>'+ idRepo + '</p></div>').appendTo(node);
+                        arrayReposEliminados[j] = idRepo;
+                        j++;
+                    }
+                });
+                //Por último mostramos el modal aun dentro del callback y si no hay eliminados lo informamos
+                if (boolHayEliminados == false){
+                    $('<p class="align-center"><b>Todos permanecen en GitHub</b></p>').appendTo(node);
+                }
+            });
+            $('#container-main').removeClass("loading");
+            $('#confirmar-eliminar').modal('show');
+        });
+    };
+
+    /* FUNCION PARA ELIMINAR LOS REPOSITORIOS QUE ESTAN EN FIREBASE PERO HAN SIDO ELIMINADOS DE GITHUB */
+    function deleteRepositories() {
+        //Recorremos el bucle de repositorios que ya no estan en github y los eliminamos de firebase
+        for (var p = 0; (p <= arrayReposEliminados.length - 1); p++) {
+            var childRepo = new Firebase(nameBBDD + 'repos/' + arrayReposEliminados[p]);
+            childRepo.remove();
+        };
+        $('#confirmar-eliminar').modal('hide');
+        if (arrayReposEliminados.length != 0){
+            $(".notifications .notification.eliminado.ok").addClass("active");
+            setTimeout(function() {
+                $(".notifications .notification.eliminado").removeClass("active");
+            }, 3000);  
+        }else{
+            $(".notifications .notification.eliminado.empty").addClass("active");
+            setTimeout(function() {
+                $(".notifications .notification.eliminado").removeClass("active");
+            }, 3000); 
+        }
+    };
+
     /* FUNCION PARA ACTUALIZAR LOS DATOS DE LOS REPOSITORIOS EN FIREBASE. SI ALGUNO NO ESTÁ EN FIREBASE SE AÑADE */
     function updateRepositories() {
         //Cerramos el modal
@@ -447,80 +520,7 @@
             });
             
         });
-    };
-
-    /* FUNCION PARA COMPROBAR SI ALGUN REPOSITORIO GUARDADO HA SIDO ELIMINADO */
-    function checkDeletedRepositories() {
-        $('#container-main').addClass("loading");
-        var refTemp = new Firebase(nameBBDD + 'repos');
-        var arrayReposGit = new Array();
-        var node = $('#display-deleted-repos');
-        var boolHayEliminados = false;
-        //Vacio el nodo
-        node.empty();
-        //Guardo en un array los ids de los repositorios actuales en github
-        jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepos){
-            var repos = responseRepos.data; // JSON Parsing
-            var i = 0;
-            var j = 0;
-            $(repos).each(function () {
-                arrayReposGit[i] = this.id;
-                i++;
-            });
-            //Recojo los ids que tenemos en Firebase. Si alguno no se encuentra entre los de github, significa que se ha borrado
-            refTemp.on("value", function(snapshot) {
-                 snapshot.forEach(function(childSnapshot) {
-                    var childData = childSnapshot.val();
-                    var idRepo = childData.id;
-                    var nameRepo = childData.name;
-                    var bool = false;
-                    //Para cada repositorio compruebo que se encuentre entre los de github, si no lo añado a un array
-                    for (var p = 0; (p <= arrayReposGit.length - 1); p++) {
-                        if (arrayReposGit[p] == idRepo){
-                            bool = true;
-                            break;
-                        }
-                    };
-                    //Si bool = false el repositorio se ha eliminado de GitHub y lo mostramos en el modal de eliminar
-                    if (bool == false){
-                        boolHayEliminados = true;
-                        $('<div class="row deleted"><div class="col-md-6"><p><b>Nombre: </b>'+ nameRepo + '</p></div>' + 
-                        '<div class="col-md-6"><p><b>Id: </b>'+ idRepo + '</p></div>').appendTo(node);
-                        arrayReposEliminados[j] = idRepo;
-                        j++;
-                    }
-                });
-                //Por último mostramos el modal aun dentro del callback y si no hay eliminados lo informamos
-                if (boolHayEliminados == false){
-                    $('<p class="align-center"><b>Todos permanecen en GitHub</b></p>').appendTo(node);
-                }
-            });
-            $('#container-main').removeClass("loading");
-            $('#confirmar-eliminar').modal('show');
-        });
-    };
-
-
-    /* FUNCION PARA ELIMINAR LOS REPOSITORIOS QUE ESTAN EN FIREBASE PERO HAN SIDO ELIMINADOS DE GITHUB */
-    function deleteRepositories() {
-        //Recorremos el bucle de repositorios que ya no estan en github y los eliminamos de firebase
-        for (var p = 0; (p <= arrayReposEliminados.length - 1); p++) {
-            var childRepo = new Firebase(nameBBDD + 'repos/' + arrayReposEliminados[p]);
-            childRepo.remove();
-        };
-        $('#confirmar-eliminar').modal('hide');
-        if (arrayReposEliminados.length != 0){
-            $(".notifications .notification.eliminado.ok").addClass("active");
-            setTimeout(function() {
-                $(".notifications .notification.eliminado").removeClass("active");
-            }, 3000);  
-        }else{
-            $(".notifications .notification.eliminado.empty").addClass("active");
-            setTimeout(function() {
-                $(".notifications .notification.eliminado").removeClass("active");
-            }, 3000); 
-        }
-    };
+    };        
 
     /* FUNCION PARA GUARDAR LA INFORMACION DE LOS COLABORADORES EN FIREBASE */
     function updateMembers(){
@@ -623,4 +623,4 @@
                 }, 3000);
             });
         });
-    };        
+    };

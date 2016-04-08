@@ -170,12 +170,6 @@
 
          return decodeURIComponent(escape(window.atob(string)));   
     };
-    
-    /* FUNCION PARA MOSTRAR TANTOS PROYECTOS COMO QUEPAN EN LA PANTALLA */
-    function loadMore() {
-        currentPage++;
-        loadRepositoriesGithub();
-    };
 
     /* FUNCIÓN PARA CARGAR EN UN ARRAY GLOBAL LAS CATEGORÍAS */
     function getCategories(callback) {
