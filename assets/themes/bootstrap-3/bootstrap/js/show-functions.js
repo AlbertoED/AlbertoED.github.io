@@ -1,4 +1,5 @@
 /*** FUNCIONES DEL MODULO DE VISUALIZACION - MOSTRAR INFORMACION ****/ 
+
 	/* FUNCION PARA MOSTRAR LA INFORMACION ESPECIFICA DE UN REPOSITORIO CUYO ID SE PASA POR PARAMETRO */
     function showInfoRepository(idParam) {
         $('#container-main').addClass("loading");

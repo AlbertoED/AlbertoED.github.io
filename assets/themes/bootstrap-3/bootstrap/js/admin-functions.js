@@ -446,7 +446,7 @@
                     myDataRef.on("value", function(snapshot) {
                         var elementFirebase = snapshot.child("repos/" + IDRepo).exists();
                         //Si está en Firebase, actualizamos los datos
-                        if (elementFirebase == true){
+                        if (elementFirebase == true){   
                             nOK++;
                             var fechaIn;
                             var privacidad;
@@ -466,7 +466,7 @@
                                         var collaborators = reponseCollaborators.data;
                                         var collaboratorsRepo = new Array();
                                         var i = 0;
-                                        if (collaborators == undefined){
+                                        if ((collaborators == undefined) || (collaborators.length == 0)){
                                             collaboratorsRepo[0] = ("Autor no especificado");
                                         }else{
                                             $(collaborators).each(function() {
