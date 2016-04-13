@@ -7,14 +7,29 @@ order: 6
 ---
 {% include JB/setup %}
 <div class="page-header" style="margin-top:10px;" align="center">
-    <h1>{{page.title}}</h1>
+    <h1 id="title-IWS">{{page.title}}</h1>
 </div>
+<!-- Div par almacenar los repositorios según categoría -->
 <div id="container-IWS">
-	<div class="col-md-6" id="column-IWS-1"></div>
-	<div class="col-md-6" id="column-IWS-2"></div>
+  <div class="row">
+  	<div class="col-md-6" id="column-IWS-1"></div>
+  	<div class="col-md-6" id="column-IWS-2"></div>
+  </div>
 </div>
+
+<div class="row">
+  	<div class="col-md-12">
+    	<div class="jumbotron info-index">
+      		<p>En la página oficial del <b>Grupo de Sistemas Inteligentes de la UPM</b> podrás encontrar información detallada sobre esta categoría y sus proyectos.</p>
+      		<div align="center">
+    			<a href="http://www.gsi.dit.upm.es/es/investigacion/lineas?view=researcharea&task=show&id=12" class="btn btn-primary btn-lg">Ver más</a>
+    		</div>
+    	</div>
+  	</div>
+</div>
+
 <script type="text/javascript">
 	 $(window).load(function(){
-		showRepositoriesByCategory('Ingeniería Web y de servicios','IWS'); 
+		showRepositoriesByCategory(document.getElementById('title-IWS').innerHTML,'IWS'); 
 	});
 </script>

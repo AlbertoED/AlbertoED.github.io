@@ -23,6 +23,17 @@
         if (loadingProjects || stopLoadingProjects){
             return;
         }
+        //Monto la cadena del combo de las categorias a partir del array de categorias ya cargado. La categoría 'sin asignar' se modifica
+        var stringCategoriesOptions  = "";
+       for (var p = 0; (p <= arrayCategories.length - 1); p++) {
+           if (arrayCategories[p] == "Sin asignar"){
+                stringCategoriesOptions += '<option hidden value="' + p + '">Seleccione una categoría</option>';
+                //1Agentes y Simulación Social<option value="2">Big Data y Aprendizaje Automático</option><option value="3">NLP y Análisis de Sentimientos</option><option value="4">La Web de Datos y Tecnologías Semánticas</option><option value="5">Ingeniería Web y de servicios</option><option value="6">Otros</option>
+           }else{
+                stringCategoriesOptions += '<option value="' + p + '">' + arrayCategories[p] + '</option>'
+           }
+        };
+        console.log(stringCategoriesOptions);
         var description;
         var fechaIn;
         var fechaUp;
@@ -31,7 +42,7 @@
         loadingProjects = true;
         jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=9&access_token=' + tokenGit + '&page=' + currentPage + '&callback=?', function(data) {
             console.log(data);
-        repos = data.data;
+            repos = data.data;
             // Comprobamos si la peticion ya no devuelve mas objetos y en ese caso ya no se envían mas peticiones a github
             // y se termina el infinite scroll
             if (repos.length == 0){
@@ -66,7 +77,7 @@
                     $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + this.html_url + '" target="_blank">' + this.name + '</a></p></div>' +
                     '<div class="panel-body"><div class="row"><div class="col-md-2"><p><b>Autor: </b>'+ this.owner.login + '</p></div>' + 
                     '<div class="col-md-3"><p><b>Fecha Creación: </b>'+ fechaIn + '</p></div>' +
-                    '<div class="col-md-5"><div class="form-inline"><b>Categoría: </b><select id="select' + this.id + '" class="form-control"><option hidden value="0">Seleccione una categoría</option><option value="1">Agentes y Simulación Social</option><option value="2">Big Data y Aprendizaje Automático</option><option value="3">NLP y Análisis de Sentimientos</option><option value="4">La Web de Datos y Tecnologías Semánticas</option><option value="5">Ingeniería Web y de servicios</option><option value="6">Otros</option></select></p></div></div> ' +
+                    '<div class="col-md-5"><div class="form-inline"><b>Categoría: </b><select id="select' + this.id + '" class="form-control">' + stringCategoriesOptions + '</select></p></div></div> ' +
                     '<div class="col-md-2"><p><b>¿Mostrar?: </b><input data-toggle="toggle" type="checkbox" id="toggle' + this.id + '"></p></div></div>' +
                     '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
                     '<div class="col-md-8"><b>Fecha última actualización: </b>' + fechaUp + '</div>' +
@@ -139,6 +150,16 @@
         //Comprobamos si se ha introducido algun filtro:
         if ($('#srch-control-navbar').val() != ''){
             isFilter = true;
+            //Monto la cadena del combo de las categorias a partir del array de categorias ya cargado. La categoría 'sin asignar' se modifica
+            var stringCategoriesOptions  = "";
+           for (var p = 0; (p <= arrayCategories.length - 1); p++) {
+               if (arrayCategories[p] == "Sin asignar"){
+                    stringCategoriesOptions += '<option hidden value="' + p + '">Seleccione una categoría</option>';
+                    //1Agentes y Simulación Social<option value="2">Big Data y Aprendizaje Automático</option><option value="3">NLP y Análisis de Sentimientos</option><option value="4">La Web de Datos y Tecnologías Semánticas</option><option value="5">Ingeniería Web y de servicios</option><option value="6">Otros</option>
+               }else{
+                    stringCategoriesOptions += '<option value="' + p + '">' + arrayCategories[p] + '</option>'
+               }
+            };
             var filter = $('#srch-control-navbar').val().toUpperCase();
             jQuery.getJSON('https://api.github.com/orgs/' + cuentaGit + '/repos?per_page=1000&access_token=' + tokenGit + '&callback=?', function(responseRepoInfo) {
                 var repoGroup = responseRepoInfo.data;            
@@ -173,7 +194,7 @@
                         $('<div class="panel panel-primary"><div class="panel-heading" style="background-color: #0683AD;background-image: none;"><p class="titleReposAdmin"><a href="' + this.html_url + '" target="_blank">' + this.name + '</a></p></div>' +
                         '<div class="panel-body"><div class="row"><div class="col-md-2"><p><b>Autor: </b>'+ this.owner.login + '</p></div>' + 
                         '<div class="col-md-3"><p><b>Fecha Creación: </b>'+ fechaIn + '</p></div>' +
-                        '<div class="col-md-5"><div class="form-inline"><b>Categoría: </b><select id="select' + this.id + '" class="form-control"><option hidden value="0">Seleccione una categoría</option><option value="1">Agentes y Simulación Social</option><option value="2">Big Data y Aprendizaje Automático</option><option value="3">NLP y Análisis de Sentimientos</option><option value="4">La Web de Datos y Tecnologías Semánticas</option><option value="5">Ingeniería Web y de servicios</option><option value="6">Otros</option></select></p></div></div> ' +
+                        '<div class="col-md-5"><div class="form-inline"><b>Categoría: </b><select id="select' + this.id + '" class="form-control">' + stringCategoriesOptions + '</select></p></div></div> ' +
                         '<div class="col-md-2"><p><b>¿Mostrar?: </b><input data-toggle="toggle" type="checkbox" id="toggle' + this.id + '"></p></div></div>' +
                         '<div class="row"><div class="col-md-2"><p><b>ID: </b>' + this.id + '</p></div>' +
                         '<div class="col-md-8"><b>Fecha última actualización: </b>' + fechaUp + '</div>' +

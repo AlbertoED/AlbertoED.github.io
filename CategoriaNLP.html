@@ -7,14 +7,29 @@ order: 8
 ---
 {% include JB/setup %}
 <div class="page-header" style="margin-top:10px;" align="center">
-    <h1>{{page.title}}</h1>
+    <h1 id="title-NLP">{{page.title}}</h1>
 </div>
+<!-- Div par almacenar los repositorios según categoría -->
 <div id="container-NLP">
-	<div class="col-md-6" id="column-NLP-1"></div>
-	<div class="col-md-6" id="column-NLP-2"></div>
+	<div class="row">
+		<div class="col-md-6" id="column-NLP-1"></div>
+		<div class="col-md-6" id="column-NLP-2"></div>
+	</div>
 </div>
+
+<div class="row">
+  	<div class="col-md-12">
+    	<div class="jumbotron info-index">
+      		<p>En la página oficial del <b>Grupo de Sistemas Inteligentes de la UPM</b> podrás encontrar información detallada sobre esta categoría y sus proyectos.</p>
+      		<div align="center">
+    			<a href="http://www.gsi.dit.upm.es/es/investigacion/lineas?view=researcharea&task=show&id=6" class="btn btn-primary btn-lg">Ver más</a>
+    		</div>
+    	</div>
+  	</div>
+</div>
+
 <script type="text/javascript">
 	 $(window).load(function(){
-		showRepositoriesByCategory('NLP y Análisis de Sentimientos','NLP'); 
+		showRepositoriesByCategory(document.getElementById('title-NLP').innerHTML,'NLP'); 
 	});
 </script>

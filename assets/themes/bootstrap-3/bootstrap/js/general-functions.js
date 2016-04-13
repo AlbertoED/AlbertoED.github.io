@@ -30,7 +30,9 @@
         if (urlPag == "admin.html" || urlPag == "admin"){
             $('#container-main').addClass("loading");
             getTokenFireBase(function(){
-                loadRepositoriesGithub();
+                getCategories(function(){
+                    loadRepositoriesGithub();
+                });               
             });    
         }       
         $(window).scroll(function(){

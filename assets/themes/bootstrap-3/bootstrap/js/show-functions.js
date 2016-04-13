@@ -433,7 +433,7 @@
         $('#select-date-year').val(0);
         $("#select-date-month").attr('disabled', true);
         $("#select-date-year").attr('disabled', true);  
-        //LLamamos a la funcion que recraga todos sin filtros
+        //LLamamos a la funcion que recarga todos sin filtros
         showAllRepos();
     }
 

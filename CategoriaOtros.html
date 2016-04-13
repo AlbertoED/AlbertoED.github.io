@@ -7,14 +7,26 @@ order: 9
 ---
 {% include JB/setup %}
 <div class="page-header" style="margin-top:10px;" align="center">
-    <h1>{{page.title}}</h1>
+    <h1 id="title-Otros">{{page.title}}</h1>
 </div>
+<!-- Div par almacenar los repositorios según categoría -->
 <div id="container-Otros">
-	<div class="col-md-6" id="column-Otros-1"></div>
-	<div class="col-md-6" id="column-Otros-2"></div>
+	<div class="row">
+		<div class="col-md-6" id="column-Otros-1"></div>
+		<div class="col-md-6" id="column-Otros-2"></div>
+	</div>
 </div>
+
+<div class="row">
+  	<div class="col-md-12">
+    	<div class="jumbotron info-index">
+      		<p>Estos proyectos no pertenecen a ninguna categoría específica o están en proceso de categorización.</p>
+    	</div>
+  	</div>
+</div>
+
 <script type="text/javascript">
 	 $(window).load(function(){
-		showRepositoriesByCategory('Otros','Otros'); 
+		showRepositoriesByCategory(document.getElementById('title-Otros').innerHTML,'Otros'); 
 	});
 </script>

@@ -7,15 +7,29 @@ order: 5
 ---
 {% include JB/setup %}
 <div class="page-header" style="margin-top:10px;" align="center">
-    <h1>{{page.title}}</h1>
+    <h1 id="title-BDA">{{page.title}}</h1>
 </div>
 <!-- Div par almacenar los repositorios según categoría -->
 <div id="container-BDA">
-	<div class="col-md-6" id="column-BDA-1"></div>
-	<div class="col-md-6" id="column-BDA-2"></div>
+	<div class="row">
+		<div class="col-md-6" id="column-BDA-1"></div>
+		<div class="col-md-6" id="column-BDA-2"></div>
+	</div>
 </div>
+
+<div class="row">
+  	<div class="col-md-12">
+    	<div class="jumbotron info-index">
+      		<p>En la página oficial del <b>Grupo de Sistemas Inteligentes de la UPM</b> podrás encontrar información detallada sobre esta categoría y sus proyectos.</p>
+      		<div align="center">
+    			<a href="http://www.gsi.dit.upm.es/es/investigacion/lineas?view=researcharea&task=show&id=5" class="btn btn-primary btn-lg">Ver más</a>
+    		</div>
+    	</div>
+  	</div>
+</div>
+
 <script type="text/javascript">
 	 $(window).load(function(){
-		showRepositoriesByCategory('Big Data y Aprendizaje Automático','BDA'); 
+		showRepositoriesByCategory(document.getElementById('title-BDA').innerHTML,'BDA'); 
 	});
 </script>
