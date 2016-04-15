@@ -24,9 +24,12 @@
             if (infoRepo.readme == "-"){
                 var decodedReadme = "<h3 class='noReadme'>Repositorio sin archivo Readme<h3>"
             }else{
+                console.log(infoRepo.codeReadme)
+                console.log(infoRepo.readme);
+                console.log(decodeBase64(infoRepo.readme));
                 switch(infoRepo.codeReadme) {
                     case "showdown":
-                        var converter = new showdown.Converter();
+                        var converter = new showdown.Converter();                       
                         var decodedReadme = converter.makeHtml(decodeBase64(infoRepo.readme));
                         break;
                     case "rundown":
@@ -39,6 +42,7 @@
                     default:
                         var decodedReadme = "<h2>Repositorio sin archivo Readme<h2>";     
                 }
+                console.log(decodedReadme);
             } 
             //Recojo la categoría
             var tempRefCat = new Firebase(nameBBDD + "Categories/" + infoRepo.category + "/name")
