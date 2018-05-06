@@ -1,7 +1,7 @@
 # This is the default format. 
 # For more see: http://jekyllrb.com/docs/permalinks/
 permalink: /:categories/:year/:month/:day/:title 
-
+THEME-NAME: bootstrap-3
 #Incluimos esta linea para que al generar el sitio se incluya el archivo .htaccess
 include: [".htaccess", ".htpasswd"]
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
